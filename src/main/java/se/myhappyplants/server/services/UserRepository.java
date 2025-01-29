@@ -28,13 +28,20 @@ public class UserRepository {
     public boolean saveUser(User user) {
         boolean success = false;
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        String sqlSafeUsername = user.getUsername().replace("'", "''");
-        String query = "INSERT INTO [User] VALUES ('" + sqlSafeUsername + "', '" + user.getEmail() + "', '" + hashedPassword + "'," + 1 + "," + 1 + ");";
+
         try {
+            String query = String.format(
+                    "INSERT INTO users (username, email, password, notification_activated, fun_facts_activated) " +
+                            "VALUES ('%s', '%s', '%s', %b, %b)",
+                    user.getUsername(),
+                    user.getEmail(),
+                    hashedPassword,
+                    true,  // notification_activated default
+                    true   // fun_facts_activated default
+            );
             database.executeUpdate(query);
             success = true;
-        }
-        catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
         return success;
@@ -50,7 +57,7 @@ public class UserRepository {
      */
     public boolean checkLogin(String email, String password) {
         boolean isVerified = false;
-        String query = "SELECT password FROM [User] WHERE email = '" + email + "';";
+        String query = "SELECT password FROM users WHERE email = '" + email + "';";
         try {
             ResultSet resultSet = database.executeQuery(query);
             if (resultSet.next()) {
@@ -76,7 +83,7 @@ public class UserRepository {
         String username = null;
         boolean notificationActivated = false;
         boolean funFactsActivated = false;
-        String query = "SELECT id, username, notification_activated, fun_facts_activated FROM [User] WHERE email = '" + email + "';";
+        String query = "SELECT id, username, notification_activated, fun_facts_activated FROM users WHERE email = '" + email + "';";
         try {
             ResultSet resultSet = database.executeQuery(query);
             while (resultSet.next()) {
@@ -105,18 +112,21 @@ public class UserRepository {
     public boolean deleteAccount(String email, String password) {
         boolean accountDeleted = false;
         if (checkLogin(email, password)) {
-            String querySelect = "SELECT [User].id from [User] WHERE [User].email = '" + email + "';";
+            String querySelect = "SELECT id FROM users WHERE email = '" + email + "';";
             try {
                 Statement statement = database.beginTransaction();
                 ResultSet resultSet = statement.executeQuery(querySelect);
                 if (!resultSet.next()) {
-                    throw new SQLException();
+                    throw new SQLException("User not found");
                 }
                 int id = resultSet.getInt(1);
-                String queryDeletePlants = "DELETE FROM [Plant] WHERE user_id = " + id + ";";
+
+                String queryDeletePlants = "DELETE FROM plants WHERE user_id = " + id + ";";
                 statement.executeUpdate(queryDeletePlants);
-                String queryDeleteUser = "DELETE FROM [User] WHERE id = " + id + ";";
+
+                String queryDeleteUser = "DELETE FROM users WHERE id = " + id + ";";
                 statement.executeUpdate(queryDeleteUser);
+
                 database.endTransaction();
                 accountDeleted = true;
             }

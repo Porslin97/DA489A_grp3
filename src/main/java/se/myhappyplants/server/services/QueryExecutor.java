@@ -20,34 +20,35 @@ public class QueryExecutor implements IQueryExecutor {
     public void executeUpdate(String query) throws SQLException {
         boolean isSuccess = false;
         int retries = 0;
-        do {
+        while (!isSuccess && retries < 3) {
             try {
                 this.connection.getConnection().createStatement().executeUpdate(query);
                 isSuccess = true;
-                return;
-            }
-            catch (SQLException sqlException) {
+            } catch (SQLException sqlException) {
+                System.err.println("SQLException on attempt " + (retries + 1) + ": " + sqlException.getMessage());
                 connection.closeConnection();
                 retries++;
             }
-        } while (!isSuccess && retries < 3);
-        throw new SQLException("No connection to database");
+        }
+        if (!isSuccess) {
+            throw new SQLException("Failed to execute update after 3 attempts");
+        }
     }
 
     @Override
     public ResultSet executeQuery(String query) throws SQLException {
         int retries = 0;
-        do {
+        while (retries < 3) {
             try {
                 ResultSet resultSet = this.connection.getConnection().createStatement().executeQuery(query);
                 return resultSet;
-            }
-            catch (SQLException sqlException) {
+            } catch (SQLException sqlException) {
+                System.err.println("SQLException on attempt " + (retries + 1) + ": " + sqlException.getMessage());
                 connection.closeConnection();
                 retries++;
             }
-        } while (retries < 3);
-        throw new SQLException("No connection to database");
+        }
+        throw new SQLException("Failed to execute query after 3 attempts");
     }
 
     @Override

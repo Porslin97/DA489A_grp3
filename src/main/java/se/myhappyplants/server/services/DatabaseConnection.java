@@ -1,6 +1,7 @@
 package se.myhappyplants.server.services;
 
 import se.myhappyplants.server.PasswordsAndKeys;
+import java.sql.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.DriverManager;
@@ -24,27 +25,27 @@ public class DatabaseConnection implements IDatabaseConnection {
         String dbServerPort = PasswordsAndKeys.dbServerPort;
         String dbUser = PasswordsAndKeys.dbUsername;
         String dbPassword = PasswordsAndKeys.dbPassword;
-        DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
 
         if (InetAddress.getLocalHost().getHostName().equals(PasswordsAndKeys.dbHostName)) {
             dbServerIp = "localhost";
         }
-        String dbURL = String.format("jdbc:sqlserver://%s:%s;databaseName=" + databaseName + ";user=%s;password=%s", dbServerIp, dbServerPort, dbUser, dbPassword);
-        this.conn = DriverManager.getConnection(dbURL);
+
+        String dbURL = String.format("jdbc:postgresql://%s:%s/%s", dbServerIp, dbServerPort, databaseName);
+        this.conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
         return conn;
     }
 
     @Override
-    public java.sql.Connection getConnection() {
-        if(conn==null) {
+    public Connection getConnection() {
+        if (conn == null) {
             try {
                 conn = createConnection();
-            }
-            catch (UnknownHostException e) {
+            } catch (UnknownHostException e) {
+                System.err.println("Unknown host exception: " + e.getMessage());
                 e.printStackTrace();
-            }
-            catch (SQLException sqlException) {
-                sqlException.printStackTrace();
+            } catch (SQLException e) {
+                System.err.println("SQL exception: " + e.getMessage());
+                e.printStackTrace();
             }
         }
         return conn;
