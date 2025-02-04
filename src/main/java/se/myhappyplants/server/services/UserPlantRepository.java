@@ -67,7 +67,7 @@ public class UserPlantRepository {
      */
     public ArrayList<Plant> getUserLibrary(User user) {
         ArrayList<Plant> plantList = new ArrayList<>();
-        String query = "SELECT nickname, plant_id, last_watered, image_url FROM plants WHERE user_id = ?;";
+        String query = "SELECT nickname, plant_id, last_watered, image_url FROM user_plants WHERE user_id = ?;";
         try (ResultSet resultSet = database.executeQuery(query, ps -> ps.setInt(1, user.getUniqueId()))) {
             while (resultSet.next()) {
                 String nickname = resultSet.getString("nickname");
@@ -91,7 +91,7 @@ public class UserPlantRepository {
      */
     public Plant getPlant(User user, String nickname) {
         Plant plant = null;
-        String query = "SELECT nickname, plant_id, last_watered, image_url FROM plants WHERE user_id = ? AND nickname = ?;";
+        String query = "SELECT nickname, plant_id, last_watered, image_url FROM user_plants WHERE user_id = ? AND nickname = ?;";
         try (ResultSet resultSet = database.executeQuery(query, ps -> {
             ps.setInt(1, user.getUniqueId());
             ps.setString(2, nickname);
@@ -118,7 +118,7 @@ public class UserPlantRepository {
      */
     public boolean deletePlant(User user, String nickname) {
         boolean plantDeleted = false;
-        String query = "DELETE FROM plants WHERE user_id = ? AND nickname = ?;";
+        String query = "DELETE FROM user_plants WHERE user_id = ? AND nickname = ?;";
         try {
             database.executeUpdate(query, ps -> {
                 ps.setInt(1, user.getUniqueId());
@@ -141,7 +141,7 @@ public class UserPlantRepository {
      */
     public boolean changeLastWatered(User user, String nickname, LocalDate date) {
         boolean dateChanged = false;
-        String query = "UPDATE plants SET last_watered = ? WHERE user_id = ? AND nickname = ?;";
+        String query = "UPDATE user_plants SET last_watered = ? WHERE user_id = ? AND nickname = ?;";
         try {
             database.executeUpdate(query, ps -> {
                 ps.setDate(1, Date.valueOf(date));
@@ -157,7 +157,7 @@ public class UserPlantRepository {
 
     public boolean changeNickname(User user, String nickname, String newNickname) {
         boolean nicknameChanged = false;
-        String query = "UPDATE plants SET nickname = ? WHERE user_id = ? AND nickname = ?;";
+        String query = "UPDATE user_plants SET nickname = ? WHERE user_id = ? AND nickname = ?;";
         try {
             database.executeUpdate(query, ps -> {
                 ps.setString(1, newNickname);
@@ -174,7 +174,7 @@ public class UserPlantRepository {
     public boolean changeAllToWatered(User user) {
         boolean dateChanged = false;
         LocalDate date = LocalDate.now();
-        String query = "UPDATE plants SET last_watered = ? WHERE user_id = ?;";
+        String query = "UPDATE user_plants SET last_watered = ? WHERE user_id = ?;";
         try {
             database.executeUpdate(query, ps -> {
                 ps.setDate(1, Date.valueOf(date));
@@ -189,7 +189,7 @@ public class UserPlantRepository {
 
     public boolean changePlantPicture(User user, Plant plant) {
         boolean pictureChanged = false;
-        String query = "UPDATE plants SET image_url = ? WHERE user_id = ? AND nickname = ?;";
+        String query = "UPDATE user_plants SET image_url = ? WHERE user_id = ? AND nickname = ?;";
         try {
             database.executeUpdate(query, ps -> {
                 ps.setString(1, plant.getImageURL());
