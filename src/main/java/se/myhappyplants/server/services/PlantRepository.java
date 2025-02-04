@@ -5,7 +5,6 @@ import se.myhappyplants.shared.Plant;
 import se.myhappyplants.shared.PlantDetails;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,17 +16,19 @@ import java.util.ArrayList;
  */
 public class PlantRepository {
 
-    private IQueryExecutor database;
+    private IQueryExecutor queryExecutor;
 
-    public PlantRepository(IQueryExecutor database) {
-        this.database = database;
+    public PlantRepository(IQueryExecutor queryExecutor) {
+        this.queryExecutor = queryExecutor;
     }
 
     public ArrayList<Plant> getResult(String plantSearch) {
         ArrayList<Plant> plantList = new ArrayList<>();
-        String query = "SELECT id, common_name, scientific_name, family, image_url FROM species WHERE scientific_name LIKE ('%" + plantSearch + "%') OR common_name LIKE ('%" + plantSearch + "%');";
-        try {
-            ResultSet resultSet = database.executeQuery(query);
+        String query = "SELECT id, common_name, scientific_name, family, image_url FROM species WHERE scientific_name LIKE ? OR common_name LIKE ?;";
+        try (ResultSet resultSet = queryExecutor.executeQuery(query, ps -> {
+            ps.setString(1, "%" + plantSearch + "%");
+            ps.setString(2, "%" + plantSearch + "%");
+        })) {
             while (resultSet.next()) {
                 String plantId = resultSet.getString("id");
                 String commonName = resultSet.getString("common_name");
@@ -36,8 +37,7 @@ public class PlantRepository {
                 String imageURL = resultSet.getString("image_url");
                 plantList.add(new Plant(plantId, commonName, scientificName, familyName, imageURL));
             }
-        }
-        catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             System.out.println(sqlException.fillInStackTrace());
             plantList = null;
         }
@@ -46,9 +46,10 @@ public class PlantRepository {
 
     public PlantDetails getPlantDetails(Plant plant) {
         PlantDetails plantDetails = null;
-        String query = "SELECT genus, scientific_name, light, water_frequency, family FROM species WHERE id = '" + plant.getPlantId() + "';";
-        try {
-            ResultSet resultSet = database.executeQuery(query);
+        String query = "SELECT genus, scientific_name, light, water_frequency, family FROM species WHERE id = ?;";
+
+        try (ResultSet resultSet = queryExecutor.executeQuery(query, ps ->
+                ps.setString(1, plant.getPlantId()))) {
             while (resultSet.next()) {
                 String genus = resultSet.getString("genus");
                 String scientificName = resultSet.getString("scientific_name");
@@ -61,8 +62,7 @@ public class PlantRepository {
 
                 plantDetails = new PlantDetails(genus, scientificName, light, water, family);
             }
-        }
-        catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             System.out.println(sqlException.fillInStackTrace());
         }
         return plantDetails;
@@ -80,17 +80,17 @@ public class PlantRepository {
 
     public long getWaterFrequency(String plantId) throws IOException, InterruptedException {
         long waterFrequency = -1;
-        String query = "SELECT water_frequency FROM species WHERE id = '" + plantId + "';";
-        try {
-            ResultSet resultSet = database.executeQuery(query);
+        String query = "SELECT water_frequency FROM species WHERE id = ?;";
+
+        try (ResultSet resultSet = queryExecutor.executeQuery(query, ps ->
+                ps.setString(1, plantId))) {
             while (resultSet.next()) {
                 String waterText = resultSet.getString("water_frequency");
                 int water = (isNumeric(waterText)) ? Integer.parseInt(waterText) : -1;
                 waterFrequency = WaterCalculator.calculateWaterFrequencyForWatering(water);
             }
-        }
-        catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.fillInStackTrace());
         }
         return waterFrequency;
     }

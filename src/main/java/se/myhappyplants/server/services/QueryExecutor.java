@@ -1,5 +1,6 @@
 package se.myhappyplants.server.services;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,31 +18,37 @@ public class QueryExecutor implements IQueryExecutor {
     }
 
     @Override
-    public void executeUpdate(String query) throws SQLException {
-        boolean isSuccess = false;
+    public void executeUpdate(String query, PreparedStatementSetter setter) throws SQLException {
         int retries = 0;
-        while (!isSuccess && retries < 3) {
-            try {
-                this.connection.getConnection().createStatement().executeUpdate(query);
-                isSuccess = true;
+        while (retries < 3) {
+            try (PreparedStatement ps = this.connection.getConnection().prepareStatement(query)) {
+                if (setter != null) {
+                    setter.setValues(ps);
+                }
+                ps.executeUpdate();
+                return;
             } catch (SQLException sqlException) {
                 System.err.println("SQLException on attempt " + (retries + 1) + ": " + sqlException.getMessage());
                 connection.closeConnection();
                 retries++;
             }
         }
-        if (!isSuccess) {
-            throw new SQLException("Failed to execute update after 3 attempts");
-        }
+        throw new SQLException("Failed to execute update after 3 attempts");
     }
 
+
     @Override
-    public ResultSet executeQuery(String query) throws SQLException {
+    public ResultSet executeQuery(String query, PreparedStatementSetter setter) throws SQLException {
         int retries = 0;
         while (retries < 3) {
             try {
-                ResultSet resultSet = this.connection.getConnection().createStatement().executeQuery(query);
-                return resultSet;
+                PreparedStatement ps = connection.getConnection().prepareStatement(query);
+
+                if (setter != null) {
+                    setter.setValues(ps);
+                }
+
+                return ps.executeQuery();
             } catch (SQLException sqlException) {
                 System.err.println("SQLException on attempt " + (retries + 1) + ": " + sqlException.getMessage());
                 connection.closeConnection();
@@ -51,27 +58,29 @@ public class QueryExecutor implements IQueryExecutor {
         throw new SQLException("Failed to execute query after 3 attempts");
     }
 
+
     @Override
-    public Statement beginTransaction() throws SQLException {
+    public void beginTransaction() throws SQLException {
         int retries = 0;
-        do {
+        while (retries < 3) {
             try {
                 connection.getConnection().setAutoCommit(false);
-                return connection.getConnection().createStatement();
-            }
-            catch (SQLException sqlException) {
+                return;
+            } catch (SQLException sqlException) {
                 connection.closeConnection();
                 retries++;
             }
         }
-        while (retries < 3);
-        throw new SQLException("No connection to database");
+        throw new SQLException("Failed to begin transaction after 3 attempts");
     }
 
     @Override
     public void endTransaction() throws SQLException {
-        connection.getConnection().commit();
-        connection.getConnection().setAutoCommit(true);
+        try {
+            connection.getConnection().commit();
+        } finally {
+            connection.getConnection().setAutoCommit(true);
+        }
     }
 
     @Override

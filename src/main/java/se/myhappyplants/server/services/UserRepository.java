@@ -3,7 +3,6 @@ package se.myhappyplants.server.services;
 import org.mindrot.jbcrypt.BCrypt;
 import se.myhappyplants.shared.User;
 
-import java.net.UnknownHostException;
 import java.sql.*;
 
 /**
@@ -13,10 +12,10 @@ import java.sql.*;
  */
 public class UserRepository {
 
-    private IQueryExecutor database;
+    private IQueryExecutor queryExecutor;
 
-    public UserRepository(IQueryExecutor database){
-       this.database = database;
+    public UserRepository(IQueryExecutor queryExecutor) {
+        this.queryExecutor = queryExecutor;
     }
 
     /**
@@ -26,25 +25,24 @@ public class UserRepository {
      * @return A boolean value, true if the user was stored successfully
      */
     public boolean saveUser(User user) {
-        boolean success = false;
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
 
+        String query = "INSERT INTO users (email, username, password, notification_activated, fun_facts_activated) VALUES (?, ?, ?, ?, ?);";
+
         try {
-            String query = String.format(
-                    "INSERT INTO users (username, email, password, notification_activated, fun_facts_activated) " +
-                            "VALUES ('%s', '%s', '%s', %b, %b)",
-                    user.getUsername(),
-                    user.getEmail(),
-                    hashedPassword,
-                    true,  // notification_activated default
-                    true   // fun_facts_activated default
-            );
-            database.executeUpdate(query);
-            success = true;
+            queryExecutor.executeUpdate(query, ps -> {
+                ps.setString(1, user.getEmail());
+                ps.setString(2, user.getUsername());
+                ps.setString(3, hashedPassword);
+                ps.setBoolean(4, true);
+                ps.setBoolean(5, true);
+            });
+            return true;
         } catch (SQLException sqlException) {
+            System.err.println("Failed to save user: " + sqlException.getMessage());
             sqlException.printStackTrace();
+            return false;
         }
-        return success;
     }
 
     /**
@@ -57,15 +55,15 @@ public class UserRepository {
      */
     public boolean checkLogin(String email, String password) {
         boolean isVerified = false;
-        String query = "SELECT password FROM users WHERE email = '" + email + "';";
-        try {
-            ResultSet resultSet = database.executeQuery(query);
+        String query = "SELECT password FROM users WHERE email = ?;";
+
+        try (ResultSet resultSet = queryExecutor.executeQuery(query, ps ->
+                ps.setString(1, email))) {
             if (resultSet.next()) {
                 String hashedPassword = resultSet.getString(1);
                 isVerified = BCrypt.checkpw(password, hashedPassword);
             }
-        }
-        catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
         return isVerified;
@@ -83,18 +81,18 @@ public class UserRepository {
         String username = null;
         boolean notificationActivated = false;
         boolean funFactsActivated = false;
-        String query = "SELECT id, username, notification_activated, fun_facts_activated FROM users WHERE email = '" + email + "';";
-        try {
-            ResultSet resultSet = database.executeQuery(query);
-            while (resultSet.next()) {
+        String query = "SELECT id, username, notification_activated, fun_facts_activated FROM users WHERE email = ?;";
+
+        try (ResultSet resultSet = queryExecutor.executeQuery(query, ps ->
+                ps.setString(1, email))) {
+            if (resultSet.next()) {
                 uniqueID = resultSet.getInt(1);
                 username = resultSet.getString(2);
                 notificationActivated = resultSet.getBoolean(3);
                 funFactsActivated = resultSet.getBoolean(4);
             }
             user = new User(uniqueID, email, username, notificationActivated, funFactsActivated);
-        }
-        catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
         return user;
@@ -112,30 +110,30 @@ public class UserRepository {
     public boolean deleteAccount(String email, String password) {
         boolean accountDeleted = false;
         if (checkLogin(email, password)) {
-            String querySelect = "SELECT id FROM users WHERE email = '" + email + "';";
+            String querySelect = "SELECT id FROM users WHERE email = ?;";
             try {
-                Statement statement = database.beginTransaction();
-                ResultSet resultSet = statement.executeQuery(querySelect);
-                if (!resultSet.next()) {
-                    throw new SQLException("User not found");
+                queryExecutor.beginTransaction();
+                try (ResultSet resultSet = queryExecutor.executeQuery(querySelect, ps -> {
+                    ps.setString(1, email);
+                })) {
+                    if (resultSet.next()) {
+                        int id = resultSet.getInt(1);
+                        String queryDeleteUser = "DELETE FROM users WHERE id = ?;";
+                        queryExecutor.executeUpdate(queryDeleteUser, ps -> {
+                            ps.setInt(1, id);
+                        });
+
+                    } else {
+                        throw new SQLException("No user found with email: " + email);
+                    }
+                    queryExecutor.endTransaction();
+                    accountDeleted = true;
                 }
-                int id = resultSet.getInt(1);
-
-                String queryDeletePlants = "DELETE FROM plants WHERE user_id = " + id + ";";
-                statement.executeUpdate(queryDeletePlants);
-
-                String queryDeleteUser = "DELETE FROM users WHERE id = " + id + ";";
-                statement.executeUpdate(queryDeleteUser);
-
-                database.endTransaction();
-                accountDeleted = true;
-            }
-            catch (SQLException sqlException) {
+            } catch (SQLException sqlException) {
                 try {
-                   database.rollbackTransaction();
-                }
-                catch (SQLException throwables) {
-                    throwables.printStackTrace();
+                    queryExecutor.rollbackTransaction();
+                } catch (SQLException rollbackException) {
+                    rollbackException.printStackTrace();
                 }
             }
         }
@@ -143,37 +141,32 @@ public class UserRepository {
     }
 
     public boolean changeNotifications(User user, boolean notifications) {
-        boolean notificationsChanged = false;
-        int notificationsActivated = 0;
-        if (notifications) {
-            notificationsActivated = 1;
-        }
-        String query = "UPDATE [User] SET notification_activated = " + notificationsActivated + " WHERE email = '" + user.getEmail() + "';";
+        String query = "UPDATE users SET notification_activated = ? WHERE email = ?";
+
         try {
-            database.executeUpdate(query);
-            notificationsChanged = true;
-        }
-        catch (SQLException sqlException) {
+            queryExecutor.executeUpdate(query, ps -> {
+                ps.setBoolean(1, notifications);
+                ps.setString(2, user.getEmail());
+            });
+        } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+            return false;
         }
-        return notificationsChanged;
+        return true;
     }
 
     public boolean changeFunFacts(User user, Boolean funFactsActivated) {
-        boolean funFactsChanged = false;
-        int funFactsBitValue = 0;
-        if (funFactsActivated) {
-            funFactsBitValue = 1;
-        }
-        String query = "UPDATE [User] SET fun_facts_activated = " + funFactsBitValue + " WHERE email = '" + user.getEmail() + "';";
+        String query = "UPDATE users SET fun_facts_activated = ? WHERE email = ?";
         try {
-            database.executeUpdate(query);
-            funFactsChanged = true;
-        }
-        catch (SQLException sqlException) {
+            queryExecutor.executeUpdate(query, ps -> {
+                ps.setBoolean(1, funFactsActivated);
+                ps.setString(2, user.getEmail());
+            });
+        } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+            return false;
         }
-        return funFactsChanged;
+        return true;
     }
 }
 
