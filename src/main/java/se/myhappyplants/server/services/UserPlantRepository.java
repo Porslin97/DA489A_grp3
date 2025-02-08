@@ -66,7 +66,8 @@ public class UserPlantRepository {
      */
     public ArrayList<Plant> getUserLibrary(User user) {
         ArrayList<Plant> plantList = new ArrayList<>();
-        String query = "SELECT nickname, plant_id, last_watered, image_url FROM user_plants WHERE user_id = ?;";
+        String query = "SELECT nickname, plant_id, last_watered, image_url, watering_frequency FROM user_plants WHERE user_id = ?;";
+        System.out.println("User: " + user.getUniqueId());
         try (ResultSet resultSet = database.executeQuery(query, ps -> ps.setInt(1, user.getUniqueId()))) {
             while (resultSet.next()) {
                 String nickname = resultSet.getString("nickname");
@@ -74,6 +75,7 @@ public class UserPlantRepository {
                 Date lastWatered = resultSet.getDate("last_watered");
                 String imageURL = resultSet.getString("image_url");
                 int waterFrequency = resultSet.getInt("watering_frequency");
+                System.out.println("Nickname: " + nickname + " PlantId: " + plantId + " Last watered: " + lastWatered + " ImageURL: " + imageURL);
                 plantList.add(new Plant(nickname, plantId, lastWatered, waterFrequency, imageURL));
             }
         } catch (SQLException exception) {
