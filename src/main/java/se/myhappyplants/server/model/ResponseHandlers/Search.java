@@ -1,7 +1,7 @@
 package se.myhappyplants.server.model.ResponseHandlers;
 
 import se.myhappyplants.server.model.IResponseHandler;
-import se.myhappyplants.server.services.PlantRepository;
+import se.myhappyplants.server.services.PlantApiService;
 import se.myhappyplants.shared.Message;
 import se.myhappyplants.shared.Plant;
 
@@ -10,10 +10,10 @@ import java.util.ArrayList;
  * Class that handles the request of a search
  */
 public class Search implements IResponseHandler {
-    private PlantRepository plantRepository;
+    private PlantApiService plantApiService;
 
-    public Search(PlantRepository plantRepository) {
-        this.plantRepository = plantRepository;
+    public Search(PlantApiService plantApiService) {
+        this.plantApiService = plantApiService;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class Search implements IResponseHandler {
         Message response;
         String searchText = request.getMessageText();
         try {
-            ArrayList<Plant> plantList = plantRepository.getResult(searchText);
+            ArrayList<Plant> plantList = plantApiService.getResult(searchText);
             response = new Message(plantList, true);
         } catch (Exception e) {
             response = new Message(false);

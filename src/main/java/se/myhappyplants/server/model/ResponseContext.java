@@ -1,7 +1,7 @@
 package se.myhappyplants.server.model;
 
 import se.myhappyplants.server.model.ResponseHandlers.*;
-import se.myhappyplants.server.services.PlantRepository;
+import se.myhappyplants.server.services.PlantApiService;
 import se.myhappyplants.server.services.UserPlantRepository;
 import se.myhappyplants.server.services.UserRepository;
 import se.myhappyplants.shared.MessageType;
@@ -18,13 +18,13 @@ public class ResponseContext {
     private HashMap<MessageType, IResponseHandler> responders = new HashMap<>();
     private UserRepository userRepository;
     private UserPlantRepository userPlantRepository;
-    private PlantRepository plantRepository;
+    private PlantApiService plantApiService;
 
-    public ResponseContext(UserRepository userRepository, UserPlantRepository userPlantRepository, PlantRepository plantRepository) {
+    public ResponseContext(UserRepository userRepository, UserPlantRepository userPlantRepository, PlantApiService plantApiService) {
 
         this.userRepository = userRepository;
         this.userPlantRepository = userPlantRepository;
-        this.plantRepository = plantRepository;
+        this.plantApiService = plantApiService;
         createResponders();
     }
 
@@ -41,11 +41,11 @@ public class ResponseContext {
         responders.put(MessageType.deleteAccount, new DeleteAccount(userRepository));
         responders.put(MessageType.deletePlant, new DeletePlant(userPlantRepository));
         responders.put(MessageType.getLibrary, new GetLibrary(userPlantRepository));
-        responders.put(MessageType.getMorePlantInfo, new GetPlantDetails(plantRepository));
+        responders.put(MessageType.getMorePlantInfo, new GetPlantDetails(plantApiService));
         responders.put(MessageType.login, new Login(userRepository));
         responders.put(MessageType.register, new Register(userRepository));
         responders.put(MessageType.savePlant, new SavePlant(userPlantRepository));
-        responders.put(MessageType.search, new Search(plantRepository));
+        responders.put(MessageType.search, new Search(plantApiService));
     }
 
     public IResponseHandler getResponseHandler(MessageType messageType) {

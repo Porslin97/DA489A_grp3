@@ -138,14 +138,14 @@ public class SearchPlantPane extends Pane implements PlantPane {
                     if (!gotInfoOnPlant) {
                         PlantDetails plantDetails = searchTabPaneController.getPlantDetails(plant);
                         String lightText = LightTextFormatter.getLightTextString(plantDetails.getLight());
-                        long waterInMilli = WaterCalculator.calculateWaterFrequencyForWatering(plantDetails.getWaterFrequency());
-                        String waterText = WaterTextFormatter.getWaterString(waterInMilli);
+                        // long waterInMilli = WaterCalculator.calculateWaterFrequencyForWatering(plantDetails.getWaterFrequency());
+                        // String waterText = WaterTextFormatter.getWaterString(waterInMilli);
                         ObservableList<String> plantInfo = FXCollections.observableArrayList();
                         plantInfo.add("Genus: " +plantDetails.getGenus());
                         plantInfo.add("Scientific name: "+plantDetails.getScientificName());
                         plantInfo.add("Family: "+plantDetails.getFamily());
                         plantInfo.add("Light: " +lightText);
-                        plantInfo.add("Water: "+waterText);
+                        // plantInfo.add("Water: "+waterText);
                         listView.setItems(plantInfo);
                     }
                     extendPaneMoreInfoPlant();

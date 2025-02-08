@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public class UserPlantRepository {
 
-    private PlantRepository plantRepository;
+    private PlantApiService plantApiService;
     private IQueryExecutor database;
 
     /**
@@ -25,8 +25,8 @@ public class UserPlantRepository {
      * @throws SQLException
      * @throws UnknownHostException
      */
-    public UserPlantRepository(PlantRepository plantRepository, IQueryExecutor database) throws UnknownHostException, SQLException {
-        this.plantRepository = plantRepository;
+    public UserPlantRepository(PlantApiService plantApiService, IQueryExecutor database) throws UnknownHostException, SQLException {
+        this.plantApiService = plantApiService;
         this.database = database;
 
     }
@@ -74,7 +74,7 @@ public class UserPlantRepository {
                 String plantId = resultSet.getString("plant_id");
                 Date lastWatered = resultSet.getDate("last_watered");
                 String imageURL = resultSet.getString("image_url");
-                long waterFrequency = plantRepository.getWaterFrequency(plantId);
+                long waterFrequency = plantApiService.getWaterFrequency(plantId);
                 plantList.add(new Plant(nickname, plantId, lastWatered, waterFrequency, imageURL));
             }
         } catch (SQLException | IOException | InterruptedException exception) {
@@ -91,7 +91,7 @@ public class UserPlantRepository {
      */
     public Plant getPlant(User user, String nickname) {
         Plant plant = null;
-        String query = "SELECT nickname, plant_id, last_watered, image_url FROM user_plants WHERE user_id = ? AND nickname = ?;";
+        String query = "SELECT nickname, plant_id, last_watered, image_url, watering_frequency FROM user_plants WHERE user_id = ? AND nickname = ?;";
         try (ResultSet resultSet = database.executeQuery(query, ps -> {
             ps.setInt(1, user.getUniqueId());
             ps.setString(2, nickname);
@@ -100,7 +100,7 @@ public class UserPlantRepository {
                 String plantId = resultSet.getString("plant_id");
                 Date lastWatered = resultSet.getDate("last_watered");
                 String imageURL = resultSet.getString("image_url");
-                long waterFrequency = plantRepository.getWaterFrequency(plantId);
+                int waterFrequency = resultSet.getInt("watering_frequency");
                 plant = new Plant(nickname, plantId, lastWatered, waterFrequency, imageURL);
             }
         } catch (SQLException | IOException | InterruptedException sqlException) {

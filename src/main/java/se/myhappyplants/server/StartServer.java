@@ -18,10 +18,10 @@ public class StartServer {
         IQueryExecutor queryExecutor = new QueryExecutor(databaseConnection);
 
         UserRepository userRepository = new UserRepository(queryExecutor);
-        PlantRepository plantRepository = new PlantRepository(queryExecutor);
-        UserPlantRepository userPlantRepository = new UserPlantRepository(plantRepository, queryExecutor);
+        PlantApiService plantApiService = new PlantApiService();
+        UserPlantRepository userPlantRepository = new UserPlantRepository(plantApiService, queryExecutor);
 
-        ResponseController responseController = new ResponseController(userRepository,userPlantRepository,plantRepository);
+        ResponseController responseController = new ResponseController(userRepository,userPlantRepository, plantApiService);
 
         new Server(2555, responseController);
     }

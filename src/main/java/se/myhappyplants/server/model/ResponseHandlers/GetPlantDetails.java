@@ -1,7 +1,7 @@
 package se.myhappyplants.server.model.ResponseHandlers;
 
 import se.myhappyplants.server.model.IResponseHandler;
-import se.myhappyplants.server.services.PlantRepository;
+import se.myhappyplants.server.services.PlantApiService;
 import se.myhappyplants.shared.Message;
 import se.myhappyplants.shared.Plant;
 import se.myhappyplants.shared.PlantDetails;
@@ -9,10 +9,10 @@ import se.myhappyplants.shared.PlantDetails;
  * Class that gets the plant details
  */
 public class GetPlantDetails implements IResponseHandler {
-    private PlantRepository plantRepository;
+    private PlantApiService plantApiService;
 
-    public GetPlantDetails(PlantRepository plantRepository) {
-        this.plantRepository = plantRepository;
+    public GetPlantDetails(PlantApiService plantApiService) {
+        this.plantApiService = plantApiService;
     }
 
     @Override
@@ -20,7 +20,7 @@ public class GetPlantDetails implements IResponseHandler {
         Message response;
         Plant plant = request.getPlant();
         try {
-            PlantDetails plantDetails = plantRepository.getPlantDetails(plant);
+            PlantDetails plantDetails = plantApiService.getPlantDetails(plant);
             response = new Message(plantDetails, true);
         } catch (Exception e) {
             response = new Message(false);
