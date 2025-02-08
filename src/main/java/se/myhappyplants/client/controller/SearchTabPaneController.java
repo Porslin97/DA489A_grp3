@@ -21,10 +21,10 @@ import se.myhappyplants.shared.Message;
 import se.myhappyplants.shared.MessageType;
 import se.myhappyplants.shared.Plant;
 import se.myhappyplants.client.model.SetAvatar;
-import se.myhappyplants.shared.PlantDetails;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class that controls the logic of the "search"-tab
@@ -56,7 +56,7 @@ public class SearchTabPaneController {
     @FXML
     public TextField txtNbrOfResults;
 
-    private ArrayList<Plant> searchResults;
+    private List<Plant> searchResults;
 
     /**
      * Method to initialize the GUI
@@ -178,7 +178,7 @@ public class SearchTabPaneController {
                         Platform.runLater(() -> listViewResult.getItems().clear());
                         return;
                     }
-                    Platform.runLater(() -> showResultsOnPane());
+                    Platform.runLater(this::showResultsOnPane);
                 }
             }
             else {
@@ -198,9 +198,11 @@ public class SearchTabPaneController {
         mainPaneController.logoutButtonPressed();
     }
 
-    public PlantDetails getPlantDetails(Plant plant) {
+
+    // TODO: Check if works removing plantdetails class
+    public Plant getPlantDetails(Plant plant) {
         PopupBox.display(MessageText.holdOnGettingInfo.toString());
-        PlantDetails plantDetails = null;
+        Plant plantDetails = null;
         Message getInfoSearchedPlant = new Message(MessageType.getMorePlantInfo, plant);
         ServerConnection connection = ServerConnection.getClientConnection();
         Message response = connection.makeRequest(getInfoSearchedPlant);

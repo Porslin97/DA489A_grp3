@@ -7,6 +7,7 @@ import javafx.scene.image.ImageView;
 import se.myhappyplants.shared.Plant;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class that created the notification in the
@@ -20,7 +21,7 @@ public class NotificationsCreator {
      * @param imgNotifications
      * @return ObservableList<String> to set in the listView in the GUI
      */
-    public static ObservableList<String> getNotificationsStrings (ArrayList<Plant> currentUserLibrary, ImageView imgNotifications) {
+    public static ObservableList<String> getNotificationsStrings (List<Plant> currentUserLibrary, ImageView imgNotifications) {
 
         ObservableList<String> notificationStrings = FXCollections.observableArrayList();
         if (LoggedInUser.getInstance().getUser().areNotificationsActivated()) {

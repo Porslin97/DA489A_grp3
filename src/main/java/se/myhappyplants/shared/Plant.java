@@ -5,6 +5,8 @@ import se.myhappyplants.client.model.PictureRandomizer;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class defining a plant
@@ -20,7 +22,7 @@ public class Plant implements Serializable {
     private String familyName;
     private String imageURL;
     private String nickname;
-    private String sunlight;
+    private List<String> sunlight;
     private String description;
     private String recommended_watering_frequency;
     private int users_watering_frequency;
@@ -33,9 +35,10 @@ public class Plant implements Serializable {
      * @param imageURL
      */
 
-    public Plant(String id, String commonName, String imageURL) {
+    public Plant(String id, String commonName, String scientificName, String imageURL) {
         this.plantId = id;
         this.commonName = commonName;
+        this.scientificName = scientificName;
         this.imageURL = imageURL;
     }
 
@@ -115,6 +118,18 @@ public class Plant implements Serializable {
         return scientificName;
     }
 
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public List<String> getSunlight() {
+        return sunlight;
+    }
+
+    public String getRecommended_watering_frequency() {
+        return recommended_watering_frequency;
+    }
+
     public String getPlantId() {
         return plantId;
     }
@@ -139,6 +154,10 @@ public class Plant implements Serializable {
 
     public void setLastWatered(LocalDate localDate) {
         this.lastWatered = Date.valueOf(localDate);
+    }
+
+    public int getUsers_watering_frequency() {
+        return users_watering_frequency;
     }
 
     /**
@@ -190,11 +209,10 @@ public class Plant implements Serializable {
         return strToReturn;
     }
 
-    public void updatePlantDetails(String scientificName, String familyName, String description, String sunlight, String recommended_watering_frequency) {
-        this.scientificName = scientificName;
+    public void updatePlantDetails(String familyName, String description, List<String> sunlight, String recommended_watering_frequency) {
         this.familyName = familyName;
         this.description = description;
-        this.sunlight = sunlight;
+        this.sunlight = new ArrayList<>(sunlight);
         this.recommended_watering_frequency = recommended_watering_frequency;
     }
 

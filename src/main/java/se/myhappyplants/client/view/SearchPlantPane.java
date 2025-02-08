@@ -16,9 +16,7 @@ import javafx.util.Duration;
 import se.myhappyplants.client.controller.SearchTabPaneController;
 
 import se.myhappyplants.client.model.ImageLibrary;
-import se.myhappyplants.shared.WaterCalculator;
 import se.myhappyplants.shared.Plant;
-import se.myhappyplants.shared.PlantDetails;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -34,7 +32,7 @@ public class SearchPlantPane extends Pane implements PlantPane {
     private Button infoButton;
     private Button addButton;
 
-    private Plant plant;
+    private Plant plant; // when we create an object of this class the plant object is from the search and has the ID, commonName and image
     private SearchTabPaneController searchTabPaneController;
     private ListView listView;
     private ImageView imgViewPlusSign;
@@ -136,16 +134,12 @@ public class SearchPlantPane extends Pane implements PlantPane {
                 commonName.setDisable(true);
                 if (!extended) {
                     if (!gotInfoOnPlant) {
-                        PlantDetails plantDetails = searchTabPaneController.getPlantDetails(plant);
-                        String lightText = LightTextFormatter.getLightTextString(plantDetails.getLight());
-                        // long waterInMilli = WaterCalculator.calculateWaterFrequencyForWatering(plantDetails.getWaterFrequency());
-                        // String waterText = WaterTextFormatter.getWaterString(waterInMilli);
+                        Plant plantDetails = searchTabPaneController.getPlantDetails(plant);
                         ObservableList<String> plantInfo = FXCollections.observableArrayList();
-                        plantInfo.add("Genus: " +plantDetails.getGenus());
-                        plantInfo.add("Scientific name: "+plantDetails.getScientificName());
-                        plantInfo.add("Family: "+plantDetails.getFamily());
-                        plantInfo.add("Light: " +lightText);
-                        // plantInfo.add("Water: "+waterText);
+                        plantInfo.add("Scientific name: "+ plantDetails.getScientificName());
+                        plantInfo.add("Family: "+ plantDetails.getFamilyName());
+                        plantInfo.add("Light: " + plantDetails.getSunlight());
+                        plantInfo.add("Water: "+ plantDetails.getRecommended_watering_frequency());
                         listView.setItems(plantInfo);
                     }
                     extendPaneMoreInfoPlant();

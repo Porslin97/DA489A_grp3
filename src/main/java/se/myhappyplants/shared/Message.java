@@ -3,6 +3,8 @@ package se.myhappyplants.shared;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Class that can be used for communication between Client/Server
@@ -18,10 +20,9 @@ public class Message implements Serializable {
     private User user;
     private boolean success;
     private LocalDate date;
-    private ArrayList<Plant> plantArray;
+    private List<Plant> plantArray;
     private Plant plant;
     private String newNickname;
-    private PlantDetails plantDetails;
 
 
     /**
@@ -119,7 +120,7 @@ public class Message implements Serializable {
      * @param plantArray
      * @param success
      */
-    public Message(ArrayList<Plant> plantArray, boolean success) {
+    public Message(List<Plant> plantArray, boolean success) {
         this.plantArray = plantArray;
         this.success = success;
     }
@@ -148,14 +149,16 @@ public class Message implements Serializable {
         this.success = success;
     }
 
+
+    // TODO: check if this even works after removing plant details
     /**
      * Creates a message that can be used to send
      * further information about a plant
      * @param plantDetails
      * @param success
      */
-    public Message(PlantDetails plantDetails, boolean success) {
-        this.plantDetails = plantDetails;
+    public Message(Plant plantDetails, boolean success) {
+        this.plant = plantDetails;
         this.success = success;
     }
 
@@ -179,7 +182,7 @@ public class Message implements Serializable {
         return success;
     }
 
-    public ArrayList<Plant> getPlantArray() {
+    public List<Plant> getPlantArray() {
         return plantArray;
     }
 
@@ -195,7 +198,8 @@ public class Message implements Serializable {
         return notifications;
     }
 
-    public PlantDetails getPlantDetails() {
-        return plantDetails;
+    // TODO: check if this even works after removing plant details
+    public Plant getPlantDetails() {
+        return plant;
     }
 }

@@ -19,7 +19,7 @@ public class StartServer {
 
         UserRepository userRepository = new UserRepository(queryExecutor);
         PlantApiService plantApiService = new PlantApiService();
-        UserPlantRepository userPlantRepository = new UserPlantRepository(plantApiService, queryExecutor);
+        UserPlantRepository userPlantRepository = new UserPlantRepository(queryExecutor);
 
         ResponseController responseController = new ResponseController(userRepository,userPlantRepository, plantApiService);
 

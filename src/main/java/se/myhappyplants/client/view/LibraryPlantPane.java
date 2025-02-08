@@ -15,7 +15,6 @@ import se.myhappyplants.client.model.BoxTitle;
 import se.myhappyplants.client.model.PictureRandomizer;
 import se.myhappyplants.shared.WaterCalculator;
 import se.myhappyplants.shared.Plant;
-import se.myhappyplants.shared.PlantDetails;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -231,17 +230,13 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         infoButton.setDisable(true);
         if (!extended) {
             if (!gotInfoOnPlant) {
-                PlantDetails plantDetails = myPlantsTabPaneController.getPlantDetails(plant);
-                long waterInMilli = WaterCalculator.calculateWaterFrequencyForWatering(plantDetails.getWaterFrequency());
-                String waterText = WaterTextFormatter.getWaterString(waterInMilli);
-                String lightText = LightTextFormatter.getLightTextString(plantDetails.getLight());
+                // TODO: anropas redan? undvika flera anrop till API. Plant plantDetails = myPlantsTabPaneController.getPlantDetails(plant);
 
                 ObservableList<String> plantInfo = FXCollections.observableArrayList();
-                plantInfo.add("Genus: " + plantDetails.getGenus());
-                plantInfo.add("Scientific name: " + plantDetails.getScientificName());
-                plantInfo.add("Family: " + plantDetails.getFamily());
-                plantInfo.add("Light: " + lightText);
-                plantInfo.add("Water: " + waterText);
+                plantInfo.add("Scientific name: " + plant.getScientificName());
+                plantInfo.add("Family: " + plant.getFamilyName());
+                plantInfo.add("Light: " + plant.getSunlight());
+                plantInfo.add("Water: " + plant.getRecommended_watering_frequency());
                 plantInfo.add("Last watered: " + plant.getLastWatered());
                 listViewMoreInfo.setItems(plantInfo);
             }
@@ -325,16 +320,12 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         listViewMoreInfo.setLayoutY(this.getHeight() + 100.0);
         listViewMoreInfo.setPrefWidth(725.0);
         listViewMoreInfo.setPrefHeight(140.0);
-        PlantDetails plantDetails = myPlantsTabPaneController.getPlantDetails(plant);
-        long waterInMilli = WaterCalculator.calculateWaterFrequencyForWatering(plantDetails.getWaterFrequency());
-        String waterText = WaterTextFormatter.getWaterString(waterInMilli);
-        String lightText = LightTextFormatter.getLightTextString(plantDetails.getLight());
+        Plant plantDetails = myPlantsTabPaneController.getPlantDetails(plant);
         ObservableList<String> plantInfo = FXCollections.observableArrayList();
-        plantInfo.add("Genus: " + plantDetails.getGenus());
         plantInfo.add("Scientific name: " + plantDetails.getScientificName());
-        plantInfo.add("Family: " + plantDetails.getFamily());
-        plantInfo.add("Light: " + lightText);
-        plantInfo.add("Water: " + waterText);
+        plantInfo.add("Family: " + plantDetails.getFamilyName());
+        plantInfo.add("Light: " + plantDetails.getSunlight());
+        plantInfo.add("Water: " + plantDetails.getRecommended_watering_frequency());
         plantInfo.add("Last watered: " + plant.getLastWatered());
         this.setPrefHeight(92.0);
         this.getChildren().addAll(image, nickname, daysUntilWaterlbl, progressBar, waterButton, infoButton);

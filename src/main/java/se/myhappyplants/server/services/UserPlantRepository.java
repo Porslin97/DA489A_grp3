@@ -16,7 +16,6 @@ import java.util.ArrayList;
  */
 public class UserPlantRepository {
 
-    private PlantApiService plantApiService;
     private IQueryExecutor database;
 
     /**
@@ -25,8 +24,7 @@ public class UserPlantRepository {
      * @throws SQLException
      * @throws UnknownHostException
      */
-    public UserPlantRepository(PlantApiService plantApiService, IQueryExecutor database) throws UnknownHostException, SQLException {
-        this.plantApiService = plantApiService;
+    public UserPlantRepository(IQueryExecutor database) throws UnknownHostException, SQLException {
         this.database = database;
 
     }
@@ -42,7 +40,7 @@ public class UserPlantRepository {
 
     public boolean savePlant(User user, Plant plant) {
         boolean success = false;
-        String query = "INSERT INTO plants (user_id, nickname, plant_id, last_watered, image_url) VALUES (?, ?, ?, ?, ?);";
+        String query = "INSERT INTO user_plants (user_id, nickname, plant_id, last_watered, image_url, watering_frequency) VALUES (?, ?, ?, ?, ?, ?);";
         try {
             database.executeUpdate(query, ps -> {
                 ps.setInt(1, user.getUniqueId());
@@ -50,6 +48,7 @@ public class UserPlantRepository {
                 ps.setString(3, plant.getPlantId());
                 ps.setDate(4, plant.getLastWatered());
                 ps.setString(5, plant.getImageURL());
+                ps.setInt(6, plant.getUsers_watering_frequency());
             });
             success = true;
         } catch (SQLException throwables) {
@@ -74,10 +73,10 @@ public class UserPlantRepository {
                 String plantId = resultSet.getString("plant_id");
                 Date lastWatered = resultSet.getDate("last_watered");
                 String imageURL = resultSet.getString("image_url");
-                long waterFrequency = plantApiService.getWaterFrequency(plantId);
+                int waterFrequency = resultSet.getInt("watering_frequency");
                 plantList.add(new Plant(nickname, plantId, lastWatered, waterFrequency, imageURL));
             }
-        } catch (SQLException | IOException | InterruptedException exception) {
+        } catch (SQLException exception) {
             System.out.println(exception.fillInStackTrace());
         }
         return plantList;
@@ -103,7 +102,7 @@ public class UserPlantRepository {
                 int waterFrequency = resultSet.getInt("watering_frequency");
                 plant = new Plant(nickname, plantId, lastWatered, waterFrequency, imageURL);
             }
-        } catch (SQLException | IOException | InterruptedException sqlException) {
+        } catch (SQLException sqlException) {
             System.out.println(sqlException.fillInStackTrace());
         }
         return plant;

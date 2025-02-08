@@ -6,6 +6,9 @@ import se.myhappyplants.shared.Message;
 import se.myhappyplants.shared.Plant;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 /**
  * Class that handles the request of a search
  */
@@ -21,8 +24,9 @@ public class Search implements IResponseHandler {
         Message response;
         String searchText = request.getMessageText();
         try {
-            ArrayList<Plant> plantList = plantApiService.getResult(searchText);
-            response = new Message(plantList, true);
+            Optional<List<Plant>> plantList = plantApiService.getPlants(searchText);
+            List<Plant> plants = plantList.orElse(new ArrayList<>());
+            response = new Message(plants, true);
         } catch (Exception e) {
             response = new Message(false);
             e.printStackTrace();
