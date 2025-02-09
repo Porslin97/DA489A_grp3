@@ -212,7 +212,7 @@ public class MyPlantsTabPaneController {
      * @param plantNickname the nickname of the plant that the user chooses
      */
     @FXML
-    public void addPlantToCurrentUserLibrary(Plant selectedPlant, String plantNickname) {
+    public void addPlantToCurrentUserLibrary(Plant selectedPlant, String plantNickname, int wateringFrequency) {
         int plantsWithThisNickname = 1;
         String uniqueNickName = plantNickname;
         for (Plant plant : currentUserLibrary) {
@@ -224,7 +224,7 @@ public class MyPlantsTabPaneController {
         long currentDateMilli = System.currentTimeMillis();
         Date date = new Date(currentDateMilli);
         String imageURL = PictureRandomizer.getRandomPictureURL();
-        Plant plantToAdd = new Plant(uniqueNickName, selectedPlant.getPlantId(), date, imageURL);
+        Plant plantToAdd = new Plant(uniqueNickName, selectedPlant.getPlantId(), date, wateringFrequency, imageURL);
         PopupBox.display(MessageText.sucessfullyAddPlant.toString());
         addPlantToDB(plantToAdd);
     }

@@ -2,7 +2,6 @@ package se.myhappyplants.shared;
 
 import se.myhappyplants.client.model.PictureRandomizer;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -15,7 +14,7 @@ import java.util.List;
  * Updated by: Linn Borgström, Eric Simonson, Susanne Vikström
  */
 public class Plant implements Serializable {
-    @Serial
+
     private static final long serialVersionUID = 867522155232174497L;
     private String plantId;
     private String commonName;
