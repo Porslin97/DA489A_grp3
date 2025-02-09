@@ -76,9 +76,10 @@ public class SearchTabPaneController {
             lblUsername.setText("Guest");
             String defaultAvatarUrl = "file:resources/images/user_default_img.png";
             imgUserAvatar.setFill(new ImagePattern(new Image(defaultAvatarUrl)));
+            MessageBox.display(BoxTitle.Guest,"You will be logged in as a guest. You will only be able to search for plants.");
+
         }
         cmbSortOption.setItems(ListSorter.sortOptionsSearch());
-        MessageBox.display(BoxTitle.Guest,"You will be logged in as a guest. You will only be able to search for plants.");
     }
 
     /**
