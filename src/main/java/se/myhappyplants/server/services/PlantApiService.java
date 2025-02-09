@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import se.myhappyplants.shared.Plant;
 import se.myhappyplants.server.PasswordsAndKeys;
+import se.myhappyplants.shared.PlantDetails;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -28,19 +29,26 @@ public class PlantApiService {
         this.httpClient = HttpClient.newHttpClient();
     }
 
-    // TODO: If plantID is above 3000 set default values (need premium account to access species with ID above 3000)
-    public Plant getPlantDetails(Plant plant) {
+    public PlantDetails getPlantDetails(Plant plant) {
+        int plantId = Integer.parseInt(plant.getPlantId());
+
+        if (plantId > 3000) { // Plants with ID above 3000 require premium from the API to get detailed information
+            System.out.println("Plant ID is above 3000, setting default values and not fetching details from API");
+            return new PlantDetails("Unknown", "Unknown", "Unknown", List.of("Unknown"), "Unknown");
+        }
+
         try {
             String query = String.format("https://perenual.com/api/species/details/%s?key=%s", plant.getPlantId(), API_KEY);
             JSONObject jsonResponse = fetchJsonResponse(query);
             return parsePlantDetailsFromJson(jsonResponse);
         } catch (Exception e) {
             System.err.println("Failed to fetch plant details: " + e.getMessage());
-            return plant;
+            return new PlantDetails("Unknown", "Unknown", "Unknown", List.of("Unknown"), "Unknown");
         }
     }
 
     public Optional<List<Plant>> getPlants(String plantSearch) {
+        System.out.println("Fetching plants from API");
         try {
             String query = buildQueryUrl(plantSearch);
             JSONObject jsonResponse = fetchJsonResponse(query);
@@ -76,6 +84,7 @@ public class PlantApiService {
     }
 
     private List<Plant> parsePlantsFromJson(JSONObject jsonResponse) {
+        System.out.println("Parsing plants from JSON");
         JSONArray data = jsonResponse.getJSONArray("data");
         List<Plant> plants = new ArrayList<>();
 
@@ -88,22 +97,18 @@ public class PlantApiService {
             System.out.println("Plant: " + id + " " + commonName + " " + scientificName + " " + imageUrl);
             plants.add(new Plant(id, commonName, scientificName, imageUrl));
         }
+        System.out.println("Parsed " + plants.size() + " plants");
+        System.out.println(plants);
         return plants;
     }
 
-    private Plant parsePlantDetailsFromJson(JSONObject plantJson) {
-        String id = String.valueOf(plantJson.getInt("id"));
-        String commonName = getJsonString(plantJson, "common_name");
-        String scientificName = getJsonArrayAsList(plantJson, "scientific_name").stream().findFirst().orElse("");
+    private PlantDetails parsePlantDetailsFromJson(JSONObject plantJson) {
         String familyName = getJsonString(plantJson, "family");
         String description = getJsonString(plantJson, "description");
         List<String> sunlight = getJsonArrayAsList(plantJson, "sunlight");
         String recommendedWateringFrequency = getJsonString(plantJson, "watering");
-        String imageUrl = plantJson.getJSONObject("default_image").getString("thumbnail");
-
-        Plant plant = new Plant(id, commonName, scientificName, imageUrl);
-        plant.updatePlantDetails(familyName, description, sunlight, recommendedWateringFrequency);
-        return plant;
+        String scientificName = getJsonArrayAsList(plantJson, "scientific_name").stream().findFirst().orElse("");
+        return new PlantDetails(familyName, description, recommendedWateringFrequency, sunlight, scientificName); // TODO: needed for plant details in user library, maybe can change
     }
 
     private static List<String> getJsonArrayAsList(JSONObject jsonObject, String key) {

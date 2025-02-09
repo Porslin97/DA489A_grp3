@@ -320,14 +320,16 @@ public class MyPlantsTabPaneController {
      * @param plant the selected plant
      * @return an instance of the class PlantDetails
      */
-    public Plant getPlantDetails(Plant plant) {
-        Plant plantDetails = null;
+    public PlantDetails getPlantDetails(Plant plant) {
+        System.out.println("Entered getPlantDetails in MyPlantsTabPaneController");
+        PlantDetails plantDetails = null; // TODO: Optional.empty() ?
         Message getInfoSearchedPlant = new Message(MessageType.getMorePlantInfo, plant);
         ServerConnection connection = ServerConnection.getClientConnection();
         Message response = connection.makeRequest(getInfoSearchedPlant);
         if (response != null) {
             plantDetails = response.getPlantDetails();
         }
+        System.out.println("PlantDetails: " + plantDetails);
         return plantDetails;
     }
 

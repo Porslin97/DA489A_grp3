@@ -13,6 +13,7 @@ import javafx.util.Duration;
 import se.myhappyplants.client.controller.MyPlantsTabPaneController;
 import se.myhappyplants.client.model.BoxTitle;
 import se.myhappyplants.client.model.PictureRandomizer;
+import se.myhappyplants.shared.PlantDetails;
 import se.myhappyplants.shared.WaterCalculator;
 import se.myhappyplants.shared.Plant;
 
@@ -228,17 +229,23 @@ public class LibraryPlantPane extends Pane implements PlantPane {
      */
     public void pressInfoButton() {
         infoButton.setDisable(true);
+        System.out.println("Pressed info button");
         if (!extended) {
+            System.out.println("Not extended");
             if (!gotInfoOnPlant) {
-                // TODO: anropas redan? undvika flera anrop till API. Plant plantDetails = myPlantsTabPaneController.getPlantDetails(plant);
-
+                System.out.println("Not got info on plant");
+                PlantDetails plantDetails = myPlantsTabPaneController.getPlantDetails(plant);
                 ObservableList<String> plantInfo = FXCollections.observableArrayList();
-                plantInfo.add("Scientific name: " + plant.getScientificName());
-                plantInfo.add("Family: " + plant.getFamilyName());
-                plantInfo.add("Light: " + plant.getSunlight());
-                plantInfo.add("Water: " + plant.getRecommended_watering_frequency());
+                plantInfo.add("Scientific name: " + plantDetails.getScientificName());
+                plantInfo.add("Family: " + plantDetails.getFamilyName());
+                plantInfo.add("Light: " + plantDetails.getSunlight());
+                plantInfo.add("Water: " + plantDetails.getRecommended_watering_frequency());
                 plantInfo.add("Last watered: " + plant.getLastWatered());
+                plantInfo.add("Description: " + plantDetails.getDescription());
                 listViewMoreInfo.setItems(plantInfo);
+
+                System.out.println("Got info on plant + " + plant.getNickname() + "scientific: " + plant.getScientificName() + "family: " + plantDetails.getFamilyName() + "light: " + plantDetails.getSunlight() + "water: " + plantDetails.getRecommended_watering_frequency() + "last watered: " + plant.getLastWatered());
+                gotInfoOnPlant = true; // TODO: each plant should only be fetched once
             }
             expand();
         }
@@ -320,17 +327,21 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         listViewMoreInfo.setLayoutY(this.getHeight() + 100.0);
         listViewMoreInfo.setPrefWidth(725.0);
         listViewMoreInfo.setPrefHeight(140.0);
-        Plant plantDetails = myPlantsTabPaneController.getPlantDetails(plant);
+        this.setPrefHeight(92.0);
+
+        /*
+        Vi vill inte anropa detaljer direkt när användarens växter laddas. bara när användaren klickar på info-knapp.
+
+        anropa inte direkt: Plant plantDetails = myPlantsTabPaneController.getPlantDetails(plant);
         ObservableList<String> plantInfo = FXCollections.observableArrayList();
         plantInfo.add("Scientific name: " + plantDetails.getScientificName());
         plantInfo.add("Family: " + plantDetails.getFamilyName());
         plantInfo.add("Light: " + plantDetails.getSunlight());
         plantInfo.add("Water: " + plantDetails.getRecommended_watering_frequency());
         plantInfo.add("Last watered: " + plant.getLastWatered());
-        this.setPrefHeight(92.0);
+        */
         this.getChildren().addAll(image, nickname, daysUntilWaterlbl, progressBar, waterButton, infoButton);
-        listViewMoreInfo.setItems(plantInfo);
-
+        // listViewMoreInfo.setItems(plantInfo);
     }
 
 

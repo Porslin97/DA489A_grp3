@@ -4,6 +4,7 @@ import se.myhappyplants.server.model.IResponseHandler;
 import se.myhappyplants.server.services.PlantApiService;
 import se.myhappyplants.shared.Message;
 import se.myhappyplants.shared.Plant;
+import se.myhappyplants.shared.PlantDetails;
 
 import java.util.Optional;
 
@@ -22,7 +23,7 @@ public class GetPlantDetails implements IResponseHandler {
         Message response;
         Plant plant = request.getPlant();
         try {
-            Plant updatedPlant = plantApiService.getPlantDetails(plant);
+            PlantDetails updatedPlant = plantApiService.getPlantDetails(plant);
             response = new Message(updatedPlant, true);
         } catch (Exception e) {
             response = new Message(false);

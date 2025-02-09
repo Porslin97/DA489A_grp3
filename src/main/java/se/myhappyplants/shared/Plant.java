@@ -2,6 +2,7 @@ package se.myhappyplants.shared;
 
 import se.myhappyplants.client.model.PictureRandomizer;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -14,17 +15,13 @@ import java.util.List;
  * Updated by: Linn Borgström, Eric Simonson, Susanne Vikström
  */
 public class Plant implements Serializable {
-
+    @Serial
     private static final long serialVersionUID = 867522155232174497L;
     private String plantId;
     private String commonName;
     private String scientificName;
-    private String familyName;
     private String imageURL;
     private String nickname;
-    private List<String> sunlight;
-    private String description;
-    private String recommended_watering_frequency;
     private int users_watering_frequency;
     private Date lastWatered;
 
@@ -56,7 +53,6 @@ public class Plant implements Serializable {
         this.plantId = plantId;
         this.commonName = commonName;
         this.scientificName = scientificName;
-        this.familyName = familyName;
         this.imageURL = imageURL;
     }
 
@@ -116,18 +112,6 @@ public class Plant implements Serializable {
 
     public String getScientificName() {
         return scientificName;
-    }
-
-    public String getFamilyName() {
-        return familyName;
-    }
-
-    public List<String> getSunlight() {
-        return sunlight;
-    }
-
-    public String getRecommended_watering_frequency() {
-        return recommended_watering_frequency;
     }
 
     public String getPlantId() {
@@ -209,15 +193,8 @@ public class Plant implements Serializable {
         return strToReturn;
     }
 
-    public void updatePlantDetails(String familyName, String description, List<String> sunlight, String recommended_watering_frequency) {
-        this.familyName = familyName;
-        this.description = description;
-        this.sunlight = new ArrayList<>(sunlight);
-        this.recommended_watering_frequency = recommended_watering_frequency;
-    }
-
     @Override
     public String toString() {
-        return String.format("Common name: %s \tFamily name: %s \tScientific name: %s ", commonName, familyName, scientificName);
+        return String.format("Common name: %s \tScientific name: %s ", commonName, scientificName);
     }
 }

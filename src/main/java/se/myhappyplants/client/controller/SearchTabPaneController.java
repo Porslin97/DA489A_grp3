@@ -21,6 +21,7 @@ import se.myhappyplants.shared.Message;
 import se.myhappyplants.shared.MessageType;
 import se.myhappyplants.shared.Plant;
 import se.myhappyplants.client.model.SetAvatar;
+import se.myhappyplants.shared.PlantDetails;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -199,10 +200,9 @@ public class SearchTabPaneController {
     }
 
 
-    // TODO: Check if works removing plantdetails class
-    public Plant getPlantDetails(Plant plant) {
+    public PlantDetails getPlantDetails(Plant plant) {
         PopupBox.display(MessageText.holdOnGettingInfo.toString());
-        Plant plantDetails = null;
+        PlantDetails plantDetails = null;
         Message getInfoSearchedPlant = new Message(MessageType.getMorePlantInfo, plant);
         ServerConnection connection = ServerConnection.getClientConnection();
         Message response = connection.makeRequest(getInfoSearchedPlant);

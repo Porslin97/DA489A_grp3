@@ -23,6 +23,7 @@ public class Message implements Serializable {
     private List<Plant> plantArray;
     private Plant plant;
     private String newNickname;
+    private PlantDetails plantDetails;
 
 
     /**
@@ -150,15 +151,14 @@ public class Message implements Serializable {
     }
 
 
-    // TODO: check if this even works after removing plant details
     /**
      * Creates a message that can be used to send
      * further information about a plant
      * @param plantDetails
      * @param success
      */
-    public Message(Plant plantDetails, boolean success) {
-        this.plant = plantDetails;
+    public Message(PlantDetails plantDetails, boolean success) {
+        this.plantDetails = plantDetails;
         this.success = success;
     }
 
@@ -198,8 +198,7 @@ public class Message implements Serializable {
         return notifications;
     }
 
-    // TODO: check if this even works after removing plant details
-    public Plant getPlantDetails() {
-        return plant;
+    public PlantDetails getPlantDetails() {
+        return plantDetails;
     }
 }

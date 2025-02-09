@@ -17,6 +17,7 @@ import se.myhappyplants.client.controller.SearchTabPaneController;
 
 import se.myhappyplants.client.model.ImageLibrary;
 import se.myhappyplants.shared.Plant;
+import se.myhappyplants.shared.PlantDetails;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -132,15 +133,20 @@ public class SearchPlantPane extends Pane implements PlantPane {
             public void handle(Event event) {
                 infoButton.setDisable(true);
                 commonName.setDisable(true);
+                System.out.println("Pressed more info button, got info on plant?: " + gotInfoOnPlant);
                 if (!extended) {
                     if (!gotInfoOnPlant) {
-                        Plant plantDetails = searchTabPaneController.getPlantDetails(plant);
+                        System.out.println("Getting info on plant and calling searchTabPaneController.getPlantDetails(plant)");
+                        PlantDetails plantDetails = searchTabPaneController.getPlantDetails(plant);
                         ObservableList<String> plantInfo = FXCollections.observableArrayList();
-                        plantInfo.add("Scientific name: "+ plantDetails.getScientificName());
+                        plantInfo.add("Scientific name: "+ plant.getScientificName());
                         plantInfo.add("Family: "+ plantDetails.getFamilyName());
                         plantInfo.add("Light: " + plantDetails.getSunlight());
                         plantInfo.add("Water: "+ plantDetails.getRecommended_watering_frequency());
+                        plantInfo.add("Description: "+ plantDetails.getDescription());
                         listView.setItems(plantInfo);
+
+                        gotInfoOnPlant = true;
                     }
                     extendPaneMoreInfoPlant();
                 } else {
