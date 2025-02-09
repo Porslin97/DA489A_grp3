@@ -3,6 +3,8 @@ package se.myhappyplants.shared;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Class that can be used for communication between Client/Server
@@ -18,7 +20,7 @@ public class Message implements Serializable {
     private User user;
     private boolean success;
     private LocalDate date;
-    private ArrayList<Plant> plantArray;
+    private List<Plant> plantArray;
     private Plant plant;
     private String newNickname;
     private PlantDetails plantDetails;
@@ -119,7 +121,7 @@ public class Message implements Serializable {
      * @param plantArray
      * @param success
      */
-    public Message(ArrayList<Plant> plantArray, boolean success) {
+    public Message(List<Plant> plantArray, boolean success) {
         this.plantArray = plantArray;
         this.success = success;
     }
@@ -147,6 +149,7 @@ public class Message implements Serializable {
         this.user = user;
         this.success = success;
     }
+
 
     /**
      * Creates a message that can be used to send
@@ -179,7 +182,7 @@ public class Message implements Serializable {
         return success;
     }
 
-    public ArrayList<Plant> getPlantArray() {
+    public List<Plant> getPlantArray() {
         return plantArray;
     }
 

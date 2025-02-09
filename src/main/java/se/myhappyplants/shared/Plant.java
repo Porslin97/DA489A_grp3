@@ -2,9 +2,12 @@ package se.myhappyplants.shared;
 
 import se.myhappyplants.client.model.PictureRandomizer;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class defining a plant
@@ -12,16 +15,29 @@ import java.time.LocalDate;
  * Updated by: Linn Borgström, Eric Simonson, Susanne Vikström
  */
 public class Plant implements Serializable {
-
+    @Serial
     private static final long serialVersionUID = 867522155232174497L;
     private String plantId;
     private String commonName;
     private String scientificName;
-    private String familyName;
     private String imageURL;
     private String nickname;
+    private int users_watering_frequency;
     private Date lastWatered;
-    private long waterFrequency;
+
+    /**
+     * Creates a plant object from information gathered from Perenual species-list endpoint
+     * @param id
+     * @param commonName
+     * @param imageURL
+     */
+
+    public Plant(String id, String commonName, String scientificName, String imageURL) {
+        this.plantId = id;
+        this.commonName = commonName;
+        this.scientificName = scientificName;
+        this.imageURL = imageURL;
+    }
 
     /**
      * Creates a plant object from information
@@ -37,22 +53,16 @@ public class Plant implements Serializable {
         this.plantId = plantId;
         this.commonName = commonName;
         this.scientificName = scientificName;
-        this.familyName = familyName;
         this.imageURL = imageURL;
     }
 
-    public Plant(String nickname, String plantId, Date lastWatered, long waterFrequency) {
-        this.nickname = nickname;
-        this.plantId = plantId;
-        this.lastWatered = lastWatered;
-        this.waterFrequency = waterFrequency;
-    }
 
     public Plant(String nickname, String plantID, Date lastWatered) {
         this.nickname = nickname;
         this.plantId = plantID;
         this.lastWatered = lastWatered;
     }
+
     /**
      * Creates a plant object from a users library
      * in the MyHappyPlants database
@@ -63,12 +73,11 @@ public class Plant implements Serializable {
      * @param waterFrequency How often the plant needs water in milliseconds
      * @param imageURL       Image location
      */
-    public Plant(String nickname, String plantId, Date lastWatered, long waterFrequency, String imageURL) {
-
+    public Plant(String nickname, String plantId, Date lastWatered, int waterFrequency, String imageURL) {
         this.nickname = nickname;
         this.plantId = plantId;
         this.lastWatered = lastWatered;
-        this.waterFrequency = waterFrequency;
+        this.users_watering_frequency = waterFrequency;
         this.imageURL = imageURL;
     }
 
@@ -87,11 +96,6 @@ public class Plant implements Serializable {
         this.plantId = plantId;
         this.lastWatered = lastWatered;
         this.imageURL = imageURL;
-    }
-
-    public String toString() {
-        String toString = String.format("Common name: %s \tFamily name: %s \tScientific name: %s ", commonName, familyName, scientificName);
-        return toString;
     }
 
     public String getNickname() {
@@ -125,8 +129,7 @@ public class Plant implements Serializable {
         if(imageURL == null) {
             imageURL = PictureRandomizer.getRandomPictureURL();
         }
-        String httpImageURL = imageURL.replace("https", "http");
-        return httpImageURL;
+        return imageURL.replace("https", "http");
     }
 
     public Date getLastWatered() {
@@ -134,8 +137,11 @@ public class Plant implements Serializable {
     }
 
     public void setLastWatered(LocalDate localDate) {
-        Date date = java.sql.Date.valueOf(localDate);
-        this.lastWatered = date;
+        this.lastWatered = Date.valueOf(localDate);
+    }
+
+    public int getUsers_watering_frequency() {
+        return users_watering_frequency;
     }
 
     /**
@@ -146,13 +152,12 @@ public class Plant implements Serializable {
      * @return Double between 0.02 (max time elapsed) and 1.0 (min time elapsed)
      */
     public double getProgress() {
-        long difference = System.currentTimeMillis() - lastWatered.getTime();
-        difference -= 43000000l;
-        double progress = 1.0 - ((double) difference / (double) waterFrequency);
+        long millisSinceLastWatered = System.currentTimeMillis() - lastWatered.getTime();
+        long millisWaterFrequency = users_watering_frequency * 86400000L; // Convert days to milliseconds
+        double progress = 1.0 - ((double) millisSinceLastWatered / (double) millisWaterFrequency);
         if (progress <= 0.02) {
             progress = 0.02;
-        }
-        else if (progress >= 0.95) {
+        } else if (progress >= 0.95) {
             progress = 1.0;
         }
         return progress;
@@ -167,8 +172,9 @@ public class Plant implements Serializable {
      */
     public String getDaysUntilWater() {
         long millisSinceLastWatered = System.currentTimeMillis() - lastWatered.getTime();
-        long millisUntilNextWatering = waterFrequency - millisSinceLastWatered;
-        long millisInADay = 86400000;
+        long millisWaterFrequency = users_watering_frequency * 86400000L; // Convert days to milliseconds
+        long millisUntilNextWatering = millisWaterFrequency - millisSinceLastWatered;
+        long millisInADay = 86400000L;
 
         double daysExactlyUntilWatering = (double) millisUntilNextWatering / (double) millisInADay;
 
@@ -185,5 +191,10 @@ public class Plant implements Serializable {
         }
 
         return strToReturn;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Common name: %s \tScientific name: %s ", commonName, scientificName);
     }
 }

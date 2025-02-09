@@ -25,6 +25,7 @@ import se.myhappyplants.shared.PlantDetails;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class that controls the logic of the "search"-tab
@@ -56,7 +57,7 @@ public class SearchTabPaneController {
     @FXML
     public TextField txtNbrOfResults;
 
-    private ArrayList<Plant> searchResults;
+    private List<Plant> searchResults;
 
     /**
      * Method to initialize the GUI
@@ -178,7 +179,7 @@ public class SearchTabPaneController {
                         Platform.runLater(() -> listViewResult.getItems().clear());
                         return;
                     }
-                    Platform.runLater(() -> showResultsOnPane());
+                    Platform.runLater(this::showResultsOnPane);
                 }
             }
             else {
@@ -197,6 +198,7 @@ public class SearchTabPaneController {
     private void logoutButtonPressed() throws IOException {
         mainPaneController.logoutButtonPressed();
     }
+
 
     public PlantDetails getPlantDetails(Plant plant) {
         PopupBox.display(MessageText.holdOnGettingInfo.toString());

@@ -142,7 +142,6 @@ public class UserRepository {
 
     public boolean changeNotifications(User user, boolean notifications) {
         String query = "UPDATE users SET notification_activated = ? WHERE email = ?";
-
         try {
             queryExecutor.executeUpdate(query, ps -> {
                 ps.setBoolean(1, notifications);

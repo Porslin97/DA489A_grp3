@@ -1,45 +1,65 @@
 package se.myhappyplants.shared;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
- * Container class for more detailed information about a plant
- * Created by: Frida Jacobsson
- * Updated by:
- **/
+ * Class with additional details about a plant for the user
+ */
+
 public class PlantDetails implements Serializable {
 
-    private String genus;
+    private static final long serialVersionUID = 123456789L;
+    private String familyName;
     private String scientificName;
-    private int light;
-    private int waterFrequency;
-    private String family;
+    private String description;
+    private String recommended_watering_frequency;
+    private List<String> sunlight;
 
-    public PlantDetails(String genus, String scientificName, int light, int waterFrequency, String family) {
+
+    public PlantDetails(String familyName, String description, String recommended_watering_frequency, List<String> sunlight, String scientificName) {
+        this.familyName = familyName;
+        this.description = description;
+        this.recommended_watering_frequency = recommended_watering_frequency;
+        this.sunlight = sunlight;
         this.scientificName = scientificName;
-        this.genus = genus;
-        this.light = light;
-        this.waterFrequency = waterFrequency;
-        this.family = family;
+    }
+
+    public PlantDetails(String familyName, String description, String recommended_watering_frequency, List<String> sunlight) {
+        this.familyName = familyName;
+        this.description = description;
+        this.recommended_watering_frequency = recommended_watering_frequency;
+        this.sunlight = sunlight;
+    }
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getRecommended_watering_frequency() {
+        return recommended_watering_frequency;
+    }
+
+    public List<String> getSunlight() {
+        return sunlight;
     }
 
     public String getScientificName() {
         return scientificName;
     }
 
-    public String getGenus() {
-        return genus;
-    }
-
-    public int getLight() {
-        return light;
-    }
-
-    public int getWaterFrequency() {
-        return waterFrequency;
-    }
-
-    public String getFamily() {
-        return family;
+    @Override
+    public String toString() {
+        return "PlantDetails{" +
+                "familyName='" + familyName + '\'' +
+                ", description='" + description + '\'' +
+                ", recommended_watering_frequency='" + recommended_watering_frequency + '\'' +
+                ", sunlight=" + sunlight +
+                '}';
     }
 }

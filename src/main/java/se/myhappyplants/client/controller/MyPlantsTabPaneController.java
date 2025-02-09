@@ -39,6 +39,7 @@ import java.nio.file.Paths;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller with logic used by the "My Plants" tab
@@ -50,7 +51,7 @@ public class MyPlantsTabPaneController {
     @FXML
     public ImageView imgNotifications;
 
-    private ArrayList<Plant> currentUserLibrary;
+    private List<Plant> currentUserLibrary;
 
     @FXML
     private MainPaneController mainPaneController;
@@ -320,13 +321,15 @@ public class MyPlantsTabPaneController {
      * @return an instance of the class PlantDetails
      */
     public PlantDetails getPlantDetails(Plant plant) {
-        PlantDetails plantDetails = null;
+        System.out.println("Entered getPlantDetails in MyPlantsTabPaneController");
+        PlantDetails plantDetails = null; // TODO: Optional.empty() ?
         Message getInfoSearchedPlant = new Message(MessageType.getMorePlantInfo, plant);
         ServerConnection connection = ServerConnection.getClientConnection();
         Message response = connection.makeRequest(getInfoSearchedPlant);
         if (response != null) {
             plantDetails = response.getPlantDetails();
         }
+        System.out.println("PlantDetails: " + plantDetails);
         return plantDetails;
     }
 
