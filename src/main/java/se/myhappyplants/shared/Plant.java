@@ -143,17 +143,20 @@ public class Plant implements Serializable {
         return users_watering_frequency;
     }
 
+    public void setUsers_watering_frequency(int users_watering_frequency) {
+        this.users_watering_frequency = users_watering_frequency;
+    }
+
     /**
      * Compares the length of time since the plant was watered
-     * with recommended frequency of watering. Returns a decimal value
-     * that can be used in a progress bar or indicator
+     * Returns a decimal value that can be used in a progress bar or indicator
      *
      * @return Double between 0.02 (max time elapsed) and 1.0 (min time elapsed)
      */
     public double getProgress() {
-        long millisSinceLastWatered = System.currentTimeMillis() - lastWatered.getTime();
-        long millisWaterFrequency = users_watering_frequency * 86400000L; // Convert days to milliseconds
-        double progress = 1.0 - ((double) millisSinceLastWatered / (double) millisWaterFrequency);
+        long daysSinceLastWatered = (System.currentTimeMillis() - lastWatered.getTime()) / (1000 * 60 * 60 * 24);
+        double progress = 1.0 - ((double) daysSinceLastWatered / (double) users_watering_frequency);
+
         if (progress <= 0.02) {
             progress = 0.02;
         } else if (progress >= 0.95) {
@@ -170,26 +173,18 @@ public class Plant implements Serializable {
      * @return Days since last water
      */
     public String getDaysUntilWater() {
-        long millisSinceLastWatered = System.currentTimeMillis() - lastWatered.getTime();
-        long millisWaterFrequency = users_watering_frequency * 86400000L; // Convert days to milliseconds
-        long millisUntilNextWatering = millisWaterFrequency - millisSinceLastWatered;
-        long millisInADay = 86400000L;
+        long daysSinceLastWatered = (System.currentTimeMillis() - lastWatered.getTime()) / (1000 * 60 * 60 * 24);
+        int daysUntilNextWatering = users_watering_frequency - (int) daysSinceLastWatered;
 
-        double daysExactlyUntilWatering = (double) millisUntilNextWatering / (double) millisInADay;
-
-        int daysUntilWatering = (int) daysExactlyUntilWatering;
-        double decimals = daysExactlyUntilWatering - (int) daysExactlyUntilWatering;
-
-        if (decimals > 0.5) {
-            daysUntilWatering = (int) daysExactlyUntilWatering + 1;
+        if (daysUntilNextWatering <= 0) {
+            return "You need to water this plant now!";
         }
 
-        String strToReturn = String.format("Needs water in %d days", daysUntilWatering);
-        if (getProgress() == 0.02 || daysUntilWatering == 0) {
-            strToReturn = "You need to water this plant now!";
+        if (daysUntilNextWatering == 1) {
+            return "You need to water this plant tomorrow!";
         }
 
-        return strToReturn;
+        return String.format("You need to water this plant in %d days", daysUntilNextWatering);
     }
 
     @Override

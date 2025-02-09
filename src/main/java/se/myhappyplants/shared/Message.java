@@ -23,6 +23,7 @@ public class Message implements Serializable {
     private List<Plant> plantArray;
     private Plant plant;
     private String newNickname;
+    private int newWateringFrequency;
     private PlantDetails plantDetails;
 
 
@@ -113,6 +114,19 @@ public class Message implements Serializable {
         this.newNickname = newNickname;
     }
 
+    /**
+     * Creates a message that can be used to send
+     * a user and the updated watering frequency
+     *
+     * @param messageType
+     * @param user
+     * @param wateringFrequency
+     */
+    public Message(MessageType messageType, User user, Plant plant, int wateringFrequency) {
+        this(messageType, user, plant);
+        this.newWateringFrequency = wateringFrequency;
+    }
+
 
     /**
      * Creates a message that can be used to send
@@ -164,6 +178,10 @@ public class Message implements Serializable {
 
     public String getNewNickname() {
         return newNickname;
+    }
+
+    public int getNewWateringFrequency() {
+        return newWateringFrequency;
     }
 
     public MessageType getMessageType() {

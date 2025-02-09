@@ -296,6 +296,23 @@ public class MyPlantsTabPaneController {
         }
     }
 
+    public boolean changeWateringFrequencyInDB(Plant plant, int wateringFrequency) {
+        Message changeWateringFrequencyInDB = new Message(MessageType.changeWateringFrequency, LoggedInUser.getInstance().getUser(), plant, wateringFrequency);
+        ServerConnection connection = ServerConnection.getClientConnection();
+        Message response = connection.makeRequest(changeWateringFrequencyInDB);
+        PopupBox.display(MessageText.sucessfullyChangedPlant.toString());
+        if (!response.isSuccess()) {
+            Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "It was not possible to change watering frequency for you plant. Try again."));
+            return false;
+        } else {
+            //plant.setUsers_watering_frequency(wateringFrequency);
+            //sortLibrary();
+            createCurrentUserLibraryFromDB(); // TODO: is this correct?
+            showNotifications();
+            return true;
+        }
+    }
+
     /**
      * rearranges the library based on selected sorting option
      */
