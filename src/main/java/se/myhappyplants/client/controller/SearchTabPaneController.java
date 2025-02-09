@@ -61,6 +61,7 @@ public class SearchTabPaneController {
 
     /**
      * Method to initialize the GUI
+     *
      * @throws IOException
      */
     @FXML
@@ -74,13 +75,16 @@ public class SearchTabPaneController {
 
     /**
      * Method to message the right controller-class that the log out-button has been pressed
+     *
      * @throws IOException
      */
     public void setMainController(MainPaneController mainPaneController) {
         this.mainPaneController = mainPaneController;
     }
+
     /**
      * Method to set and display the fun facts
+     *
      * @param factsActivated boolean, if the user has activated the option to true
      */
     public void showFunFact(boolean factsActivated) {
@@ -89,8 +93,7 @@ public class SearchTabPaneController {
         if (factsActivated) {
             imgFunFactTitle.setVisible(true);
             lstFunFacts.setItems(funFacts.getRandomFact());
-        }
-        else {
+        } else {
             imgFunFactTitle.setVisible(false);
             lstFunFacts.setItems(null);
         }
@@ -98,6 +101,7 @@ public class SearchTabPaneController {
 
     /**
      * Method to add a plant to the logged in users library. Asks the user if it wants to add a nickname to the plant and receives a string if the answer is yes
+     *
      * @param plantAdd the selected plant to add
      */
     @FXML
@@ -108,7 +112,27 @@ public class SearchTabPaneController {
         if (answer == 1) {
             plantNickname = MessageBox.askForStringInput("Add a nickname", "Nickname:");
         }
-        mainPaneController.getMyPlantsTabPaneController().addPlantToCurrentUserLibrary(plantAdd, plantNickname);
+
+        int wateringFrequency = -1; // invalid default, user have to choose.
+
+        while (wateringFrequency <= 0) {
+            String input = MessageBox.askForStringInput("Watering frequency", "How often should this plant be watered (in days)?");
+
+            if (input != null) {
+                try {
+                    wateringFrequency = Integer.parseInt(input);
+
+                    if (wateringFrequency <= 0) {
+                        MessageBox.display(BoxTitle.Error, "Please enter a number greater than 0.");
+                        wateringFrequency = -1;
+                    }
+                } catch (NumberFormatException e) {
+                    MessageBox.display(BoxTitle.Error, "Please enter a valid number for watering frequency.");
+                    wateringFrequency = -1;
+                }
+            }
+        }
+        mainPaneController.getMyPlantsTabPaneController().addPlantToCurrentUserLibrary(plantAdd, plantNickname, wateringFrequency);
     }
 
     /**
@@ -131,22 +155,20 @@ public class SearchTabPaneController {
                             Plant Plant = spp.getPlant();
                             if (Plant.getImageURL().equals("")) {
                                 spp.setDefaultImage(ImageLibrary.getDefaultPlantImage().toURI().toString());
-                            }
-                            else {
+                            } else {
                                 try {
                                     spp.updateImage();
-                                }
-                                catch (IllegalArgumentException e) {
+                                } catch (IllegalArgumentException e) {
                                     spp.setDefaultImage(ImageLibrary.getDefaultPlantImage().toURI().toString());
                                 }
                             }
                             updateProgress(i++, searchPlantPanes.size());
                         }
-                            Text text = (Text) progressIndicator.lookup(".percentage");
-                            if(text.getText().equals("90%") || text.getText().equals("Done")){
-                                text.setText("Done");
-                                progressIndicator.setPrefWidth(text.getLayoutBounds().getWidth());
-                            }
+                        Text text = (Text) progressIndicator.lookup(".percentage");
+                        if (text.getText().equals("90%") || text.getText().equals("Done")) {
+                            text.setText("Done");
+                            progressIndicator.setPrefWidth(text.getLayoutBounds().getWidth());
+                        }
                         return true;
                     }
                 };
@@ -172,7 +194,7 @@ public class SearchTabPaneController {
                 if (apiResponse.isSuccess()) {
                     searchResults = apiResponse.getPlantArray();
                     Platform.runLater(() -> txtNbrOfResults.setText(searchResults.size() + " results"));
-                    if(searchResults.size() == 0) {
+                    if (searchResults.size() == 0) {
                         progressIndicator.progressProperty().unbind();
                         progressIndicator.setProgress(100);
                         btnSearch.setDisable(false);
@@ -181,8 +203,7 @@ public class SearchTabPaneController {
                     }
                     Platform.runLater(this::showResultsOnPane);
                 }
-            }
-            else {
+            } else {
                 Platform.runLater(() -> MessageBox.display(BoxTitle.Error, "The connection to the server has failed. Check your connection and try again."));
             }
             btnSearch.setDisable(false);
@@ -192,6 +213,7 @@ public class SearchTabPaneController {
 
     /**
      * Method to message the right controller-class that the log out-button has been pressed
+     *
      * @throws IOException
      */
     @FXML

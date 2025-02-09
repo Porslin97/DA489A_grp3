@@ -39,6 +39,7 @@ public class LibraryPlantPane extends Pane implements PlantPane {
     private Button waterButton;
     private Button changeNicknameButton;
     private Button changePictureButton;
+    private Button updateWateringFrequencyButton;
     private Button deleteButton;
     private DatePicker datePicker;
     private Button changeOKWaterButton;
@@ -90,6 +91,7 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         initInfoButton();
         initChangeNicknameButton(plant);
         initChangePictureButton();
+        initUpdateWateringFrequencyButton(plant);
         initChangeWaterOKButton(plant);
         initDatePicker();
         initDeleteButton(plant);
@@ -110,7 +112,6 @@ public class LibraryPlantPane extends Pane implements PlantPane {
      * Method to show the user a message that the library is empty
      */
     private void initEmptyLibraryLabel () {
-
         this.image = new ImageView();
         Image img = PictureRandomizer.getRandomPicture();
         initImages(img);
@@ -211,6 +212,22 @@ public class LibraryPlantPane extends Pane implements PlantPane {
             setColorProgressBar(100);
         });
     }
+
+    /**
+     * Method to initiate the update watering frequency-button
+     * @param plant to change the nickname on
+     */
+
+    private void initUpdateWateringFrequencyButton(Plant plant) { // TODO: needs to update in the library panel when changing?
+        this.updateWateringFrequencyButton = new Button("Update watering frequency");
+        updateWateringFrequencyButton.setLayoutX(500.0);
+        updateWateringFrequencyButton.setLayoutY(55.0);
+        updateWateringFrequencyButton.setMnemonicParsing(false);
+        updateWateringFrequencyButton.setOnAction(onPress -> {
+            updateWateringFrequency(plant);
+        });
+    }
+
     /**
      * Method to initiate the info button
      */
@@ -224,6 +241,8 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         });
     }
 
+
+
     /**
      * Method to set off what happens when a user presses the info button
      */
@@ -236,11 +255,12 @@ public class LibraryPlantPane extends Pane implements PlantPane {
                 System.out.println("Not got info on plant");
                 PlantDetails plantDetails = myPlantsTabPaneController.getPlantDetails(plant);
                 ObservableList<String> plantInfo = FXCollections.observableArrayList();
+                plantInfo.add("Last watered: " + plant.getLastWatered());
+                plantInfo.add("Current watering frequency: every " + plant.getUsers_watering_frequency() + " days");
                 plantInfo.add("Scientific name: " + plantDetails.getScientificName());
                 plantInfo.add("Family: " + plantDetails.getFamilyName());
                 plantInfo.add("Light: " + plantDetails.getSunlight());
                 plantInfo.add("Water: " + plantDetails.getRecommended_watering_frequency());
-                plantInfo.add("Last watered: " + plant.getLastWatered());
                 plantInfo.add("Description: " + plantDetails.getDescription());
                 listViewMoreInfo.setItems(plantInfo);
 
@@ -266,6 +286,7 @@ public class LibraryPlantPane extends Pane implements PlantPane {
             changeNickname(plant);
         });
     }
+
     /**
      * Method to initiate the change last watered-button
      * @param plant to change the nickname on
@@ -340,7 +361,7 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         plantInfo.add("Water: " + plantDetails.getRecommended_watering_frequency());
         plantInfo.add("Last watered: " + plant.getLastWatered());
         */
-        this.getChildren().addAll(image, nickname, daysUntilWaterlbl, progressBar, waterButton, infoButton);
+        this.getChildren().addAll(image, nickname, daysUntilWaterlbl, progressBar, waterButton, infoButton, updateWateringFrequencyButton);
         // listViewMoreInfo.setItems(plantInfo);
     }
 
@@ -422,6 +443,34 @@ public class LibraryPlantPane extends Pane implements PlantPane {
             if (changeSuccess) {
                 nickname.setText(newNickname);
             }
+        }
+    }
+
+    private void updateWateringFrequency(Plant plant) {
+        int newWateringFrequency = -1; // invalid default, user have to choose.
+
+        while (newWateringFrequency <= 0) {
+            String input = MessageBox.askForStringInput("Watering frequency", "How often should this plant be watered (in days)?");
+
+            if (input != null) {
+                try {
+                    newWateringFrequency = Integer.parseInt(input);
+
+                    if (newWateringFrequency <= 0) {
+                        MessageBox.display(BoxTitle.Error, "Please enter a number greater than 0.");
+                        newWateringFrequency = -1;
+                    }
+                } catch (NumberFormatException e) {
+                    MessageBox.display(BoxTitle.Error, "Please enter a valid number for watering frequency.");
+                    newWateringFrequency = -1;
+                }
+            }
+        }
+
+        if (myPlantsTabPaneController.changeWateringFrequencyInDB(plant, newWateringFrequency)) {
+            System.out.println("Watering frequency changed to: " + newWateringFrequency);
+            progressBar.setProgress(plant.getProgress());
+            setColorProgressBar(plant.getProgress());
         }
     }
 

@@ -212,7 +212,7 @@ public class MyPlantsTabPaneController {
      * @param plantNickname the nickname of the plant that the user chooses
      */
     @FXML
-    public void addPlantToCurrentUserLibrary(Plant selectedPlant, String plantNickname) {
+    public void addPlantToCurrentUserLibrary(Plant selectedPlant, String plantNickname, int wateringFrequency) {
         int plantsWithThisNickname = 1;
         String uniqueNickName = plantNickname;
         for (Plant plant : currentUserLibrary) {
@@ -224,7 +224,7 @@ public class MyPlantsTabPaneController {
         long currentDateMilli = System.currentTimeMillis();
         Date date = new Date(currentDateMilli);
         String imageURL = PictureRandomizer.getRandomPictureURL();
-        Plant plantToAdd = new Plant(uniqueNickName, selectedPlant.getPlantId(), date, imageURL);
+        Plant plantToAdd = new Plant(uniqueNickName, selectedPlant.getPlantId(), date, wateringFrequency, imageURL);
         PopupBox.display(MessageText.sucessfullyAddPlant.toString());
         addPlantToDB(plantToAdd);
     }
@@ -292,6 +292,23 @@ public class MyPlantsTabPaneController {
         } else {
             plant.setNickname(newNickname);
             sortLibrary();
+            return true;
+        }
+    }
+
+    public boolean changeWateringFrequencyInDB(Plant plant, int wateringFrequency) {
+        Message changeWateringFrequencyInDB = new Message(MessageType.changeWateringFrequency, LoggedInUser.getInstance().getUser(), plant, wateringFrequency);
+        ServerConnection connection = ServerConnection.getClientConnection();
+        Message response = connection.makeRequest(changeWateringFrequencyInDB);
+        PopupBox.display(MessageText.sucessfullyChangedPlant.toString());
+        if (!response.isSuccess()) {
+            Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "It was not possible to change watering frequency for you plant. Try again."));
+            return false;
+        } else {
+            //plant.setUsers_watering_frequency(wateringFrequency);
+            //sortLibrary();
+            createCurrentUserLibraryFromDB(); // TODO: is this correct?
+            showNotifications();
             return true;
         }
     }

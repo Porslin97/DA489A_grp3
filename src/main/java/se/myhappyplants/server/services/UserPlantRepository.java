@@ -203,4 +203,20 @@ public class UserPlantRepository {
         }
         return pictureChanged;
     }
+
+    public boolean updateWateringFrequency(User user, Plant plant, int newWateringFrequency) {
+        boolean frequencyChanged = false;
+        String query = "UPDATE user_plants SET watering_frequency = ? WHERE user_id = ? AND nickname = ?;";
+        try {
+            database.executeUpdate(query, ps -> {
+                ps.setInt(1, newWateringFrequency);
+                ps.setInt(2, user.getUniqueId());
+                ps.setString(3, plant.getNickname());
+            });
+            frequencyChanged = true;
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+        return frequencyChanged;
+    }
 }
