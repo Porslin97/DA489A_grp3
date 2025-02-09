@@ -123,4 +123,8 @@ public class LoginPaneController {
     }
 
 
+
+    public void guestButtonPressed(ActionEvent actionEvent) throws IOException {
+        StartClient.setRoot(RootName.searchTabPane.toString());
+    }
 }

@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import se.myhappyplants.client.model.*;
@@ -24,6 +25,7 @@ import se.myhappyplants.client.model.SetAvatar;
 import se.myhappyplants.shared.PlantDetails;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -56,6 +58,7 @@ public class SearchTabPaneController {
     @FXML
     public TextField txtNbrOfResults;
 
+
     private ArrayList<Plant> searchResults;
 
     /**
@@ -65,10 +68,17 @@ public class SearchTabPaneController {
     @FXML
     public void initialize() {
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
-        lblUsername.setText(loggedInUser.getUser().getUsername());
-        imgUserAvatar.setFill(new ImagePattern(new Image(SetAvatar.setAvatarOnLogin(loggedInUser.getUser().getEmail()))));
+        if (loggedInUser.getUser() != null) {
+            lblUsername.setText(loggedInUser.getUser().getUsername());
+            imgUserAvatar.setFill(new ImagePattern(new Image(SetAvatar.setAvatarOnLogin(loggedInUser.getUser().getEmail()))));
+            showFunFact(loggedInUser.getUser().areFunFactsActivated());
+        } else {
+            lblUsername.setText("Guest");
+            String defaultAvatarUrl = "file:resources/images/user_default_img.png";
+            imgUserAvatar.setFill(new ImagePattern(new Image(defaultAvatarUrl)));
+        }
         cmbSortOption.setItems(ListSorter.sortOptionsSearch());
-        showFunFact(LoggedInUser.getInstance().getUser().areFunFactsActivated());
+        MessageBox.display(BoxTitle.Guest,"You will be logged in as a guest. You will only be able to search for plants.");
     }
 
     /**
@@ -101,6 +111,11 @@ public class SearchTabPaneController {
      */
     @FXML
     public void addPlantToCurrentUserLibrary(Plant plantAdd) {
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
+        if(loggedInUser.getUser() == null) {
+            MessageBox.display(BoxTitle.Guest, "You need to be logged in to add a plant to your library.");
+            return;
+        }
         String plantNickname = plantAdd.getCommonName();
 
         int answer = MessageBox.askYesNo(BoxTitle.Add, "Do you want to add a nickname for your plant?");
@@ -195,7 +210,13 @@ public class SearchTabPaneController {
      */
     @FXML
     private void logoutButtonPressed() throws IOException {
-        mainPaneController.logoutButtonPressed();
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
+        if(loggedInUser.getUser() != null) {
+            mainPaneController.logoutButtonPressed();
+        } else {
+            StartClient.setRoot(String.valueOf(RootName.loginPane));
+
+        }
     }
 
     public PlantDetails getPlantDetails(Plant plant) {

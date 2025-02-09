@@ -11,7 +11,8 @@ public enum BoxTitle {
     Success("Success"),
     Add("Add"),
     GDPR("GDPR"),
-    Delete("Delete");
+    Delete("Delete"),
+    Guest("Guest");
 
     BoxTitle(String text) {
 

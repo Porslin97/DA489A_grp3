@@ -16,11 +16,15 @@ import java.io.IOException;
  */
 public class MainPaneController {
 
-    @FXML public TabPane mainPane;
+    @FXML
+    public TabPane mainPane;
 
-    @FXML private MyPlantsTabPaneController myPlantsTabPaneController;
-    @FXML private SearchTabPaneController searchTabPaneController;
-    @FXML private SettingsTabPaneController settingsTabPaneController;
+    @FXML
+    private MyPlantsTabPaneController myPlantsTabPaneController;
+    @FXML
+    private SearchTabPaneController searchTabPaneController;
+    @FXML
+    private SettingsTabPaneController settingsTabPaneController;
 
     /**
      * Constructor that has access to FXML variables
@@ -34,6 +38,7 @@ public class MainPaneController {
 
     /**
      * Getter-method to get the myPlantsTabPaneController
+     *
      * @return MyPlantsTabPaneController
      */
 
@@ -43,6 +48,7 @@ public class MainPaneController {
 
     /**
      * Getter-method to get the searchTabPaneController
+     *
      * @return searchTabPaneController
      */
     public SearchTabPaneController getSearchTabPaneController() {
@@ -57,7 +63,6 @@ public class MainPaneController {
     @FXML
     public void logoutButtonPressed() throws IOException {
         String email = LoggedInUser.getInstance().getUser().getEmail();
-
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("resources/lastLogin.txt"))) {
             bw.write(email);
             bw.flush();
@@ -66,6 +71,7 @@ public class MainPaneController {
         }
         LoggedInUser.getInstance().setUser(null);
         StartClient.setRoot(String.valueOf(RootName.loginPane));
+
     }
 
     /**
