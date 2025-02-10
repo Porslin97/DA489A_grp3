@@ -13,6 +13,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import se.myhappyplants.client.model.*;
 import se.myhappyplants.client.service.ServerConnection;
+import se.myhappyplants.client.util.DialogUtils;
 import se.myhappyplants.client.view.AutocompleteSearchField;
 import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.client.view.PopupBox;
@@ -104,43 +105,64 @@ public class SearchTabPaneController {
     }
 
     /**
-     * Method to add a plant to the logged in users library. Asks the user if it wants to add a nickname to the plant and receives a string if the answer is yes
+     * Method to add a plant to the logged in users library. Asks the user if it wants to add a nickname and watering frequency
      * @param plantAdd the selected plant to add
      */
     @FXML
     public void addPlantToCurrentUserLibrary(Plant plantAdd) {
-        LoggedInUser loggedInUser = LoggedInUser.getInstance();
-        if(loggedInUser.getUser() == null) {
-            MessageBox.display(BoxTitle.Guest, "You need to be logged in to add a plant to your library.");
+        if (!isUserLoggedIn()) {
             return;
         }
+
+        String plantNickname = getPlantNickname(plantAdd);
+        if (plantNickname == null) {
+            return;
+        }
+
+        int newWateringFrequency = DialogUtils.getValidWateringFrequency();
+        if (newWateringFrequency == -1) {
+            return;
+        }
+
+        mainPaneController.getMyPlantsTabPaneController().addPlantToCurrentUserLibrary(plantAdd, plantNickname, newWateringFrequency);
+    }
+
+    private boolean isUserLoggedIn() {
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
+        if (loggedInUser.getUser() == null) {
+            MessageBox.display(BoxTitle.Guest, "You need to be logged in to add a plant to your library.");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Method to get the plant nickname from the user
+     * @param plantAdd the plant to add
+     * @return the nickname of the plant
+     */
+
+    private String getPlantNickname(Plant plantAdd) {
         String plantNickname = plantAdd.getCommonName();
-
         int answer = MessageBox.askYesNo(BoxTitle.Add, "Do you want to add a nickname for your plant?");
+
         if (answer == 1) {
-            plantNickname = MessageBox.askForStringInput("Add a nickname", "Nickname:");
-        }
-
-        int wateringFrequency = -1; // invalid default, user have to choose.
-
-        while (wateringFrequency <= 0) {
-            String input = MessageBox.askForStringInput("Watering frequency", "How often should this plant be watered (in days)?");
-
-            if (input != null) {
-                try {
-                    wateringFrequency = Integer.parseInt(input);
-
-                    if (wateringFrequency <= 0) {
-                        MessageBox.display(BoxTitle.Error, "Please enter a number greater than 0.");
-                        wateringFrequency = -1;
-                    }
-                } catch (NumberFormatException e) {
-                    MessageBox.display(BoxTitle.Error, "Please enter a valid number for watering frequency.");
-                    wateringFrequency = -1;
+            while (true) {
+                String nicknameInput = MessageBox.askForStringInput("Add a nickname", "Nickname:");
+                if (nicknameInput == null) {
+                    return null;
                 }
+                nicknameInput = nicknameInput.trim();
+                if (nicknameInput.isEmpty()) {
+                    MessageBox.display(BoxTitle.Error, "Nickname cannot be empty. Please enter a valid nickname.");
+                    continue;
+                }
+                return nicknameInput;
             }
+        } else if (answer == -1) {
+            return null;
         }
-        mainPaneController.getMyPlantsTabPaneController().addPlantToCurrentUserLibrary(plantAdd, plantNickname, wateringFrequency);
+        return plantNickname;
     }
 
     /**

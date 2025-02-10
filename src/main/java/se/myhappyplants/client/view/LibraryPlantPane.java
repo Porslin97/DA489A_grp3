@@ -13,6 +13,7 @@ import javafx.util.Duration;
 import se.myhappyplants.client.controller.MyPlantsTabPaneController;
 import se.myhappyplants.client.model.BoxTitle;
 import se.myhappyplants.client.model.PictureRandomizer;
+import se.myhappyplants.client.util.DialogUtils;
 import se.myhappyplants.shared.PlantDetails;
 import se.myhappyplants.shared.WaterCalculator;
 import se.myhappyplants.shared.Plant;
@@ -452,26 +453,9 @@ public class LibraryPlantPane extends Pane implements PlantPane {
      */
 
     private void updateWateringFrequency(Plant plant) {
-        int newWateringFrequency;
-
-        while (true) {
-            String input = MessageBox.askForStringInput("Watering frequency", "How often should this plant be watered (in days)?");
-
-            if (input == null || input.trim().isEmpty()) {
-                return;
-            }
-
-            try {
-                newWateringFrequency = Integer.parseInt(input);
-
-                if (newWateringFrequency > 0) {
-                    break;
-                } else {
-                    MessageBox.display(BoxTitle.Error, "Please enter a number greater than 0.");
-                }
-            } catch (NumberFormatException e) {
-                MessageBox.display(BoxTitle.Error, "Please enter a valid number for watering frequency.");
-            }
+        int newWateringFrequency = DialogUtils.getValidWateringFrequency();
+        if (newWateringFrequency == -1) {
+            return;
         }
 
         if (myPlantsTabPaneController.changeWateringFrequencyInDB(plant, newWateringFrequency)) {

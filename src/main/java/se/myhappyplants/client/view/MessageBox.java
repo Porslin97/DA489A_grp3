@@ -121,7 +121,7 @@ public class MessageBox {
      */
     public static String askForStringInput(String title, String question) {
         Stage window = new Stage();
-        AtomicReference<String> input = new AtomicReference<>("");
+        AtomicReference<String> input = new AtomicReference<>(null);
 
 
         window.initModality(Modality.APPLICATION_MODAL);
