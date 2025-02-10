@@ -446,24 +446,31 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         }
     }
 
-    private void updateWateringFrequency(Plant plant) {
-        int newWateringFrequency = -1; // invalid default, user have to choose.
+    /**
+     * Method to change the watering frequency of a plant
+     * @param plant the selected plant
+     */
 
-        while (newWateringFrequency <= 0) {
+    private void updateWateringFrequency(Plant plant) {
+        int newWateringFrequency;
+
+        while (true) {
             String input = MessageBox.askForStringInput("Watering frequency", "How often should this plant be watered (in days)?");
 
-            if (input != null) {
-                try {
-                    newWateringFrequency = Integer.parseInt(input);
+            if (input == null || input.trim().isEmpty()) {
+                return;
+            }
 
-                    if (newWateringFrequency <= 0) {
-                        MessageBox.display(BoxTitle.Error, "Please enter a number greater than 0.");
-                        newWateringFrequency = -1;
-                    }
-                } catch (NumberFormatException e) {
-                    MessageBox.display(BoxTitle.Error, "Please enter a valid number for watering frequency.");
-                    newWateringFrequency = -1;
+            try {
+                newWateringFrequency = Integer.parseInt(input);
+
+                if (newWateringFrequency > 0) {
+                    break;
+                } else {
+                    MessageBox.display(BoxTitle.Error, "Please enter a number greater than 0.");
                 }
+            } catch (NumberFormatException e) {
+                MessageBox.display(BoxTitle.Error, "Please enter a valid number for watering frequency.");
             }
         }
 

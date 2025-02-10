@@ -230,7 +230,6 @@ public class SearchTabPaneController {
             mainPaneController.logoutButtonPressed();
         } else {
             StartClient.setRoot(String.valueOf(RootName.loginPane));
-
         }
     }
 
