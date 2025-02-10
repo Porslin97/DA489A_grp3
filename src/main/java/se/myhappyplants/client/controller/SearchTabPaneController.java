@@ -61,30 +61,34 @@ public class SearchTabPaneController {
 
     /**
      * Method to initialize the GUI
-     *
      * @throws IOException
      */
     @FXML
     public void initialize() {
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
-        lblUsername.setText(loggedInUser.getUser().getUsername());
-        imgUserAvatar.setFill(new ImagePattern(new Image(SetAvatar.setAvatarOnLogin(loggedInUser.getUser().getEmail()))));
+        if (loggedInUser.getUser() != null) {
+            lblUsername.setText(loggedInUser.getUser().getUsername());
+            imgUserAvatar.setFill(new ImagePattern(new Image(SetAvatar.setAvatarOnLogin(loggedInUser.getUser().getEmail()))));
+            showFunFact(loggedInUser.getUser().areFunFactsActivated());
+        } else {
+            lblUsername.setText("Guest");
+            String defaultAvatarUrl = "file:resources/images/user_default_img.png";
+            imgUserAvatar.setFill(new ImagePattern(new Image(defaultAvatarUrl)));
+            MessageBox.display(BoxTitle.Guest,"You will be logged in as a guest. You will only be able to search for plants.");
+
+        }
         cmbSortOption.setItems(ListSorter.sortOptionsSearch());
-        showFunFact(LoggedInUser.getInstance().getUser().areFunFactsActivated());
     }
 
     /**
      * Method to message the right controller-class that the log out-button has been pressed
-     *
      * @throws IOException
      */
     public void setMainController(MainPaneController mainPaneController) {
         this.mainPaneController = mainPaneController;
     }
-
     /**
      * Method to set and display the fun facts
-     *
      * @param factsActivated boolean, if the user has activated the option to true
      */
     public void showFunFact(boolean factsActivated) {
@@ -101,11 +105,15 @@ public class SearchTabPaneController {
 
     /**
      * Method to add a plant to the logged in users library. Asks the user if it wants to add a nickname to the plant and receives a string if the answer is yes
-     *
      * @param plantAdd the selected plant to add
      */
     @FXML
     public void addPlantToCurrentUserLibrary(Plant plantAdd) {
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
+        if(loggedInUser.getUser() == null) {
+            MessageBox.display(BoxTitle.Guest, "You need to be logged in to add a plant to your library.");
+            return;
+        }
         String plantNickname = plantAdd.getCommonName();
 
         int answer = MessageBox.askYesNo(BoxTitle.Add, "Do you want to add a nickname for your plant?");
@@ -213,14 +221,18 @@ public class SearchTabPaneController {
 
     /**
      * Method to message the right controller-class that the log out-button has been pressed
-     *
      * @throws IOException
      */
     @FXML
     private void logoutButtonPressed() throws IOException {
-        mainPaneController.logoutButtonPressed();
-    }
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
+        if(loggedInUser.getUser() != null) {
+            mainPaneController.logoutButtonPressed();
+        } else {
+            StartClient.setRoot(String.valueOf(RootName.loginPane));
 
+        }
+    }
 
     public PlantDetails getPlantDetails(Plant plant) {
         PopupBox.display(MessageText.holdOnGettingInfo.toString());
