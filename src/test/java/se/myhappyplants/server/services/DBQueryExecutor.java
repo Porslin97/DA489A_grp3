@@ -1,5 +1,7 @@
 package se.myhappyplants.server.services;
 
+import se.myhappyplants.server.PasswordsAndKeys;
+
 import java.sql.*;
 
 /**
@@ -8,12 +10,17 @@ import java.sql.*;
 public class DBQueryExecutor implements IQueryExecutor {
     private Connection connection;
 
-    public DBQueryExecutor() throws SQLException {
-        this.connection = DriverManager.getConnection(
-                "jdbc:postgresql://pgserver.mau.se:5432/test_grp3myhappyplants",
-                "ao6729",
-                "i4ok3njx"
-        );
+    public DBQueryExecutor(boolean useSecondUser) throws SQLException {
+        String dbUrl;
+
+        if(useSecondUser){
+            dbUrl = "jdbc: postgresql://" + PasswordsAndKeys.dbServerIp2 + PasswordsAndKeys.dbServerPort2 + "/test_grp3myhappyplants";
+            this.connection = DriverManager.getConnection(
+                    dbUrl,
+                    PasswordsAndKeys.dbUsername2,
+                    PasswordsAndKeys.dbPassword2
+            );
+        }
     }
 
     @Override
