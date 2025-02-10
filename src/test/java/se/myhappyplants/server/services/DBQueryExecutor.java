@@ -3,13 +3,17 @@ package se.myhappyplants.server.services;
 import java.sql.*;
 
 /**
- * En implementering av IQueryExecutor som använder en H2 in-memory-databas.
+ * En implementering av IQueryExecutor som använder PostgreSQL-databasen.
  */
-public class H2QueryExecutor implements IQueryExecutor {
+public class DBQueryExecutor implements IQueryExecutor {
     private Connection connection;
 
-    public H2QueryExecutor() throws SQLException {
-        this.connection = DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
+    public DBQueryExecutor() throws SQLException {
+        this.connection = DriverManager.getConnection(
+                "jdbc:postgresql://pgserver.mau.se:5432/test_grp3myhappyplants",
+                "ao6729",
+                "i4ok3njx"
+        );
     }
 
     @Override
