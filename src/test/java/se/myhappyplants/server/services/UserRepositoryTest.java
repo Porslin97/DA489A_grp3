@@ -20,7 +20,7 @@ class UserRepositoryTest {
      */
     @BeforeEach
     void setUp() throws SQLException {
-        dbQueryExecutor = new DBQueryExecutor(true);
+        dbQueryExecutor = new DBQueryExecutor();
         userRepository = new UserRepository(dbQueryExecutor);
 
         Statement stmt = dbQueryExecutor.getConnection().createStatement();
