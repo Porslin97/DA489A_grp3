@@ -135,8 +135,12 @@ public class Plant implements Serializable {
         return lastWatered;
     }
 
-    public void setLastWatered(LocalDate localDate) {
+    public boolean setLastWatered(LocalDate localDate) {
+        if (localDate.isAfter(LocalDate.now())) {
+            return false;
+        }
         this.lastWatered = Date.valueOf(localDate);
+        return true;
     }
 
     public int getUsers_watering_frequency() {
