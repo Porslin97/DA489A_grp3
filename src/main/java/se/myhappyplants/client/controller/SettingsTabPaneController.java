@@ -120,6 +120,7 @@ public class SettingsTabPaneController {
         changeFunFactsThread.start();
         ButtonText.setButtonText(tglBtnChangeFunFacts);
         mainPaneController.getSearchTabPaneController().showFunFact(tglBtnChangeFunFacts.isSelected());
+        mainPaneController.getWishlistTabPaneController().showFunFact(tglBtnChangeFunFacts.isSelected());
     }
 
 
