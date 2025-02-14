@@ -32,6 +32,7 @@ public class SearchPlantPane extends Pane implements PlantPane {
     private Label scientificName;
     private Button infoButton;
     private Button addButton;
+    private Button wishlistButton;
 
     private Plant plant; // when we create an object of this class the plant object is from the search and has the ID, commonName and image
     private SearchTabPaneController searchTabPaneController;
@@ -54,9 +55,12 @@ public class SearchPlantPane extends Pane implements PlantPane {
         initInfoButton();
         initAddButton();
         initImgViewPlusSign();
+        initAddToWishlistButton();
         initListView();
         initEventHandlerForInfo();
     }
+
+
 
     /**
      * Method to initialize the image
@@ -112,6 +116,14 @@ public class SearchPlantPane extends Pane implements PlantPane {
         addButton.setLayoutY(16.0);
         addButton.setMnemonicParsing(false);
         addButton.setOnAction(action -> searchTabPaneController.addPlantToCurrentUserLibrary(plant));
+    }
+
+    private void initAddToWishlistButton() {
+        this.wishlistButton = new Button("Add to wishlist");
+        wishlistButton.setLayoutX(800.0);
+        wishlistButton.setLayoutY(16.0);
+        wishlistButton.setMnemonicParsing(false);
+        wishlistButton.setOnAction(action -> searchTabPaneController.addPlantToCurrentUserWishlist(plant));
     }
 
     /**

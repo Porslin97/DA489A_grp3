@@ -10,6 +10,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import se.myhappyplants.client.model.*;
 import se.myhappyplants.client.view.MessageBox;
+import se.myhappyplants.shared.Plant;
 
 import java.io.IOException;
 
@@ -80,5 +81,9 @@ public class WishlistTabPaneController {
 
     public void updateAvatar() {
         imgUserAvatar.setFill(new ImagePattern(new Image(LoggedInUser.getInstance().getUser().getAvatarURL())));
+    }
+
+    public void addPlantToCurrentUserWishlist(Plant plant) {
+        
     }
 }
