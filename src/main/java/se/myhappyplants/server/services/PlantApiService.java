@@ -14,6 +14,7 @@ import java.net.http.HttpResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +54,7 @@ public class PlantApiService {
             String query = buildQueryUrl(plantSearch);
             JSONObject jsonResponse = fetchJsonResponse(query);
             List<Plant> plants = parsePlantsFromJson(jsonResponse);
+            plants.sort(Comparator.comparing(Plant::getCommonName, String.CASE_INSENSITIVE_ORDER));
             return plants.isEmpty() ? Optional.empty() : Optional.of(plants);
         } catch (Exception e) {
             System.err.println("Failed to fetch plants: " + e.getMessage());

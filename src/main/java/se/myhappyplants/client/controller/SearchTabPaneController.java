@@ -220,11 +220,10 @@ public class SearchTabPaneController {
             ServerConnection connection = ServerConnection.getClientConnection();
             Message apiResponse = connection.makeRequest(apiRequest);
 
-            if (apiResponse != null) {
-                if (apiResponse.isSuccess()) {
+            if (apiResponse != null && apiResponse.isSuccess()) {
                     searchResults = apiResponse.getPlantArray();
                     Platform.runLater(() -> txtNbrOfResults.setText(searchResults.size() + " results"));
-                    if (searchResults.size() == 0) {
+                    if (searchResults.isEmpty()) {
                         progressIndicator.progressProperty().unbind();
                         progressIndicator.setProgress(100);
                         btnSearch.setDisable(false);
@@ -232,7 +231,7 @@ public class SearchTabPaneController {
                         return;
                     }
                     Platform.runLater(this::showResultsOnPane);
-                }
+
             } else {
                 Platform.runLater(() -> MessageBox.display(BoxTitle.Error, "The connection to the server has failed. Check your connection and try again."));
             }
@@ -272,6 +271,7 @@ public class SearchTabPaneController {
      */
     @FXML
     public void sortResults() {
+        System.out.println("Calling sortResults in SearchTabPaneController");
         SortingOption selectedOption;
         selectedOption = cmbSortOption.getValue();
         listViewResult.setItems(ListSorter.sort(selectedOption, listViewResult.getItems()));
