@@ -182,6 +182,66 @@ class UserRepositoryTest {
         assertTrue(result, "Should handle false values correctly");
     }
 
+
+    /**
+     * BIB10F (MUST) från produkt ägare
+     * Testar att en användare kan lägga till en växt i sin önskelista och hämta den igen.
+     *
+     * @throws SQLException om något går fel vid databashantering.
+     */
+
+    @Test
+    void wishlist_shouldAddAndRetrievePlantsSuccessfully() throws SQLException {
+        String email = "test@mail.com";
+        String plantNickname = "MonsteraNick";
+        String imageUrl = "default_image.jpg";
+
+        // Skapa testanvändare
+        dbQueryExecutor.executeUpdate("INSERT INTO users (email, username, password) VALUES (?, ?, ?)", ps -> {
+            ps.setString(1, email);
+            ps.setString(2, "TestUser");
+            ps.setString(3, BCrypt.hashpw("password123", BCrypt.gensalt()));
+        });
+
+        // Hämta användarens ID
+        ResultSet userRs = dbQueryExecutor.executeQuery("SELECT id FROM users WHERE email = ?", ps -> {
+            ps.setString(1, email);
+        });
+        assertTrue(userRs.next(), "User should exist in database");
+        int userId = userRs.getInt("id");
+
+        dbQueryExecutor.executeUpdate("INSERT INTO user_plants (user_id, plant_id, nickname, last_watered, image_url) VALUES (?, ?, ?, ?, ?)", ps -> {
+            ps.setInt(1, userId);
+            ps.setInt(2, 1);
+            ps.setString(3, plantNickname);
+            ps.setDate(4, java.sql.Date.valueOf("2025-01-01"));
+            ps.setString(5, imageUrl);
+        });
+
+
+        // Hämta `id` från `user_plants`
+        ResultSet plantRs = dbQueryExecutor.executeQuery("SELECT id FROM user_plants WHERE user_id = ?", ps -> {
+            ps.setInt(1, userId);
+        });
+        assertTrue(plantRs.next(), "Plant should exist in user_plants");
+        int plantId = plantRs.getInt("id");
+
+        // Lägg till växten i `user_plants_wishlist`
+        dbQueryExecutor.executeUpdate("INSERT INTO user_plants_wishlist (user_id, plant_id) VALUES (?, ?)", ps -> {
+            ps.setInt(1, userId);
+            ps.setInt(2, plantId);
+        });
+
+        // Hämta önskelistan och verifiera att växten finns där
+        ResultSet wishlistRs = dbQueryExecutor.executeQuery("SELECT plant_id FROM user_plants_wishlist WHERE user_id = ?", ps -> {
+            ps.setInt(1, userId);
+        });
+
+        assertTrue(wishlistRs.next(), "Wishlist should contain at least one plant");
+        assertEquals(plantId, wishlistRs.getInt("plant_id"), "Plant in wishlist should match");
+    }
+
+
     /**
      * Stänger anslutningen efter varje test.
      */
