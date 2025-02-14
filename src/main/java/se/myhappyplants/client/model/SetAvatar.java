@@ -18,14 +18,17 @@ public class SetAvatar {
      * @return that path to the picture
      */
     public static String setAvatarOnLogin(String email) {
+        System.out.println("Inside setAvatarOnLogin, email: " + email);
         String avatarURL;
         try (BufferedReader br = new BufferedReader(new FileReader("resources/images/user_avatars/" + email + "_avatar.txt"))) {
             String readtxt = br.readLine();
+            System.out.println("readtxt: " + readtxt);
             avatarURL = new File(readtxt).toURI().toString();
         }
         catch (IOException e) {
             avatarURL = new File("resources/images/user_default_img.png").toURI().toString();
         }
+        System.out.println("return avatarURL: " + avatarURL);
         return avatarURL;
     }
 

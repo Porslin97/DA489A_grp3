@@ -271,7 +271,6 @@ public class LibraryPlantPane extends Pane implements PlantPane {
                 plantInfo.add("Water: " + plantDetails.getRecommended_watering_frequency());
                 plantInfo.add("Description: " + plantDetails.getDescription());
                 listViewMoreInfo.setItems(plantInfo);
-
                 System.out.println("Got info on plant + " + plant.getNickname() + "scientific: " + plant.getScientificName() + "family: " + plantDetails.getFamilyName() + "light: " + plantDetails.getSunlight() + "water: " + plantDetails.getRecommended_watering_frequency() + "last watered: " + plant.getLastWatered());
                 gotInfoOnPlant = true; // TODO: each plant should only be fetched once
             }

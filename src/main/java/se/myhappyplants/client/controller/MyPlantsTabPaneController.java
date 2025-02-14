@@ -77,7 +77,9 @@ public class MyPlantsTabPaneController {
     public void initialize() {
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
         lblUsername.setText(loggedInUser.getUser().getUsername());
-        imgUserAvatar.setFill(new ImagePattern(new Image(SetAvatar.setAvatarOnLogin(loggedInUser.getUser().getEmail()))));
+        String avatarURL = SetAvatar.setAvatarOnLogin(loggedInUser.getUser().getEmail());
+        System.out.println("avatarURL inside myplantstabpanecontroller " + avatarURL);
+        imgUserAvatar.setFill(new ImagePattern(new Image(avatarURL)));
         cmbSortOption.setItems(ListSorter.sortOptionsLibrary());
         createCurrentUserLibraryFromDB();
         addCurrentUserLibraryToHomeScreen();

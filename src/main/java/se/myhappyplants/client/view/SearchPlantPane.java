@@ -19,9 +19,6 @@ import se.myhappyplants.client.model.ImageLibrary;
 import se.myhappyplants.shared.Plant;
 import se.myhappyplants.shared.PlantDetails;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
