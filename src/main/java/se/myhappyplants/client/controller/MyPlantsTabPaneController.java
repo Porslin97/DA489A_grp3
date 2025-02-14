@@ -78,7 +78,6 @@ public class MyPlantsTabPaneController {
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
         lblUsername.setText(loggedInUser.getUser().getUsername());
         String avatarURL = SetAvatar.setAvatarOnLogin(loggedInUser.getUser().getEmail());
-        System.out.println("avatarURL inside myplantstabpanecontroller " + avatarURL);
         imgUserAvatar.setFill(new ImagePattern(new Image(avatarURL)));
         cmbSortOption.setItems(ListSorter.sortOptionsLibrary());
         createCurrentUserLibraryFromDB();
