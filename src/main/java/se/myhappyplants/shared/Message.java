@@ -25,6 +25,7 @@ public class Message implements Serializable {
     private String newNickname;
     private int newWateringFrequency;
     private PlantDetails plantDetails;
+    private SortingOption sortingOption;
 
 
     /**
@@ -154,6 +155,19 @@ public class Message implements Serializable {
 
     /**
      * Creates a message which can be used to send
+     * text and sorting option
+     *
+     * @param messageType
+     * @param messageText
+     */
+    public Message(MessageType messageType, String messageText, SortingOption sortingOption) {
+        this.messageType = messageType;
+        this.messageText = messageText;
+        this.sortingOption = sortingOption;
+    }
+
+    /**
+     * Creates a message which can be used to send
      * a user and a boolean value
      *
      * @param user
@@ -202,6 +216,10 @@ public class Message implements Serializable {
 
     public List<Plant> getPlantArray() {
         return plantArray;
+    }
+
+    public SortingOption getSortingOption() {
+        return sortingOption;
     }
 
     public Plant getPlant() {

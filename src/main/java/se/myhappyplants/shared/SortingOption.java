@@ -1,4 +1,4 @@
-package se.myhappyplants.client.model;
+package se.myhappyplants.shared;
 /**
  * Enum of different sorting options
  * Created by: Christopher O'Driscoll
@@ -6,10 +6,10 @@ package se.myhappyplants.client.model;
  */
 public enum SortingOption {
 
-    nickname("  Nickname"),
-    commonName("  Common name"),
-    scientificName("  Scientific name"),
-    waterNeed("  Water need");
+    NICKNAME("  Nickname"),
+    COMMON_NAME("  Common name"),
+    SCIENTIFIC_NAME("  Scientific name"),
+    WATER_NEED("  Water need");
 
     private final String name;
 

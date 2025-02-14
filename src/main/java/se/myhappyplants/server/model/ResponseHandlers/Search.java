@@ -4,6 +4,7 @@ import se.myhappyplants.server.model.IResponseHandler;
 import se.myhappyplants.server.services.PlantApiService;
 import se.myhappyplants.shared.Message;
 import se.myhappyplants.shared.Plant;
+import se.myhappyplants.shared.SortingOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +24,9 @@ public class Search implements IResponseHandler {
     public Message getResponse(Message request) {
         Message response;
         String searchText = request.getMessageText();
+        SortingOption sortingOption = request.getSortingOption();
         try {
-            Optional<List<Plant>> plantList = plantApiService.getPlants(searchText);
+            Optional<List<Plant>> plantList = plantApiService.getPlants(searchText, sortingOption);
             List<Plant> plants = plantList.orElse(new ArrayList<>());
             response = new Message(plants, true);
         } catch (Exception e) {

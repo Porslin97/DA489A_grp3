@@ -11,7 +11,6 @@ import java.sql.*;
         private Connection connection;
 
     public DBQueryExecutor() throws SQLException {
-
         this.connection = DriverManager.getConnection(
                 "jdbc:postgresql://" + dbServerIp2 + ":" + dbServerPort2 + "/test_grp3myhappyplants",
                 dbUsername2,

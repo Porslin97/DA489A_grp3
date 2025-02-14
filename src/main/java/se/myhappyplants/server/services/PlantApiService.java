@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import se.myhappyplants.shared.Plant;
 import se.myhappyplants.server.PasswordsAndKeys;
 import se.myhappyplants.shared.PlantDetails;
+import se.myhappyplants.shared.SortingOption;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -14,6 +15,7 @@ import java.net.http.HttpResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,12 +49,18 @@ public class PlantApiService {
         }
     }
 
-    public Optional<List<Plant>> getPlants(String plantSearch) {
-        System.out.println("Fetching plants from API");
+    public Optional<List<Plant>> getPlants(String plantSearch, SortingOption sortingOption) {
+        System.out.println("Fetching plants from API, search: " + plantSearch + ", sorting: " + sortingOption);
         try {
             String query = buildQueryUrl(plantSearch);
             JSONObject jsonResponse = fetchJsonResponse(query);
             List<Plant> plants = parsePlantsFromJson(jsonResponse);
+
+            switch (sortingOption) {
+                case COMMON_NAME -> plants.sort(Comparator.comparing(Plant::getCommonName, String.CASE_INSENSITIVE_ORDER));
+                case SCIENTIFIC_NAME -> plants.sort(Comparator.comparing(Plant::getScientificName, String.CASE_INSENSITIVE_ORDER));
+            }
+
             return plants.isEmpty() ? Optional.empty() : Optional.of(plants);
         } catch (Exception e) {
             System.err.println("Failed to fetch plants: " + e.getMessage());
