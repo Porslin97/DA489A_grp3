@@ -124,7 +124,7 @@ public class Plant implements Serializable {
         if(imageURL == null) {
             imageURL = PictureRandomizer.getRandomPictureURL();
         }
-        return imageURL.replace("https", "http");
+        return imageURL;
     }
 
     public Date getLastWatered() {

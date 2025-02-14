@@ -19,6 +19,9 @@ import se.myhappyplants.client.model.ImageLibrary;
 import se.myhappyplants.shared.Plant;
 import se.myhappyplants.shared.PlantDetails;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -39,8 +42,10 @@ public class SearchPlantPane extends Pane implements PlantPane {
     private ImageView imgViewPlusSign;
     private boolean gotInfoOnPlant;
     private boolean extended;
+
     /**
      * Constructor to initialize some variables and sets off the initialization
+     *
      * @param searchTabPaneController
      * @param imgPath
      * @param plant
@@ -60,10 +65,14 @@ public class SearchPlantPane extends Pane implements PlantPane {
 
     /**
      * Method to initialize the image
+     *
      * @param imgPath
      */
     private void initImage(String imgPath) {
         Image img = new Image(imgPath);
+        if (img.isError()) {
+            System.err.println("Error loading image in SearchPlantPane initImage: " + plant.getImageURL());
+        }
         this.image = new ImageView();
         image.setFitHeight(50.0);
         image.setFitWidth(50.0);
@@ -83,6 +92,7 @@ public class SearchPlantPane extends Pane implements PlantPane {
         commonName.prefHeight(17.0);
         commonName.prefWidth(264.0);
     }
+
     /**
      * Method to initialize scientific name label
      */
@@ -93,6 +103,7 @@ public class SearchPlantPane extends Pane implements PlantPane {
         scientificName.prefHeight(17.0);
         scientificName.prefWidth(254.0);
     }
+
     /**
      * Method to initialize the info button
      */
@@ -139,11 +150,11 @@ public class SearchPlantPane extends Pane implements PlantPane {
                         System.out.println("Getting info on plant and calling searchTabPaneController.getPlantDetails(plant)");
                         PlantDetails plantDetails = searchTabPaneController.getPlantDetails(plant);
                         ObservableList<String> plantInfo = FXCollections.observableArrayList();
-                        plantInfo.add("Scientific name: "+ plant.getScientificName());
-                        plantInfo.add("Family: "+ plantDetails.getFamilyName());
+                        plantInfo.add("Scientific name: " + plant.getScientificName());
+                        plantInfo.add("Family: " + plantDetails.getFamilyName());
                         plantInfo.add("Light: " + plantDetails.getSunlight());
-                        plantInfo.add("Water: "+ plantDetails.getRecommended_watering_frequency());
-                        plantInfo.add("Description: "+ plantDetails.getDescription());
+                        plantInfo.add("Water: " + plantDetails.getRecommended_watering_frequency());
+                        plantInfo.add("Description: " + plantDetails.getDescription());
                         listView.setItems(plantInfo);
 
                         gotInfoOnPlant = true;
@@ -174,16 +185,18 @@ public class SearchPlantPane extends Pane implements PlantPane {
         this.getChildren().addAll(image, commonName, scientificName, infoButton, addButton);
     }
 
+
     /**
      * Method to update the image
      */
     public void updateImage() {
-        Image img = new Image(String.valueOf(plant.getImageURL()));
+        Image img = new Image(plant.getImageURL());
         image.setImage(img);
     }
 
     /**
      * Getter method to get the plant
+     *
      * @return
      */
     public Plant getPlant() {
@@ -192,6 +205,7 @@ public class SearchPlantPane extends Pane implements PlantPane {
 
     /**
      * Method to set a default picture if the plant don't have it in the database
+     *
      * @param defaultImage
      */
     public void setDefaultImage(String defaultImage) {
