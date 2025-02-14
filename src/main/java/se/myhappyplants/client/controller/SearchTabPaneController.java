@@ -237,7 +237,6 @@ public class SearchTabPaneController {
                         return;
                     }
                     Platform.runLater(this::showResultsOnPane);
-
             } else {
                 Platform.runLater(() -> MessageBox.display(BoxTitle.Error, "The connection to the server has failed. Check your connection and try again."));
             }

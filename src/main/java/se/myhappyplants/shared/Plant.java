@@ -1,12 +1,8 @@
 package se.myhappyplants.shared;
 
-import se.myhappyplants.client.model.PictureRandomizer;
-
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class defining a plant
@@ -128,7 +124,7 @@ public class Plant implements Serializable {
         if(imageURL == null) {
             imageURL = PictureRandomizer.getRandomPictureURL();
         }
-        return imageURL.replace("https", "http");
+        return imageURL;
     }
 
     public Date getLastWatered() {

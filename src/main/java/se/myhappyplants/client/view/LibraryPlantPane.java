@@ -12,10 +12,9 @@ import javafx.scene.layout.*;
 import javafx.util.Duration;
 import se.myhappyplants.client.controller.MyPlantsTabPaneController;
 import se.myhappyplants.client.model.BoxTitle;
-import se.myhappyplants.client.model.PictureRandomizer;
+import se.myhappyplants.client.model.PictureRandomizerClient;
 import se.myhappyplants.client.util.DialogUtils;
 import se.myhappyplants.shared.PlantDetails;
-import se.myhappyplants.shared.WaterCalculator;
 import se.myhappyplants.shared.Plant;
 
 import java.io.File;
@@ -115,7 +114,7 @@ public class LibraryPlantPane extends Pane implements PlantPane {
      */
     private void initEmptyLibraryLabel() {
         this.image = new ImageView();
-        Image img = PictureRandomizer.getRandomPicture();
+        Image img = PictureRandomizerClient.getRandomPicture();
         initImages(img);
         Label lblEmptyInfo = new Label("Your library is currently empty \nClick here to search for plants to add    --------->");
         lblEmptyInfo.setLayoutX(150.0);
