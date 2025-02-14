@@ -20,6 +20,8 @@ import se.myhappyplants.shared.Message;
 import se.myhappyplants.shared.MessageType;
 import se.myhappyplants.shared.User;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -187,8 +189,13 @@ public class SettingsTabPaneController {
         File selectedImage = fc.showOpenDialog(null);
 
         if (selectedImage != null) {
+            if (!isValidImage(selectedImage)) {
+                return;
+            }
+
             String imagePath = selectedImage.toString();
             String imageExtension = imagePath.substring(imagePath.indexOf("."));
+
             try {
                 try {
                     Files.copy(selectedImage.toPath(), new File("resources/images/user_avatars/" + user.getEmail() + "_avatar" + imageExtension).toPath());
@@ -200,15 +207,37 @@ public class SettingsTabPaneController {
                 try (BufferedWriter bw = new BufferedWriter(new FileWriter("resources/images/user_avatars/" + user.getEmail() + "_avatar.txt"))) {
                     bw.write("resources/images/user_avatars/" + user.getEmail() + "_avatar" + imageExtension);
                     bw.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
 
                 user.setAvatar("resources/images/user_avatars/" + user.getEmail() + "_avatar" + imageExtension);
                 mainPaneController.updateAvatarOnAllTabs();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private boolean isValidImage(File imageFile) {
+        try {
+            BufferedImage bufferedImage = ImageIO.read(imageFile);
+            if (bufferedImage == null) {
+                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The selected file is not a valid image or is unsupported."));
+                return false;
+            }
+
+            String imagePath = imageFile.toString();
+            String imageExtension = imagePath.substring(imagePath.indexOf("."));
+
+            if (!imageExtension.equalsIgnoreCase(".jpg") && !imageExtension.equalsIgnoreCase(".jpeg") && !imageExtension.equalsIgnoreCase(".png")) {
+                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "Only JPG, JPEG, and PNG images are supported."));
+                return false;
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "Error reading the image file."));
+            return false;
         }
     }
 }
