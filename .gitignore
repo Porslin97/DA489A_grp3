@@ -355,6 +355,12 @@ resources/images/user_avatars/*.jpg
 resources/images/user_avatars/*.jpeg
 resources/images/user_avatars/*.png
 
+# Ignores neccesary files to save plant images
+resources/images/plants/*.txt
+resources/images/plants/*.jpg
+resources/images/plants/*.jpeg
+resources/images/plants/*.png
+
 # Antons usability test
 resources/Testdata
 UsabilityTestProgram.java
