@@ -18,14 +18,10 @@ import se.myhappyplants.client.view.AutocompleteSearchField;
 import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.client.view.PopupBox;
 import se.myhappyplants.client.view.SearchPlantPane;
-import se.myhappyplants.shared.Message;
-import se.myhappyplants.shared.MessageType;
-import se.myhappyplants.shared.Plant;
+import se.myhappyplants.shared.*;
 import se.myhappyplants.client.model.SetAvatar;
-import se.myhappyplants.shared.PlantDetails;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,6 +74,7 @@ public class SearchTabPaneController {
             MessageBox.display(BoxTitle.Guest,"You will be logged in as a guest. You will only be able to search for plants.");
 
         }
+        cmbSortOption.setValue(SortingOption.COMMON_NAME); // set default sorting value
         cmbSortOption.setItems(ListSorter.sortOptionsSearch());
     }
 
@@ -216,7 +213,8 @@ public class SearchTabPaneController {
         txtFldSearchText.addToHistory();
         PopupBox.display(MessageText.holdOnGettingInfo.toString());
         Thread searchThread = new Thread(() -> {
-            Message apiRequest = new Message(MessageType.search, txtFldSearchText.getText());
+            SortingOption selectedSortingOption = cmbSortOption.getValue();
+            Message apiRequest = new Message(MessageType.search, txtFldSearchText.getText(), selectedSortingOption);
             ServerConnection connection = ServerConnection.getClientConnection();
             Message apiResponse = connection.makeRequest(apiRequest);
 
@@ -274,6 +272,9 @@ public class SearchTabPaneController {
         System.out.println("Calling sortResults in SearchTabPaneController");
         SortingOption selectedOption;
         selectedOption = cmbSortOption.getValue();
+        if (selectedOption == null) {
+            selectedOption = SortingOption.COMMON_NAME;
+        }
         listViewResult.setItems(ListSorter.sort(selectedOption, listViewResult.getItems()));
     }
 
