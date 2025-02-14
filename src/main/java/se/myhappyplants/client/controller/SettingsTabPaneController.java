@@ -13,6 +13,7 @@ import se.myhappyplants.client.model.BoxTitle;
 import se.myhappyplants.client.model.LoggedInUser;
 import se.myhappyplants.client.model.SetAvatar;
 import se.myhappyplants.client.service.ServerConnection;
+import se.myhappyplants.client.util.ImageUtils;
 import se.myhappyplants.client.view.ButtonText;
 import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.client.view.PopupBox;
@@ -189,7 +190,7 @@ public class SettingsTabPaneController {
         File selectedImage = fc.showOpenDialog(null);
 
         if (selectedImage != null) {
-            if (!isValidImage(selectedImage)) {
+            if (!ImageUtils.isValidImage(selectedImage)) {
                 return;
             }
 
@@ -215,29 +216,6 @@ public class SettingsTabPaneController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private boolean isValidImage(File imageFile) {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(imageFile);
-            if (bufferedImage == null) {
-                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The selected file is not a valid image or is unsupported."));
-                return false;
-            }
-
-            String imagePath = imageFile.toString();
-            String imageExtension = imagePath.substring(imagePath.indexOf("."));
-
-            if (!imageExtension.equalsIgnoreCase(".jpg") && !imageExtension.equalsIgnoreCase(".jpeg") && !imageExtension.equalsIgnoreCase(".png")) {
-                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "Only JPG, JPEG, and PNG images are supported."));
-                return false;
-            }
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "Error reading the image file."));
-            return false;
         }
     }
 }

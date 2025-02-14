@@ -15,6 +15,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import se.myhappyplants.client.model.*;
 import se.myhappyplants.client.service.ServerConnection;
+import se.myhappyplants.client.util.ImageUtils;
 import se.myhappyplants.client.view.LibraryPlantPane;
 import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.client.view.PopupBox;
@@ -407,6 +408,11 @@ public class MyPlantsTabPaneController {
         File selectedImage = fc.showOpenDialog(null);
 
         if (selectedImage != null) {
+            if (!ImageUtils.isValidImage(selectedImage)) {
+                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The selected file is not a valid image or has an unsupported format."));
+                return;
+            }
+
             String imagePath = selectedImage.toString();
             String imageExtension = imagePath.substring(imagePath.indexOf("."));
             File newPictureFile = new File("resources/images/plants/" + lpp.getPlant().getNickname() + imageExtension);
