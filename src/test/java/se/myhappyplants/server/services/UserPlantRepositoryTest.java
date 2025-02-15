@@ -99,4 +99,21 @@ class UserPlantRepositoryTest {
 
    }
 
+    @Test
+    void testUpdateWateringFrequency() throws SQLException, java.net.UnknownHostException {
+        User user = new User(4, "changefrequnit4@test.com", "testUser4", true, true);
+        assertTrue(userRepository.saveUser(user));
+        User savedUser = userRepository.getUserDetails("changefrequnit4@test.com");
+
+        Date today = Date.valueOf(LocalDate.now());
+        Plant plant = new Plant("FreqPlant", "freq1", today, 7, "http://example.com/img.jpg");
+        userPlantRepository.savePlant(savedUser, plant);
+
+        // Update watering frequency to 10
+        assertTrue(userPlantRepository.updateWateringFrequency(savedUser, plant, 10), "Watering frequency updated successfully");
+
+        Plant updated = userPlantRepository.getPlant(savedUser, "FreqPlant");
+        assertEquals(10, updated.getUsers_watering_frequency(), "The watering frequency should be updated to 10");
+    }
+
 }
