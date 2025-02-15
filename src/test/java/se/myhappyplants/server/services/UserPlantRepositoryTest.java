@@ -2,6 +2,7 @@ package se.myhappyplants.server.services;
 
 import javafx.application.Platform;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import se.myhappyplants.shared.Plant;
@@ -22,11 +23,20 @@ class UserPlantRepositoryTest {
     private DBQueryExecutor dbQueryExecutor;
 
 
+    @BeforeAll
+    static void javaFXinitiliazation() {
+        try{
+            Platform.startup(() ->{
+
+            });
+        }catch (IllegalStateException e){
+
+        }
+    }
+
     @BeforeEach
     void setUp() throws SQLException, java.net.UnknownHostException {
-        Platform.startup(() ->{
 
-        });
         dbQueryExecutor = new DBQueryExecutor();
         userRepository = new UserRepository(dbQueryExecutor);
         userPlantRepository = new UserPlantRepository(dbQueryExecutor);
@@ -67,5 +77,26 @@ class UserPlantRepositoryTest {
         }
         assertTrue(found, "Plant with the nickname 'Jan' and plantId 'ivy' is in the user's library");
     }
+
+   @Test
+   void deletePlantFromLibrary() throws SQLException, java.net.UnknownHostException{
+        User testUser = new User(3, "testfall2.3@test.com", "testUser3", true, true);
+        boolean userSaved = userRepository.saveUser(testUser);
+        assertTrue(userSaved, "testuser 3 has been saved");
+
+        User user = userRepository.getUserDetails("testfall2.3@test.com");
+        assertNotNull(user, "the user exists in the database");
+
+        Date today = Date.valueOf(LocalDate.now());
+        String plantId = "ocotillo";
+        String nickname = "Ocotillo";
+        Plant plant = new Plant(nickname, plantId, today);
+        boolean plantSaved = userPlantRepository.savePlant(user, plant);
+        assertTrue(plantSaved, "plant Ocotillo has been saved to the library");
+
+        boolean deleteplantresult = userPlantRepository.deletePlant(user, nickname);
+        assertTrue(deleteplantresult, "the plant 'Ocotillo' has been removed from the library");
+
+   }
 
 }
