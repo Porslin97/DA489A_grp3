@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import se.myhappyplants.shared.Plant;
 import se.myhappyplants.shared.User;
 
+import java.net.UnknownHostException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -50,7 +51,7 @@ class UserPlantRepositoryTest {
 
     @Test
     void addPlantWithNickname() throws SQLException, java.net.UnknownHostException {
-        User testUser = new User(1, "testfall2.1@test.com", "testUser", true, true);
+        User testUser = new User(1, "testfall2.1@test.com", "testUser1", true, true);
         boolean userSaved = userRepository.saveUser(testUser);
         assertTrue(userSaved, "user saved correctly");
 
@@ -115,5 +116,34 @@ class UserPlantRepositoryTest {
         Plant updated = userPlantRepository.getPlant(savedUser, "FreqPlant");
         assertEquals(10, updated.getUsers_watering_frequency(), "The watering frequency should be updated to 10");
     }
+
+    @Test
+    void seeLibraryOverview() throws SQLException, UnknownHostException{
+        User testUser = new User(5, "testfall2.5@test.com", "testUser4", true, true);
+        assertTrue(userRepository.saveUser(testUser), "The user has been saved to the database");
+
+        User savedUser = userRepository.getUserDetails("testfall2.5@test.com");
+        assertNotNull(savedUser, "the user exists in the database");
+
+        Date today = Date.valueOf(LocalDate.now());
+        Plant plant1 = new Plant("Night scented stock", "plant1", today, 7, "http://example.com/plant1.jpg");
+        Plant plant2 = new Plant("Northern marsh", "plant2", today, 7, "http://example.com/plant2.jpg");
+
+        assertTrue(userPlantRepository.savePlant(savedUser,plant1), " 'Night scented stock' has been saved");
+        assertTrue(userPlantRepository.savePlant(savedUser,plant2), " 'Northern marsh' has been saved");
+
+        ArrayList<Plant> library = userPlantRepository.getUserLibrary(savedUser);
+        assertNotNull(library, "the library is not null");
+        assertFalse(library.isEmpty(), "the library has plants");
+
+        boolean foundPlant1 = library.stream().anyMatch(p -> "Night scented stock".equals(p.getNickname()));
+        boolean foundPlant2 = library.stream().anyMatch(p -> "Northern marsh".equals(p.getNickname()));
+        assertTrue(foundPlant1, "The library has 'Night scented stock'");
+        assertTrue(foundPlant2, "The library has 'Northern marsh'");
+
+
+
+    }
+
 
 }
