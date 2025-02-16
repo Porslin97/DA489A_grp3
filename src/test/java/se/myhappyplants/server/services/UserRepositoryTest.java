@@ -36,7 +36,7 @@ class UserRepositoryTest {
      * Testar att en användare kan sparas i databasen.
      */
     @Test
-    void saveUser_shouldReturnTrue_whenUserSavedSuccessfully() throws SQLException {
+    void saveUser_WhenSuccess() throws SQLException {
         User user = new User(1, "testing@mail.com", "TestingUser", true, true);
         boolean result = userRepository.saveUser(user);
 
@@ -53,7 +53,7 @@ class UserRepositoryTest {
      * Testar att inloggning fungerar när lösenordet matchar.
      */
     @Test
-    void checkLogin_shouldReturnTrue_whenPasswordMatches() throws SQLException {
+    void checkLogin_ValidPassword() throws SQLException {
         String email = "test@mail.com";
         String rawPassword = "password123";
         String hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt(10));
@@ -72,7 +72,7 @@ class UserRepositoryTest {
      * Testar att inloggning misslyckas om lösenordet är felaktigt.
      */
     @Test
-    void checkLogin_shouldReturnFalse_whenPasswordDoesNotMatch() throws SQLException {
+    void checkLogin_InvalidPassword() throws SQLException {
         String email = "test@mail.com";
         String correctPassword = "correctPassword";
         String storedPassword = BCrypt.hashpw(correctPassword, BCrypt.gensalt(10));
@@ -91,7 +91,7 @@ class UserRepositoryTest {
      * Testar att en användare kan raderas från databasen.
      */
     @Test
-    void deleteAccount_shouldReturnTrue_whenUserDeletedSuccessfully() throws SQLException {
+    void deleteAccount_WhenSuccess() throws SQLException {
         String email = "test@mail.com";
         String password = "password123";
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
@@ -116,7 +116,7 @@ class UserRepositoryTest {
      * Testar att vi kan hämta en användares information från databasen.
      */
     @Test
-    void getUserDetails_shouldReturnUser_whenUserExists() throws SQLException {
+    void getUserDetails_WhenUserExists() throws SQLException {
         String email = "test@mail.com";
         String username = "TestUser";
         boolean notificationActivated = true;
@@ -144,7 +144,7 @@ class UserRepositoryTest {
      * Testar att raderingen av en användare misslyckas om användaren inte finns.
      */
     @Test
-    void deleteAccount_shouldRollbackTransaction_whenUserNotFound() {
+    void deleteAccount_UserNotFound() {
         String email = "nonexistent@mail.com";
         String password = "password123";
 
@@ -156,7 +156,7 @@ class UserRepositoryTest {
      * Testar att vi kan uppdatera notifikationer för en befintlig användare.
      */
     @Test
-    void changeNotifications_shouldWork_whenUserExists() throws SQLException {
+    void changeNotifications_WhenUserExists() throws SQLException {
         String email = "test@mail.com";
         String username = "TestUser";
 
@@ -176,7 +176,7 @@ class UserRepositoryTest {
      * Testar att `changeFunFacts` hanterar `null` korrekt genom att istället skicka `false`.
      */
     @Test
-    void changeFunFacts_shouldHandleNullProperly() {
+    void changeFunFacts_HandleNull() {
         User user = new User(1, "test@mail.com", "TestUser", true, true);
         boolean result = userRepository.changeFunFacts(user, false);
         assertTrue(result, "Should handle false values correctly");
@@ -191,7 +191,7 @@ class UserRepositoryTest {
      */
 
     @Test
-    void wishlist_shouldAddAndRetrievePlantsSuccessfully() throws SQLException {
+    void wishlist_AddAndRetrieve() throws SQLException {
         String email = "test@mail.com";
         String plantNickname = "MonsteraNick";
         String imageUrl = "default_image.jpg";
