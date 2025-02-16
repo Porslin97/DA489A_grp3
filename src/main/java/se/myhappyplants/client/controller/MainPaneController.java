@@ -18,13 +18,14 @@ public class MainPaneController {
 
     @FXML
     public TabPane mainPane;
-
     @FXML
     private MyPlantsTabPaneController myPlantsTabPaneController;
     @FXML
     private SearchTabPaneController searchTabPaneController;
     @FXML
     private SettingsTabPaneController settingsTabPaneController;
+    @FXML
+    private WishlistTabPaneController wishlistTabPaneController;
 
     /**
      * Constructor that has access to FXML variables
@@ -34,6 +35,7 @@ public class MainPaneController {
         myPlantsTabPaneController.setMainController(this);
         searchTabPaneController.setMainController(this);
         settingsTabPaneController.setMainController(this);
+        wishlistTabPaneController.setMainController(this);
     }
 
     /**
@@ -53,6 +55,10 @@ public class MainPaneController {
      */
     public SearchTabPaneController getSearchTabPaneController() {
         return searchTabPaneController;
+    }
+
+    public WishlistTabPaneController getWishlistTabPaneController() {
+        return wishlistTabPaneController;
     }
 
     /**
@@ -81,6 +87,7 @@ public class MainPaneController {
         myPlantsTabPaneController.updateAvatar();
         searchTabPaneController.updateAvatar();
         settingsTabPaneController.updateAvatar();
+        wishlistTabPaneController.updateAvatar();
     }
 
     /**
@@ -89,4 +96,6 @@ public class MainPaneController {
     public void changeToSearchTab() {
         mainPane.getSelectionModel().select(1);
     }
+
+
 }

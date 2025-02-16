@@ -16,9 +16,11 @@ public enum MessageType {
     deleteAccount,
     deletePlant,
     getLibrary,
+    getWishlist,
     getMorePlantInfo,
     login,
     register,
     savePlant,
+    savePlantWishlist,
     search
 }

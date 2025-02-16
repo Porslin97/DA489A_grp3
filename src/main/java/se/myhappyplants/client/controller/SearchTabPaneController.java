@@ -124,6 +124,14 @@ public class SearchTabPaneController {
         mainPaneController.getMyPlantsTabPaneController().addPlantToCurrentUserLibrary(plantAdd, plantNickname, newWateringFrequency);
     }
 
+    @FXML
+    public void addPlantToCurrentUserWishlist(Plant plantAdd) {
+        if (!isUserLoggedIn()) {
+            return;
+        }
+        mainPaneController.getWishlistTabPaneController().addPlantToCurrentUserWishlist(plantAdd);
+    }
+
     private boolean isUserLoggedIn() {
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
         if (loggedInUser.getUser() == null) {
@@ -283,4 +291,6 @@ public class SearchTabPaneController {
     public void updateAvatar() {
         imgUserAvatar.setFill(new ImagePattern(new Image(LoggedInUser.getInstance().getUser().getAvatarURL())));
     }
+
+
 }

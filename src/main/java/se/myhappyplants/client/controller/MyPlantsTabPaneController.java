@@ -166,6 +166,7 @@ public class MyPlantsTabPaneController {
 
             if (response.isSuccess()) {
                 currentUserLibrary = response.getPlantArray();
+                System.out.println("currentUserLibrary: " + currentUserLibrary);
                 addCurrentUserLibraryToHomeScreen();
                 showNotifications();
             } else {

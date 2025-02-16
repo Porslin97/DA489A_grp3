@@ -9,15 +9,12 @@ import java.util.Random;
 public class PictureRandomizer {
 
     private static final String[] flowerImages = {
-            "resources/images/blomma2.jpg",
-            "resources/images/blomma5.jpg",
-            "resources/images/blomma6.jpg",
-            "resources/images/blomma9.jpg",
-            "resources/images/blomma10.jpg",
-            "resources/images/blomma17.jpg",
-            "resources/images/blomma18.jpg",
-            "resources/images/blomma19.jpg",
-            "resources/images/blomma21.jpg"
+            "Blommor/blomma1.png",
+            "Blommor/blomma2.png",
+            "Blommor/blomma3.png",
+            "Blommor/blomma4.png",
+            "Blommor/blomma5.png",
+            "Blommor/blomma6.png",
     };
 
     /**
