@@ -19,9 +19,6 @@ import se.myhappyplants.client.model.ImageLibrary;
 import se.myhappyplants.shared.Plant;
 import se.myhappyplants.shared.PlantDetails;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -41,6 +38,7 @@ public class SearchPlantPane extends Pane implements PlantPane {
     private SearchTabPaneController searchTabPaneController;
     private ListView listView;
     private ImageView imgViewPlusSign;
+    private ImageView imgViewWishlistSign;
     private boolean gotInfoOnPlant;
     private boolean extended;
 
@@ -59,11 +57,13 @@ public class SearchPlantPane extends Pane implements PlantPane {
         initScientificName();
         initInfoButton();
         initAddButton();
+        initWishlistButton();
         initImgViewPlusSign();
-        initAddToWishlistButton();
+        initImgViewWishlistSign();
         initListView();
         initEventHandlerForInfo();
     }
+
 
 
 
@@ -113,7 +113,7 @@ public class SearchPlantPane extends Pane implements PlantPane {
      */
     private void initInfoButton() {
         this.infoButton = new Button("More info");
-        infoButton.setLayoutX(595.0);
+        infoButton.setLayoutX(500.0);
         infoButton.setLayoutY(16.0);
         infoButton.setMnemonicParsing(false);
     }
@@ -123,15 +123,15 @@ public class SearchPlantPane extends Pane implements PlantPane {
      */
     private void initAddButton() {
         this.addButton = new Button();
-        addButton.setLayoutX(705.0);
+        addButton.setLayoutX(650.0);
         addButton.setLayoutY(16.0);
         addButton.setMnemonicParsing(false);
         addButton.setOnAction(action -> searchTabPaneController.addPlantToCurrentUserLibrary(plant));
     }
 
-    private void initAddToWishlistButton() {
-        this.wishlistButton = new Button("Add to wishlist");
-        wishlistButton.setLayoutX(800.0);
+    private void initWishlistButton() {
+        this.wishlistButton = new Button();
+        wishlistButton.setLayoutX(700.0);
         wishlistButton.setLayoutY(16.0);
         wishlistButton.setMnemonicParsing(false);
         wishlistButton.setOnAction(action -> searchTabPaneController.addPlantToCurrentUserWishlist(plant));
@@ -145,6 +145,13 @@ public class SearchPlantPane extends Pane implements PlantPane {
         imgViewPlusSign.setFitHeight(16);
         imgViewPlusSign.setFitWidth(15);
         addButton.setGraphic(imgViewPlusSign);
+    }
+
+    private void initImgViewWishlistSign() {
+        this.imgViewWishlistSign = new ImageView(ImageLibrary.getWishlistSign());
+        imgViewWishlistSign.setFitHeight(16);
+        imgViewWishlistSign.setFitWidth(15);
+        wishlistButton.setGraphic(imgViewWishlistSign);
     }
 
     /**
@@ -194,7 +201,7 @@ public class SearchPlantPane extends Pane implements PlantPane {
         listView.setPrefHeight(150.0);
 
         this.prefHeight(56.0);
-        this.getChildren().addAll(image, commonName, scientificName, infoButton, addButton);
+        this.getChildren().addAll(image, commonName, scientificName, infoButton, addButton, wishlistButton);
     }
 
 

@@ -57,6 +57,22 @@ public class UserPlantRepository {
         return success;
     }
 
+    public boolean saveWishlistPlant(User user, Plant plant) {
+        boolean success = false;
+        String query = "INSERT INTO user_plants_wishlist (user_id, plant_id, added_date) VALUES (?, CAST(? AS INTEGER), ?);";
+        try {
+            database.executeUpdate(query, ps -> {
+                ps.setInt(1, user.getUniqueId());
+                ps.setString(2, plant.getPlantId());
+                ps.setDate(3, plant.getDateAdded());
+            });
+            success = true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return success;
+    }
+
     /**
      * Method that returns all the plants connected to the logged in user.
      * Author: Linn Borgström,
@@ -77,6 +93,22 @@ public class UserPlantRepository {
                 int waterFrequency = resultSet.getInt("watering_frequency");
                 System.out.println("Nickname: " + nickname + " PlantId: " + plantId + " Last watered: " + lastWatered + " ImageURL: " + imageURL);
                 plantList.add(new Plant(nickname, plantId, lastWatered, waterFrequency, imageURL));
+            }
+        } catch (SQLException exception) {
+            System.out.println(exception.fillInStackTrace());
+        }
+        return plantList;
+    }
+
+    public ArrayList<Plant> getUserWishlist(User user) {
+        ArrayList<Plant> plantList = new ArrayList<>();
+        String query = "SELECT plant_id, added_date FROM user_plants_wishlist WHERE user_id = ?;";
+        try (ResultSet resultSet = database.executeQuery(query, ps -> ps.setInt(1, user.getUniqueId()))) {
+            while (resultSet.next()) {
+                String plantId = resultSet.getString("plant_id");
+                Date addedDate = resultSet.getDate("added_date");
+                plantList.add(new Plant(plantId, addedDate));
+                System.out.println("PlantId: " + plantId + " Added date: " + addedDate);
             }
         } catch (SQLException exception) {
             System.out.println(exception.fillInStackTrace());
@@ -219,4 +251,6 @@ public class UserPlantRepository {
         }
         return frequencyChanged;
     }
+
+
 }

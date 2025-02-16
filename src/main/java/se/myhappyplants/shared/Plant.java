@@ -19,6 +19,7 @@ public class Plant implements Serializable {
     private String nickname;
     private int users_watering_frequency;
     private Date lastWatered;
+    private Date dateAdded;
 
     /**
      * Creates a plant object from information gathered from Perenual species-list endpoint
@@ -32,6 +33,13 @@ public class Plant implements Serializable {
         this.commonName = commonName;
         this.scientificName = scientificName;
         this.imageURL = imageURL;
+    }
+
+    public Plant(String id, String commonName, String imageURL, Date dateAdded) {
+        this.plantId = id;
+        this.commonName = commonName;
+        this.imageURL = imageURL;
+        this.dateAdded = dateAdded;
     }
 
     /**
@@ -93,6 +101,11 @@ public class Plant implements Serializable {
         this.imageURL = imageURL;
     }
 
+    public Plant(String plantId, Date addedDate) {
+        this.plantId = plantId;
+        this.dateAdded = addedDate;
+    }
+
     public String getNickname() {
         return nickname;
     }
@@ -125,6 +138,10 @@ public class Plant implements Serializable {
             imageURL = PictureRandomizer.getRandomPictureURL();
         }
         return imageURL;
+    }
+
+    public Date getDateAdded() {
+        return dateAdded;
     }
 
     public Date getLastWatered() {

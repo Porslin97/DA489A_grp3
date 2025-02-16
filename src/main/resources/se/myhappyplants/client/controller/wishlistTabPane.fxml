@@ -32,6 +32,7 @@
         <AnchorPane prefHeight="527.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
             <children>
                 <ListView fx:id="lstFunFacts" layoutX="786.0" layoutY="86.0" prefHeight="296.0" prefWidth="200.0"/>
+                <ListView fx:id="lstViewUserPlantWishlist" layoutX="12.0" layoutY="86.0" prefHeight="384.0" prefWidth="765.0" />
                 <ListView layoutX="786.0" layoutY="388.0" prefHeight="82.0" prefWidth="200.0"/>
                 <ImageView fitHeight="63.0" fitWidth="108.0" layoutX="37.0" layoutY="20.0" pickOnBounds="true"
                            preserveRatio="true"/>

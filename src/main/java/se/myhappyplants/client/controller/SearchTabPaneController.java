@@ -125,11 +125,11 @@ public class SearchTabPaneController {
     }
 
     @FXML
-    public void addPlantToCurrentUserWishlist(Plant plant) {
+    public void addPlantToCurrentUserWishlist(Plant plantAdd) {
         if (!isUserLoggedIn()) {
             return;
         }
-        mainPaneController.getWishlistTabPaneController().addPlantToCurrentUserWishlist(plant);
+        mainPaneController.getWishlistTabPaneController().addPlantToCurrentUserWishlist(plantAdd);
     }
 
     private boolean isUserLoggedIn() {
