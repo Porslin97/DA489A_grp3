@@ -13,22 +13,20 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import se.myhappyplants.client.model.*;
 import se.myhappyplants.client.service.ServerConnection;
+import se.myhappyplants.client.util.DialogUtils;
 import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.client.view.PopupBox;
 import se.myhappyplants.client.view.WishlistPlantPane;
-import se.myhappyplants.shared.Message;
-import se.myhappyplants.shared.MessageType;
-import se.myhappyplants.shared.PictureRandomizer;
-import se.myhappyplants.shared.Plant;
+import se.myhappyplants.shared.*;
 
 import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 
 public class WishlistTabPaneController {
-
+    @FXML
     public ListView lstFunFacts;
-
+    @FXML
     private List<Plant> currentUserWishlist;
 
     @FXML
@@ -156,5 +154,68 @@ public class WishlistTabPaneController {
 
     public MainPaneController getMainPaneController() {
         return mainPaneController;
+    }
+    @FXML
+    public void addPlantToCurrentUserLibrary(Plant plantAdd) {
+        if (!isUserLoggedIn()) {
+            return;
+        }
+
+        String plantNickname = getPlantNickname(plantAdd);
+        if (plantNickname == null) {
+            return;
+        }
+
+        int newWateringFrequency = DialogUtils.getValidWateringFrequency();
+        if (newWateringFrequency == -1) {
+            return;
+        }
+
+        mainPaneController.getMyPlantsTabPaneController().addPlantToCurrentUserLibrary(plantAdd, plantNickname, newWateringFrequency);
+
+    }
+
+    private boolean isUserLoggedIn() {
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
+        if (loggedInUser.getUser() == null) {
+            MessageBox.display(BoxTitle.Guest, "You need to be logged in to add a plant to your library.");
+            return false;
+        }
+        return true;
+    }
+
+    private String getPlantNickname(Plant plantAdd) {
+        String plantNickname = plantAdd.getCommonName();
+        int answer = MessageBox.askYesNo(BoxTitle.Add, "Do you want to add a nickname for your plant?");
+
+        if (answer == 1) {
+            while (true) {
+                String nicknameInput = MessageBox.askForStringInput("Add a nickname", "Nickname:");
+                if (nicknameInput == null) {
+                    return null;
+                }
+                nicknameInput = nicknameInput.trim();
+                if (nicknameInput.isEmpty()) {
+                    MessageBox.display(BoxTitle.Error, "Nickname cannot be empty. Please enter a valid nickname.");
+                    continue;
+                }
+                return nicknameInput;
+            }
+        } else if (answer == -1) {
+            return null;
+        }
+        return plantNickname;
+    }
+
+    public PlantDetails getPlantDetails(Plant plant) {
+        PopupBox.display(MessageText.holdOnGettingInfo.toString());
+        PlantDetails plantDetails = null;
+        Message getInfoSearchedPlant = new Message(MessageType.getMorePlantInfo, plant);
+        ServerConnection connection = ServerConnection.getClientConnection();
+        Message response = connection.makeRequest(getInfoSearchedPlant);
+        if (response != null) {
+            plantDetails = response.getPlantDetails();
+        }
+        return plantDetails;
     }
 }

@@ -1,133 +1,304 @@
 package se.myhappyplants.client.view;
 
-import javafx.geometry.Pos;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import se.myhappyplants.client.controller.WishlistTabPaneController;
-import se.myhappyplants.client.model.PictureRandomizerClient;
+
+import se.myhappyplants.client.controller.WishlistTabPaneController;
+import se.myhappyplants.client.model.ImageLibrary;
 import se.myhappyplants.shared.Plant;
+import se.myhappyplants.shared.PlantDetails;
 
-import java.io.File;
+import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Class that initialize and sets up the search plant pane
+ * Created by: Linn Borgström, Eric Simonsson, Susanne Vikström, 2021-04-21
+ * Updated by: Linn Borgström, 2021-04-30
+ */
 public class WishlistPlantPane extends Pane implements PlantPane {
-
-    private WishlistTabPaneController wishlistTabPaneController;
-    private Plant plant;
     private ImageView image;
-    private Label plantName;
-    private Label dateAddedLabel;
+    private Label commonName;
+    private Label scientificName;
+    private Button infoButton;
+    private Button addButton;
+    private Button wishlistButton;
+
+    private Plant plant; // when we create an object of this class the plant object is from the search and has the ID, commonName and image
+    private WishlistTabPaneController wishlistTabPaneController;
     private ListView listView;
+    private ImageView imgViewPlusSign;
+    private ImageView imgViewWishlistSign;
+    private boolean gotInfoOnPlant;
+    private boolean extended;
 
-
-
-    public WishlistPlantPane(WishlistTabPaneController wishlistTabPaneController) {
-        this.wishlistTabPaneController = wishlistTabPaneController;
-        initEmptyWishlistLabel();
-    }
 
     public WishlistPlantPane() {
-        File fileImg = new File("resources/images/img.png");
-        Image img = new Image(fileImg.toURI().toString());
-        image = new ImageView(img);
-        image.setFitHeight(45.0);
-        image.setFitWidth(45.0);
-        image.setLayoutX(50.0);
-        image.setLayoutY(14.0);
-
-        plantName = new Label("Your plants are being loaded from the database..");
-        plantName.setLayoutX(100);
-        plantName.setLayoutY(25);
-        plantName.setPrefWidth(300);
-        plantName.setAlignment(Pos.CENTER);
-
-        this.getChildren().addAll(image, plantName);
     }
-
-    private void initEmptyWishlistLabel() {
-        this.image = new ImageView();
-        Image img = PictureRandomizerClient.getRandomPicture();
-        initImages(img);
-        Label lblEmptyInfo = new Label("Your wishlist is currently empty \nClick here to search for plants to add    --------->");
-        lblEmptyInfo.setLayoutX(150.0);
-        lblEmptyInfo.setLayoutY(28.0);
-        Button btnSearchPlants = new Button("Search for plants");
-        btnSearchPlants.setOnAction(action -> wishlistTabPaneController.getMainPaneController().changeToSearchTab());
-        btnSearchPlants.setLayoutX(500.0);
-        btnSearchPlants.setLayoutY(40.0);
-        this.getChildren().addAll(image, lblEmptyInfo, btnSearchPlants);
+    public WishlistPlantPane(WishlistTabPaneController wishlistTabPaneController) {
+        this.wishlistTabPaneController = wishlistTabPaneController;
     }
 
 
     public WishlistPlantPane(WishlistTabPaneController wishlistTabPaneController, Plant plant) {
         this.wishlistTabPaneController = wishlistTabPaneController;
         this.plant = plant;
-        this.image = new ImageView();
-
-        String imageUrl = plant.getImageURL();
-        if (imageUrl != null && !imageUrl.isEmpty()) {
-            try {
-                Image img = new Image(imageUrl);
-                initImages(img);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid URL or resource not found: " + imageUrl);
-                Image defaultImg = new Image("file:Blommor/blomma1.png");
-                initImages(defaultImg);
-            }
-        } else {
-            Image defaultImg = new Image("file:Blommor/blomma1.png");
-            initImages(defaultImg);
-        }
-
-        initPlantIdLabel(plant);
-        initDateAddedLabel(plant);
+        //initImage(imgPath);
+        initCommonName();
+        initScientificName();
+        initInfoButton();
+        initAddButton();
+        initWishlistButton();
+        initImgViewPlusSign();
+        //initImgViewWishlistSign();
         initListView();
+        initEventHandlerForInfo();
+    }
+
+    /**
+     * Constructor to initialize some variables and sets off the initialization
+     *
+     * @param wishlistTabPaneController
+     * @param imgPath
+     * @param plant
+     */
+    public WishlistPlantPane(WishlistTabPaneController wishlistTabPaneController, String imgPath, Plant plant) {
+        this.wishlistTabPaneController = wishlistTabPaneController;
+        this.plant = plant;
+        initImage(imgPath);
+        initCommonName();
+        initScientificName();
+        initInfoButton();
+        initAddButton();
+        initWishlistButton();
+        initImgViewPlusSign();
+        //initImgViewWishlistSign();
+        initListView();
+        initEventHandlerForInfo();
     }
 
 
-    private void initListView() {
-        listView = new ListView();
-        listView.setLayoutX(this.getWidth() + 10.0);
-        listView.setLayoutY(this.getHeight() + 100.0);
-        listView.setPrefWidth(725.0);
-        listView.setPrefHeight(140.0);
-        this.getChildren().addAll(image, plantName, dateAddedLabel);
-    }
 
 
 
 
-    private void initImages(Image img) {
-        image.setFitHeight(70.0);
-        image.setFitWidth(70.0);
-        image.setLayoutX(40.0);
-        image.setLayoutY(20.0);
+    /**
+     * Method to initialize the image
+     *
+     * @param imgPath
+     */
+    private void initImage(String imgPath) {
+        Image img = new Image(imgPath);
+        if (img.isError()) {
+            System.err.println("Error loading image in WishlistPlantPane initImage: " + plant.getImageURL());
+        }
+        this.image = new ImageView();
+        image.setFitHeight(50.0);
+        image.setFitWidth(50.0);
+        image.setLayoutY(3.0);
         image.setPickOnBounds(true);
         image.setPreserveRatio(true);
         image.setImage(img);
     }
 
-    private void initPlantIdLabel(Plant plant) {
-        plantName = new Label();
-        plantName.setLayoutX(200);
-        plantName.setLayoutY(20);
-        plantName.setPrefWidth(200);
-        plantName.setAlignment(Pos.CENTER_LEFT);
-        plantName.setText("Plant ID: " + plant.getPlantId());
+    /**
+     * Method to initialize the common name label
+     */
+    private void initCommonName() {
+        this.commonName = new Label(plant.getCommonName());
+        commonName.setLayoutX(60.0);
+        commonName.setLayoutY(20.0);
+        commonName.prefHeight(17.0);
+        commonName.prefWidth(264.0);
     }
 
-    private void initDateAddedLabel(Plant plant) {
-        this.dateAddedLabel = new Label();
-        dateAddedLabel.setLayoutY(50);
-        dateAddedLabel.setLayoutX(200);
-        dateAddedLabel.setText("Date added: " + plant.getDateAdded());
+    /**
+     * Method to initialize scientific name label
+     */
+    private void initScientificName() {
+        this.scientificName = new Label(plant.getScientificName());
+        scientificName.setLayoutX(280.0);
+        scientificName.setLayoutY(20.0);
+        scientificName.prefHeight(17.0);
+        scientificName.prefWidth(254.0);
     }
 
-    @Override
+    /**
+     * Method to initialize the info button
+     */
+    private void initInfoButton() {
+        this.infoButton = new Button("More info");
+        infoButton.setLayoutX(500.0);
+        infoButton.setLayoutY(16.0);
+        infoButton.setMnemonicParsing(false);
+    }
+
+    /**
+     * Method to initialize the add button
+     */
+    private void initAddButton() {
+        this.addButton = new Button();
+        addButton.setLayoutX(650.0);
+        addButton.setLayoutY(16.0);
+        addButton.setMnemonicParsing(false);
+        addButton.setOnAction(action -> wishlistTabPaneController.addPlantToCurrentUserLibrary(plant));
+    }
+
+    private void initWishlistButton() {
+        this.wishlistButton = new Button();
+        wishlistButton.setLayoutX(700.0);
+        wishlistButton.setLayoutY(16.0);
+        wishlistButton.setMnemonicParsing(false);
+        wishlistButton.setOnAction(action -> wishlistTabPaneController.addPlantToCurrentUserWishlist(plant));
+    }
+
+    /**
+     * Method to initialize the plus sign to the add button
+     */
+    private void initImgViewPlusSign() {
+        this.imgViewPlusSign = new ImageView(ImageLibrary.getPlusSign());
+        imgViewPlusSign.setFitHeight(16);
+        imgViewPlusSign.setFitWidth(15);
+        addButton.setGraphic(imgViewPlusSign);
+    }
+
+    private void initImgViewWishlistSign() {
+        this.imgViewWishlistSign = new ImageView(ImageLibrary.getWishlistSign());
+        imgViewWishlistSign.setFitHeight(16);
+        imgViewWishlistSign.setFitWidth(15);
+        wishlistButton.setGraphic(imgViewWishlistSign);
+    }
+
+    /**
+     * Method for what happens when a user presses the more info button
+     */
+    public void initEventHandlerForInfo() {
+        EventHandler onPress = new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                infoButton.setDisable(true);
+                commonName.setDisable(true);
+                System.out.println("Pressed more info button, got info on plant?: " + gotInfoOnPlant);
+                if (!extended) {
+                    if (!gotInfoOnPlant) {
+                        System.out.println("Getting info on plant and calling wishlistTabPaneController.getPlantDetails(plant)");
+                        PlantDetails plantDetails = wishlistTabPaneController.getPlantDetails(plant);
+                        ObservableList<String> plantInfo = FXCollections.observableArrayList();
+                        plantInfo.add("Scientific name: " + plant.getScientificName());
+                        plantInfo.add("Family: " + plantDetails.getFamilyName());
+                        plantInfo.add("Light: " + plantDetails.getSunlight());
+                        plantInfo.add("Water: " + plantDetails.getRecommended_watering_frequency());
+                        plantInfo.add("Description: " + plantDetails.getDescription());
+                        listView.setItems(plantInfo);
+
+                        gotInfoOnPlant = true;
+                    }
+                    extendPaneMoreInfoPlant();
+                } else {
+                    retractPane();
+                }
+            }
+        };
+
+        commonName.setOpacity(1.0);
+        commonName.setOnMouseClicked(onPress);
+        infoButton.setOnAction(onPress);
+    }
+
+    /**
+     * Method to initialize the ListView
+     */
+    private void initListView() {
+        listView = new ListView();
+        listView.setLayoutX(this.getWidth());
+        listView.setLayoutY(this.getHeight() + 56.0);
+        listView.setPrefWidth(740.0);
+        listView.setPrefHeight(150.0);
+
+        this.prefHeight(56.0);
+        this.getChildren().addAll(commonName, scientificName, infoButton, addButton);
+    }
+
+
+    /**
+     * Method to update the image
+     */
+    public void updateImage() {
+        Image img = new Image(plant.getImageURL());
+        image.setImage(img);
+    }
+
+    /**
+     * Getter method to get the plant
+     *
+     * @return
+     */
     public Plant getPlant() {
         return plant;
     }
+
+    /**
+     * Method to set a default picture if the plant don't have it in the database
+     *
+     * @param defaultImage
+     */
+    public void setDefaultImage(String defaultImage) {
+        Image img = new Image(defaultImage);
+        image.setImage(img);
+    }
+
+    /**
+     * Method to extend the pane and show more info on the plant
+     */
+    public void extendPaneMoreInfoPlant() {
+        AtomicReference<Double> height = new AtomicReference<>(this.getHeight());
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.millis(7.5), event -> this.setPrefHeight(height.updateAndGet(v -> (double) (v + 6.25))))
+        );
+        timeline.setCycleCount(32);
+        timeline.play();
+        timeline.setOnFinished(action -> {
+            this.getChildren().addAll(listView);
+            infoButton.setDisable(false);
+            commonName.setDisable(false);
+        });
+        extended = true;
+        gotInfoOnPlant = true;
+    }
+
+    /**
+     * Method to collapse the pane
+     */
+    public void retractPane() {
+        int size = listView.getItems().size();
+        for (int i = 0; i < size; i++) {
+            listView.getItems().remove(0);
+        }
+
+        AtomicReference<Double> height = new AtomicReference<>(this.getHeight());
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.millis(7.5), event -> this.setPrefHeight(height.updateAndGet(v -> (double) (v - 6.25))))
+        );
+        timeline.setCycleCount(32);
+        timeline.play();
+        this.getChildren().removeAll(listView);
+        timeline.setOnFinished(action -> {
+            infoButton.setDisable(false);
+            commonName.setDisable(false);
+        });
+        extended = false;
+        gotInfoOnPlant = false;
+    }
 }
+
