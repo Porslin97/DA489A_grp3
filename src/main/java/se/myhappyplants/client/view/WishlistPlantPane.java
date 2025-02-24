@@ -51,7 +51,7 @@ public class WishlistPlantPane extends Pane implements PlantPane {
     }
 
 
-    public WishlistPlantPane(WishlistTabPaneController wishlistTabPaneController, Plant plant) {
+    public WishlistPlantPane(WishlistTabPaneController wishlistTabPaneController,  Plant plant) {
         this.wishlistTabPaneController = wishlistTabPaneController;
         this.plant = plant;
         //initImage(imgPath);
@@ -83,7 +83,7 @@ public class WishlistPlantPane extends Pane implements PlantPane {
         initAddButton();
         initWishlistButton();
         initImgViewPlusSign();
-        //initImgViewWishlistSign();
+        initImgViewWishlistSign();
         initListView();
         initEventHandlerForInfo();
     }
@@ -160,7 +160,7 @@ public class WishlistPlantPane extends Pane implements PlantPane {
         wishlistButton.setLayoutX(700.0);
         wishlistButton.setLayoutY(16.0);
         wishlistButton.setMnemonicParsing(false);
-        wishlistButton.setOnAction(action -> wishlistTabPaneController.addPlantToCurrentUserWishlist(plant));
+        wishlistButton.setOnAction(action -> wishlistTabPaneController.removePlantFromCurrentUserWishlist(plant));
     }
 
     /**

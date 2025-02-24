@@ -60,8 +60,7 @@ public class UserPlantRepository {
 
     public boolean saveWishlistPlant(User user, Plant plant, PlantDetails plantDetails) {
         boolean success = false;
-        System.out.println("SAVING wishlist plant");
-        String query = "INSERT INTO user_wishlist (user_id, plant_id, added_date, common_name, scientific_name, family, light, water, description) VALUES (?, CAST(? AS INTEGER), ?, ?, ?, ?, ?, ?, ?);";
+        String query = "INSERT INTO user_wishlist (user_id, plant_id, added_date, common_name, scientific_name, family, light, water, description, image_url) VALUES (?, CAST(? AS INTEGER), ?, ?, ?, ?, ?, ?, ?, ?);";
         try {
             database.executeUpdate(query, ps -> {
                 ps.setInt(1, user.getUniqueId());
@@ -73,8 +72,8 @@ public class UserPlantRepository {
                 ps.setString(7, plantDetails.getSunlight().toString()); // light här
                 ps.setString(8, plantDetails.getRecommended_watering_frequency()); // water här
                 ps.setString(9, plantDetails.getDescription()); // description här
+                ps.setString(10, plant.getImageURL()); // bild
 
-                System.err.println(plantDetails.toString());
             });
             success = true;
         } catch (SQLException throwables) {

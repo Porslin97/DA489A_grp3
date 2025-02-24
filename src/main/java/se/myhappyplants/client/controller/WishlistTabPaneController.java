@@ -115,6 +115,27 @@ public class WishlistTabPaneController {
     }
 
     @FXML
+    public void removePlantFromCurrentUserWishlist(Plant selectedPlant) {
+        Plant plantToRemove = new Plant(selectedPlant.getPlantId(), selectedPlant.getCommonName(), null);
+        PopupBox.display("Plant removed from wishlist");
+        removePlantFromDB(plantToRemove);
+    }
+
+    private void removePlantFromDB(Plant plantToRemove) {
+        Thread removePlantThread = new Thread(() -> {
+            currentUserWishlist.remove(plantToRemove);
+            Message removePlant = new Message(MessageType.removePlantWishlist, LoggedInUser.getInstance().getUser(), plantToRemove);
+            ServerConnection connection = ServerConnection.getClientConnection();
+            Message response = connection.makeRequest(removePlant);
+            if (!response.isSuccess()) {
+                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
+            }
+            createCurrentUserWishlistFromDB();
+        });
+        removePlantThread.start();
+    }
+
+    @FXML
     public void createCurrentUserWishlistFromDB() {
         Thread getWishlistThread = new Thread(() -> {
             Message getWishlist = new Message(MessageType.getWishlist, LoggedInUser.getInstance().getUser());
@@ -143,7 +164,7 @@ public class WishlistTabPaneController {
                 obsListWishlistPlantPane.add(new WishlistPlantPane(this));
             } else {
                 for (Plant plant : currentUserWishlist) {
-                    obsListWishlistPlantPane.add(new WishlistPlantPane(this, plant));
+                    obsListWishlistPlantPane.add(new WishlistPlantPane(this,ImageLibrary.getLoadingImageFile().toURI().toString(), plant));
                 }
             }
         }
