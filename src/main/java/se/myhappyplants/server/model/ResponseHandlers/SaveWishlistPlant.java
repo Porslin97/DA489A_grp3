@@ -4,6 +4,7 @@ import se.myhappyplants.server.model.IResponseHandler;
 import se.myhappyplants.server.services.UserPlantRepository;
 import se.myhappyplants.shared.Message;
 import se.myhappyplants.shared.Plant;
+import se.myhappyplants.shared.PlantDetails;
 import se.myhappyplants.shared.User;
 /**
  * Class that saves a users plant to the wishlist
@@ -20,7 +21,9 @@ public class SaveWishlistPlant implements IResponseHandler {
         Message response;
         User user = request.getUser();
         Plant plant = request.getPlant();
-        if (userPlantRepository.saveWishlistPlant(user, plant)) {
+        PlantDetails plantDetails = request.getPlantDetails();
+        if (userPlantRepository.saveWishlistPlant(user, plant, plantDetails)) {
+            System.out.println(plant.toString());
             response = new Message(true);
 
         } else {
