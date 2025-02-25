@@ -112,7 +112,7 @@ public class Plant implements Serializable {
         this.dateAdded = addedDate;
     }
 
-    public Plant(String plantId, Date dateAdded, String commonName, String scientificName, String family, String light, String water, String description) {
+    public Plant(String plantId, Date dateAdded, String commonName, String scientificName, String family, String light, String water, String description, String imageURL) {
         this.plantId = plantId;
         this.dateAdded = dateAdded;
         this.commonName = commonName;
@@ -121,6 +121,7 @@ public class Plant implements Serializable {
         this.family = family;
         this.water = water;
         this.description = description;
+        this.imageURL = imageURL;
     }
 
     public String getNickname() {

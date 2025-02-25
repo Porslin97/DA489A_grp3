@@ -111,7 +111,7 @@ public class UserPlantRepository {
 
     public ArrayList<Plant> getUserWishlist(User user) {
         ArrayList<Plant> plantList = new ArrayList<>();
-        String query = "SELECT plant_id, added_date, common_name, scientific_name, family, light, water, description FROM user_wishlist WHERE user_id = ?;";
+        String query = "SELECT plant_id, added_date, common_name, scientific_name, family, light, water, description, image_url FROM user_wishlist WHERE user_id = ?;";
         try (ResultSet resultSet = database.executeQuery(query, ps -> ps.setInt(1, user.getUniqueId()))) {
             while (resultSet.next()) {
                 String plantId = resultSet.getString("plant_id");
@@ -122,9 +122,10 @@ public class UserPlantRepository {
                 String light = resultSet.getString("light");
                 String water = resultSet.getString("water");
                 String description = resultSet.getString("description");
+                String imageURL = resultSet.getString("image_url");
                 System.out.println("PlantId: " + plantId + " Added date: " + addedDate);
 
-                plantList.add(new Plant(plantId, addedDate, commonName, scientificName, family, light, water, description));
+                plantList.add(new Plant(plantId, addedDate, commonName, scientificName, family, light, water, description, imageURL));
             }
         } catch (SQLException exception) {
             System.out.println(exception.fillInStackTrace());

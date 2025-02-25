@@ -50,22 +50,6 @@ public class WishlistPlantPane extends Pane implements PlantPane {
         this.wishlistTabPaneController = wishlistTabPaneController;
     }
 
-
-    public WishlistPlantPane(WishlistTabPaneController wishlistTabPaneController,  Plant plant) {
-        this.wishlistTabPaneController = wishlistTabPaneController;
-        this.plant = plant;
-        //initImage(imgPath);
-        initCommonName();
-        initScientificName();
-        initInfoButton();
-        initAddButton();
-        initWishlistButton();
-        initImgViewPlusSign();
-        //initImgViewWishlistSign();
-        initListView();
-        initEventHandlerForInfo();
-    }
-
     /**
      * Constructor to initialize some variables and sets off the initialization
      *
@@ -87,11 +71,6 @@ public class WishlistPlantPane extends Pane implements PlantPane {
         initListView();
         initEventHandlerForInfo();
     }
-
-
-
-
-
 
     /**
      * Method to initialize the image
@@ -174,7 +153,7 @@ public class WishlistPlantPane extends Pane implements PlantPane {
     }
 
     private void initImgViewWishlistSign() {
-        this.imgViewWishlistSign = new ImageView(ImageLibrary.getWishlistSign());
+        this.imgViewWishlistSign = new ImageView(ImageLibrary.getDeleteSign());
         imgViewWishlistSign.setFitHeight(16);
         imgViewWishlistSign.setFitWidth(15);
         wishlistButton.setGraphic(imgViewWishlistSign);
@@ -227,7 +206,7 @@ public class WishlistPlantPane extends Pane implements PlantPane {
         listView.setPrefHeight(150.0);
 
         this.prefHeight(56.0);
-        this.getChildren().addAll(commonName, scientificName, infoButton, addButton);
+        this.getChildren().addAll(image, commonName, scientificName, infoButton, addButton, wishlistButton);
     }
 
 
@@ -300,5 +279,7 @@ public class WishlistPlantPane extends Pane implements PlantPane {
         extended = false;
         gotInfoOnPlant = false;
     }
+
+
 }
 

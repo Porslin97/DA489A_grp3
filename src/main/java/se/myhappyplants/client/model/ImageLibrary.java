@@ -11,8 +11,10 @@ public class ImageLibrary {
 
     private static final Image plusSign = new Image("Blommor/plusSign.png");
     private static final Image wishlistSign = new Image("Blommor/wishlist2.png");
+    private static final Image deleteSign = new Image("resources/images/close.png");
     private static final File loadingImageFile = new File("resources/images/img.png");
     private static final File defaultPlantImageFile = new File("resources/images/Grn_vxt.png");
+
 
     /**
      * Getter method to the plus sign image
@@ -20,6 +22,10 @@ public class ImageLibrary {
      */
     public static Image getPlusSign() {
         return plusSign;
+    }
+
+    public static Image getDeleteSign() {
+        return deleteSign;
     }
 
     public static Image getWishlistSign() {

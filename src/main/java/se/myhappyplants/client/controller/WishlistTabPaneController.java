@@ -4,6 +4,7 @@ package se.myhappyplants.client.controller;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -11,11 +12,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import se.myhappyplants.client.model.*;
 import se.myhappyplants.client.service.ServerConnection;
 import se.myhappyplants.client.util.DialogUtils;
 import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.client.view.PopupBox;
+import se.myhappyplants.client.view.SearchPlantPane;
 import se.myhappyplants.client.view.WishlistPlantPane;
 import se.myhappyplants.shared.*;
 
@@ -171,6 +174,30 @@ public class WishlistTabPaneController {
         Platform.runLater(() -> {
             lstViewUserPlantWishlist.setItems(obsListWishlistPlantPane);
         });
+
+        Task getImagesTask =
+                new Task() {
+                    @Override
+                    protected Object call() {
+                        long i = 1;
+                        for (WishlistPlantPane wishlistPlantPane : obsListWishlistPlantPane) {
+                            Plant Plant = wishlistPlantPane.getPlant();
+                            if (Plant.getImageURL().equals("")) {
+                                wishlistPlantPane.setDefaultImage(ImageLibrary.getDefaultPlantImage().toURI().toString());
+                            } else {
+                                try {
+                                    wishlistPlantPane.updateImage();
+                                } catch (IllegalArgumentException e) {
+                                    wishlistPlantPane.setDefaultImage(ImageLibrary.getDefaultPlantImage().toURI().toString());
+                                }
+                            }
+                            updateProgress(i++, obsListWishlistPlantPane.size());
+                        }
+                        return true;
+                    }
+                };
+        Thread imageThread = new Thread(getImagesTask);
+        imageThread.start();
     }
 
     public MainPaneController getMainPaneController() {
