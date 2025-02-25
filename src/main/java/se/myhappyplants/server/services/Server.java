@@ -65,10 +65,31 @@ public class Server implements Runnable {
                 executor.submit(clientHandlerTask);
             }
             catch (IOException e) {
-                e.printStackTrace();
+                if (serverRunning) {
+                    e.printStackTrace();
+                }
             }
         }
         executor.shutdown();
         System.out.println("Server stopped");
+    }
+
+    /**
+     * Stops the server
+     */
+    public void shutdown() {
+        serverRunning = false;
+        try {
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+            }
+
+            if (executor != null && !executor.isShutdown()) {
+                executor.shutdown();
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

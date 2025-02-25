@@ -19,6 +19,7 @@ public class Login implements IResponseHandler {
         Message response;
         String email = request.getUser().getEmail();
         String password = request.getUser().getPassword();
+        System.out.println("Inside login response with email: " + email + " and password: " + password);
         if (userRepository.checkLogin(email, password)) {
             User user = userRepository.getUserDetails(email);
             response = new Message(user, true);

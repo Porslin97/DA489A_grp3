@@ -30,6 +30,14 @@ public class ServerConnection {
     }
 
     /**
+     * Set the port for the server connection.
+     * @param port the port number to set
+     */
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    /**
      * Opends a socket and handles Message-requests from client side and send them to server through TCP.
      *
      * @param request instance of class Message with a certain request

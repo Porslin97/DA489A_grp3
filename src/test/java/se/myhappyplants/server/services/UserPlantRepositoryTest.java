@@ -16,7 +16,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javafx.application.Platform;
+
 import static org.junit.jupiter.api.Assertions.*;
+
 class UserPlantRepositoryTest {
 
     private UserRepository userRepository;
@@ -26,11 +28,11 @@ class UserPlantRepositoryTest {
 
     @BeforeAll
     static void javaFXinitiliazation() {
-        try{
-            Platform.startup(() ->{
+        try {
+            Platform.startup(() -> {
 
             });
-        }catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
 
         }
     }
@@ -50,7 +52,7 @@ class UserPlantRepositoryTest {
     }
 
     @Test
-    void addPlantWithNickname() throws SQLException, java.net.UnknownHostException {
+    void addPlantWithNickname() {
         User testUser = new User(1, "testfall2.1@test.com", "testUser1", true, true);
         boolean userSaved = userRepository.saveUser(testUser);
         assertTrue(userSaved, "user saved correctly");
@@ -79,8 +81,8 @@ class UserPlantRepositoryTest {
         assertTrue(found, "Plant with the nickname 'Jan' and plantId 'ivy' is in the user's library");
     }
 
-   @Test
-   void deletePlantFromLibrary() throws SQLException, java.net.UnknownHostException{
+    @Test
+    void deletePlantFromLibrary() {
         User testUser = new User(3, "testfall2.3@test.com", "testUser3", true, true);
         boolean userSaved = userRepository.saveUser(testUser);
         assertTrue(userSaved, "testuser 3 has been saved");
@@ -98,10 +100,10 @@ class UserPlantRepositoryTest {
         boolean deleteplantresult = userPlantRepository.deletePlant(user, nickname);
         assertTrue(deleteplantresult, "the plant 'Ocotillo' has been removed from the library");
 
-   }
+    }
 
     @Test
-    void testUpdateWateringFrequency() throws SQLException, java.net.UnknownHostException {
+    void testUpdateWateringFrequency() {
         User user = new User(4, "changefrequnit4@test.com", "testUser4", true, true);
         assertTrue(userRepository.saveUser(user));
         User savedUser = userRepository.getUserDetails("changefrequnit4@test.com");
@@ -118,7 +120,7 @@ class UserPlantRepositoryTest {
     }
 
     @Test
-    void seeLibraryOverview() throws SQLException, UnknownHostException{
+    void seeLibraryOverview() {
         User testUser = new User(5, "testfall2.5@test.com", "testUser4", true, true);
         assertTrue(userRepository.saveUser(testUser), "The user has been saved to the database");
 
@@ -129,21 +131,16 @@ class UserPlantRepositoryTest {
         Plant plant1 = new Plant("Night scented stock", "plant1", today, 7, "http://example.com/plant1.jpg");
         Plant plant2 = new Plant("Northern marsh", "plant2", today, 7, "http://example.com/plant2.jpg");
 
-        assertTrue(userPlantRepository.savePlant(savedUser,plant1), " 'Night scented stock' has been saved");
-        assertTrue(userPlantRepository.savePlant(savedUser,plant2), " 'Northern marsh' has been saved");
+        assertTrue(userPlantRepository.savePlant(savedUser, plant1), " 'Night scented stock' has been saved");
+        assertTrue(userPlantRepository.savePlant(savedUser, plant2), " 'Northern marsh' has been saved");
 
         ArrayList<Plant> library = userPlantRepository.getUserLibrary(savedUser);
-        assertNotNull(library, "the library is not null");
+        assertNotNull(library, "the library is null");
         assertFalse(library.isEmpty(), "the library has plants");
 
         boolean foundPlant1 = library.stream().anyMatch(p -> "Night scented stock".equals(p.getNickname()));
         boolean foundPlant2 = library.stream().anyMatch(p -> "Northern marsh".equals(p.getNickname()));
         assertTrue(foundPlant1, "The library has 'Night scented stock'");
         assertTrue(foundPlant2, "The library has 'Northern marsh'");
-
-
-
     }
-
-
 }

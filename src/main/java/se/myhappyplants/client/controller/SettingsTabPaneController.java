@@ -21,8 +21,6 @@ import se.myhappyplants.shared.Message;
 import se.myhappyplants.shared.MessageType;
 import se.myhappyplants.shared.User;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -60,7 +58,7 @@ public class SettingsTabPaneController {
         imgUserAvatar.setFill(new ImagePattern(new Image(SetAvatar.setAvatarOnLogin(loggedInUser.getEmail()))));
         tglBtnChangeNotification.setSelected(loggedInUser.areNotificationsActivated());
         ButtonText.setButtonText(tglBtnChangeNotification);
-        tglBtnChangeFunFacts.setSelected(loggedInUser.areFunFactsActivated());
+        tglBtnChangeFunFacts.setSelected(loggedInUser.getFunFactsActivated());
         ButtonText.setButtonText(tglBtnChangeFunFacts);
 
     }
