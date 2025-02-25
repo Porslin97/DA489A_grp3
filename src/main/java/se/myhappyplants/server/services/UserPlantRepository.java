@@ -67,7 +67,7 @@ public class UserPlantRepository {
                 ps.setString(2, plant.getPlantId());
                 ps.setDate(3, plant.getDateAdded());
                 ps.setString(4, plant.getCommonName());
-                ps.setString(5, plant.getScientificName());
+                ps.setString(5, plantDetails.getScientificName());
                 ps.setString(6, plantDetails.getFamilyName()); // family här
                 ps.setString(7, plantDetails.getSunlight().toString()); // light här
                 ps.setString(8, plantDetails.getRecommended_watering_frequency()); // water här
@@ -176,6 +176,22 @@ public class UserPlantRepository {
             });
             plantDeleted = true;
         } catch (SQLException sqlException) {
+            System.out.println(sqlException);
+        }
+        return plantDeleted;
+    }
+
+    public boolean deletePlantFromWishlist(int userID, int plantID) {
+        System.out.println("Vi är i deletePlantFromWishlist: " + plantID);
+        boolean plantDeleted = false;
+        String query = "DELETE FROM user_wishlist WHERE user_id = ? AND plant_id = ?;";
+        try {
+            database.executeUpdate(query, ps -> {
+                ps.setInt(1, userID);
+                ps.setInt(2, plantID);
+            });
+            plantDeleted = true;
+        }catch (SQLException sqlException) {
             System.out.println(sqlException);
         }
         return plantDeleted;

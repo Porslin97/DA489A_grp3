@@ -11,7 +11,7 @@ public class ImageLibrary {
 
     private static final Image plusSign = new Image("Blommor/plusSign.png");
     private static final Image wishlistSign = new Image("Blommor/wishlist2.png");
-    private static final Image deleteSign = new Image("resources/images/close.png");
+    private static final Image deleteSign = new Image("Blommor/cancel.png");
     private static final File loadingImageFile = new File("resources/images/img.png");
     private static final File defaultPlantImageFile = new File("resources/images/Grn_vxt.png");
 

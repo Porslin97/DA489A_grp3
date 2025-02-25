@@ -95,7 +95,7 @@ public class WishlistTabPaneController {
 
         long currentDateMilli = System.currentTimeMillis();
         Date dateAdded = new Date(currentDateMilli);
-        String imageURL = PictureRandomizer.getRandomPictureURL();
+        String imageURL = selectedPlant.getImageURL();
 
         Plant plantToAdd = new Plant(selectedPlant.getPlantId(), selectedPlant.getCommonName(), imageURL, dateAdded);
         PopupBox.display(MessageText.sucessfullyAddPlant.toString());
@@ -119,21 +119,25 @@ public class WishlistTabPaneController {
 
     @FXML
     public void removePlantFromCurrentUserWishlist(Plant selectedPlant) {
-        Plant plantToRemove = new Plant(selectedPlant.getPlantId(), selectedPlant.getCommonName(), null);
-        PopupBox.display("Plant removed from wishlist");
+        Plant plantToRemove = new Plant(selectedPlant.getCommonName(), selectedPlant.getPlantId(), null);
         removePlantFromDB(plantToRemove);
     }
 
-    private void removePlantFromDB(Plant plantToRemove) {
+    @FXML
+    public void removePlantFromDB(Plant plant) {
+        Platform.runLater(() ->PopupBox.display(MessageText.removePlant.toString()));
         Thread removePlantThread = new Thread(() -> {
-            currentUserWishlist.remove(plantToRemove);
-            Message removePlant = new Message(MessageType.removePlantWishlist, LoggedInUser.getInstance().getUser(), plantToRemove);
+            currentUserWishlist.remove(plant);
+            addCurrentUserWishlistToHomeScreen();
+            Message deletePlant = new Message(MessageType.removePlantWishlist, LoggedInUser.getInstance().getUser(), plant);
             ServerConnection connection = ServerConnection.getClientConnection();
-            Message response = connection.makeRequest(removePlant);
+            Message response = connection.makeRequest(deletePlant);
+
             if (!response.isSuccess()) {
                 Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
+            } else {
+                createCurrentUserWishlistFromDB();
             }
-            createCurrentUserWishlistFromDB();
         });
         removePlantThread.start();
     }
@@ -220,6 +224,7 @@ public class WishlistTabPaneController {
         }
 
         mainPaneController.getMyPlantsTabPaneController().addPlantToCurrentUserLibrary(plantAdd, plantNickname, newWateringFrequency);
+        removePlantFromCurrentUserWishlist(plantAdd);
 
     }
 
