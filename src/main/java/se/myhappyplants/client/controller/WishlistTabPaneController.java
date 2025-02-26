@@ -5,23 +5,26 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
 import se.myhappyplants.client.model.*;
 import se.myhappyplants.client.service.ServerConnection;
 import se.myhappyplants.client.util.DialogUtils;
 import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.client.view.PopupBox;
-import se.myhappyplants.client.view.SearchPlantPane;
 import se.myhappyplants.client.view.WishlistPlantPane;
 import se.myhappyplants.shared.*;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
@@ -118,9 +121,15 @@ public class WishlistTabPaneController {
     }
 
     @FXML
-    public void removePlantFromCurrentUserWishlist(Plant selectedPlant) {
+    public void removePlantFromCurrentUserWishlist(Plant selectedPlant, ActionEvent action) {
         Plant plantToRemove = new Plant(selectedPlant.getCommonName(), selectedPlant.getPlantId(), null);
         removePlantFromDB(plantToRemove);
+        Parent listItemToRemove = ((Button) action.getSource()).getParent();
+        System.out.println(listItemToRemove);
+        System.out.println();
+        lstViewUserPlantWishlist.getItems().remove(listItemToRemove);
+        System.out.println(lstViewUserPlantWishlist.getItems());
+        lstViewUserPlantWishlist.refresh();
     }
 
     @FXML
@@ -128,15 +137,12 @@ public class WishlistTabPaneController {
         Platform.runLater(() ->PopupBox.display(MessageText.removePlant.toString()));
         Thread removePlantThread = new Thread(() -> {
             currentUserWishlist.remove(plant);
-            addCurrentUserWishlistToHomeScreen();
             Message deletePlant = new Message(MessageType.removePlantWishlist, LoggedInUser.getInstance().getUser(), plant);
             ServerConnection connection = ServerConnection.getClientConnection();
             Message response = connection.makeRequest(deletePlant);
 
             if (!response.isSuccess()) {
                 Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
-            } else {
-                createCurrentUserWishlistFromDB();
             }
         });
         removePlantThread.start();
@@ -208,7 +214,7 @@ public class WishlistTabPaneController {
         return mainPaneController;
     }
     @FXML
-    public void addPlantToCurrentUserLibrary(Plant plantAdd) {
+    public void addPlantToCurrentUserLibrary(Plant plantAdd, ActionEvent action) {
         if (!isUserLoggedIn()) {
             return;
         }
@@ -224,7 +230,7 @@ public class WishlistTabPaneController {
         }
 
         mainPaneController.getMyPlantsTabPaneController().addPlantToCurrentUserLibrary(plantAdd, plantNickname, newWateringFrequency);
-        removePlantFromCurrentUserWishlist(plantAdd);
+        removePlantFromCurrentUserWishlist(plantAdd, action);
 
     }
 

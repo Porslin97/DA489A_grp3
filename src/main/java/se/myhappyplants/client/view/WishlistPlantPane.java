@@ -15,7 +15,6 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import se.myhappyplants.client.controller.WishlistTabPaneController;
 
-import se.myhappyplants.client.controller.WishlistTabPaneController;
 import se.myhappyplants.client.model.ImageLibrary;
 import se.myhappyplants.shared.Plant;
 import se.myhappyplants.shared.PlantDetails;
@@ -65,7 +64,7 @@ public class WishlistPlantPane extends Pane implements PlantPane {
         initScientificName();
         initInfoButton();
         initAddButton();
-        initWishlistButton();
+        initRemoveFromWishlistButton();
         initImgViewPlusSign();
         initImgViewWishlistSign();
         initListView();
@@ -131,15 +130,15 @@ public class WishlistPlantPane extends Pane implements PlantPane {
         addButton.setLayoutX(650.0);
         addButton.setLayoutY(16.0);
         addButton.setMnemonicParsing(false);
-        addButton.setOnAction(action -> wishlistTabPaneController.addPlantToCurrentUserLibrary(plant));
+        addButton.setOnAction(action -> wishlistTabPaneController.addPlantToCurrentUserLibrary(plant, action));
     }
 
-    private void initWishlistButton() {
+    private void initRemoveFromWishlistButton() {
         this.wishlistButton = new Button();
         wishlistButton.setLayoutX(700.0);
         wishlistButton.setLayoutY(16.0);
         wishlistButton.setMnemonicParsing(false);
-        wishlistButton.setOnAction(action -> wishlistTabPaneController.removePlantFromCurrentUserWishlist(plant));
+        wishlistButton.setOnAction(action -> wishlistTabPaneController.removePlantFromCurrentUserWishlist(plant, action));
     }
 
     /**
