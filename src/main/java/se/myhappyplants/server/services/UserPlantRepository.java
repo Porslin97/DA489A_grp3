@@ -1,6 +1,7 @@
 package se.myhappyplants.server.services;
 
 import se.myhappyplants.shared.Plant;
+import se.myhappyplants.shared.PlantDetails;
 import se.myhappyplants.shared.User;
 
 import java.io.IOException;
@@ -57,14 +58,22 @@ public class UserPlantRepository {
         return success;
     }
 
-    public boolean saveWishlistPlant(User user, Plant plant) {
+    public boolean saveWishlistPlant(User user, Plant plant, PlantDetails plantDetails) {
         boolean success = false;
-        String query = "INSERT INTO user_plants_wishlist (user_id, plant_id, added_date) VALUES (?, CAST(? AS INTEGER), ?);";
+        String query = "INSERT INTO user_wishlist (user_id, plant_id, added_date, common_name, scientific_name, family, light, water, description, image_url) VALUES (?, CAST(? AS INTEGER), ?, ?, ?, ?, ?, ?, ?, ?);";
         try {
             database.executeUpdate(query, ps -> {
                 ps.setInt(1, user.getUniqueId());
                 ps.setString(2, plant.getPlantId());
                 ps.setDate(3, plant.getDateAdded());
+                ps.setString(4, plant.getCommonName());
+                ps.setString(5, plantDetails.getScientificName());
+                ps.setString(6, plantDetails.getFamilyName()); // family här
+                ps.setString(7, plantDetails.getSunlight().toString()); // light här
+                ps.setString(8, plantDetails.getRecommended_watering_frequency()); // water här
+                ps.setString(9, plantDetails.getDescription()); // description här
+                ps.setString(10, plant.getImageURL()); // bild
+
             });
             success = true;
         } catch (SQLException throwables) {
@@ -102,13 +111,21 @@ public class UserPlantRepository {
 
     public ArrayList<Plant> getUserWishlist(User user) {
         ArrayList<Plant> plantList = new ArrayList<>();
-        String query = "SELECT plant_id, added_date FROM user_plants_wishlist WHERE user_id = ?;";
+        String query = "SELECT plant_id, added_date, common_name, scientific_name, family, light, water, description, image_url FROM user_wishlist WHERE user_id = ?;";
         try (ResultSet resultSet = database.executeQuery(query, ps -> ps.setInt(1, user.getUniqueId()))) {
             while (resultSet.next()) {
                 String plantId = resultSet.getString("plant_id");
                 Date addedDate = resultSet.getDate("added_date");
-                plantList.add(new Plant(plantId, addedDate));
+                String commonName = resultSet.getString("common_name");
+                String scientificName = resultSet.getString("scientific_name");
+                String family = resultSet.getString("family");
+                String light = resultSet.getString("light");
+                String water = resultSet.getString("water");
+                String description = resultSet.getString("description");
+                String imageURL = resultSet.getString("image_url");
                 System.out.println("PlantId: " + plantId + " Added date: " + addedDate);
+
+                plantList.add(new Plant(plantId, addedDate, commonName, scientificName, family, light, water, description, imageURL));
             }
         } catch (SQLException exception) {
             System.out.println(exception.fillInStackTrace());
@@ -159,6 +176,22 @@ public class UserPlantRepository {
             });
             plantDeleted = true;
         } catch (SQLException sqlException) {
+            System.out.println(sqlException);
+        }
+        return plantDeleted;
+    }
+
+    public boolean deletePlantFromWishlist(int userID, int plantID) {
+        System.out.println("Vi är i deletePlantFromWishlist: " + plantID);
+        boolean plantDeleted = false;
+        String query = "DELETE FROM user_wishlist WHERE user_id = ? AND plant_id = ?;";
+        try {
+            database.executeUpdate(query, ps -> {
+                ps.setInt(1, userID);
+                ps.setInt(2, plantID);
+            });
+            plantDeleted = true;
+        }catch (SQLException sqlException) {
             System.out.println(sqlException);
         }
         return plantDeleted;

@@ -55,11 +55,13 @@ public class UserRepository {
      */
     public boolean checkLogin(String email, String password) {
         boolean isVerified = false;
-
-        String query = "SELECT password FROM users WHERE email = ?;";
-
-        try (ResultSet resultSet = queryExecutor.executeQuery(query, ps ->
-                ps.setString(1, email))) {
+        String query = "SELECT password FROM users WHERE email = ? OR username = ?;";
+      
+        try (ResultSet resultSet = queryExecutor.executeQuery(query, ps -> {
+            ps.setString(1, email);
+            ps.setString(2, email);
+                }))
+        {
             if (resultSet.next()) {
                 String hashedPassword = resultSet.getString(1);
                 isVerified = BCrypt.checkpw(password, hashedPassword);
@@ -73,24 +75,29 @@ public class UserRepository {
     /**
      * Method to get information (id, username and notification status) about a specific user
      *
-     * @param email ??
+     * @param emailOrUsername ??
      * @return a new instance of USer
      */
-    public User getUserDetails(String email) {
+    public User getUserDetails(String emailOrUsername) {
         User user = null;
         int uniqueID = 0;
         String username = null;
+        String email = null;
         boolean notificationActivated = false;
         boolean funFactsActivated = false;
-        String query = "SELECT id, username, notification_activated, fun_facts_activated FROM users WHERE email = ?;";
+        String query = "SELECT id, username, email, notification_activated, fun_facts_activated FROM users WHERE email = ? OR username = ?;";
 
-        try (ResultSet resultSet = queryExecutor.executeQuery(query, ps ->
-                ps.setString(1, email))) {
+        try (ResultSet resultSet = queryExecutor.executeQuery(query, ps -> {
+            ps.setString(1, emailOrUsername);
+            ps.setString(2, emailOrUsername);
+                }))
+        {
             if (resultSet.next()) {
                 uniqueID = resultSet.getInt(1);
                 username = resultSet.getString(2);
-                notificationActivated = resultSet.getBoolean(3);
-                funFactsActivated = resultSet.getBoolean(4);
+                email = resultSet.getString(3);
+                notificationActivated = resultSet.getBoolean(4);
+                funFactsActivated = resultSet.getBoolean(5);
             }
             user = new User(uniqueID, email, username, notificationActivated, funFactsActivated);
         } catch (SQLException sqlException) {

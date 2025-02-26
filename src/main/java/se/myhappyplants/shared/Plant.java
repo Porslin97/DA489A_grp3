@@ -21,6 +21,12 @@ public class Plant implements Serializable {
     private Date lastWatered;
     private Date dateAdded;
 
+    // for wishlist. Added because limited api calls
+    private String family;
+    private String light;
+    private String water;
+    private String description;
+
     /**
      * Creates a plant object from information gathered from Perenual species-list endpoint
      * @param id
@@ -104,6 +110,18 @@ public class Plant implements Serializable {
     public Plant(String plantId, Date addedDate) {
         this.plantId = plantId;
         this.dateAdded = addedDate;
+    }
+
+    public Plant(String plantId, Date dateAdded, String commonName, String scientificName, String family, String light, String water, String description, String imageURL) {
+        this.plantId = plantId;
+        this.dateAdded = dateAdded;
+        this.commonName = commonName;
+        this.scientificName = scientificName;
+        this.light = light;
+        this.family = family;
+        this.water = water;
+        this.description = description;
+        this.imageURL = imageURL;
     }
 
     public String getNickname() {

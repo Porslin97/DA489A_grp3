@@ -17,11 +17,10 @@ public class Login implements IResponseHandler {
     @Override
     public Message getResponse(Message request) {
         Message response;
-        String email = request.getUser().getEmail();
+        String emailOrUsername = request.getUser().getEmail();
         String password = request.getUser().getPassword();
-        System.out.println("Inside login response with email: " + email + " and password: " + password);
-        if (userRepository.checkLogin(email, password)) {
-            User user = userRepository.getUserDetails(email);
+        if (userRepository.checkLogin(emailOrUsername, password)) {
+            User user = userRepository.getUserDetails(emailOrUsername);
             response = new Message(user, true);
         } else {
             response = new Message(false);

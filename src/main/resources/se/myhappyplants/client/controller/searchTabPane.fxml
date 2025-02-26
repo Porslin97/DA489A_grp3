@@ -15,17 +15,16 @@
 <?import javafx.scene.shape.Circle?>
 <?import se.myhappyplants.client.view.AutocompleteSearchField?>
 
-<BorderPane fx:id="plantsPane" prefHeight="570.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.myhappyplants.client.controller.SearchTabPaneController">
+<BorderPane prefHeight="570.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.myhappyplants.client.controller.SearchTabPaneController">
     <top>
         <AnchorPane prefHeight="56.0" prefWidth="600.0" BorderPane.alignment="CENTER">
             <children>
                 <Circle fx:id="imgUserAvatar" layoutX="32.0" layoutY="37.0" pickOnBounds="true" radius="25" />
                 <Label fx:id="lblUsername" layoutX="77.0" layoutY="30.0" text="Username" />
                 <Button layoutX="909.0" layoutY="24.0" mnemonicParsing="false" onAction="#logoutButtonPressed" styleClass="logOutButton" text="Log Out" />
-                <ImageView fitHeight="79.0" fitWidth="125.0" layoutX="770.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../../../Blommor/Logotyp.png" />
-                    </image>
+                <ImageView fitHeight="79.0" fitWidth="125.0" layoutX="770.0" layoutY="-1.0" pickOnBounds="true"
+                           preserveRatio="true">
+                    <Image url="@../../../../Blommor/Logotyp.png"/>
                 </ImageView>
             </children>
         </AnchorPane>
@@ -46,15 +45,13 @@
                 <Label layoutX="522.0" layoutY="57.0" text="Sort by: " />
                 <ComboBox fx:id="cmbSortOption" layoutX="591.0" layoutY="50.0" onAction="#sortResults" prefHeight="30.0" prefWidth="186.0" promptText="  Common name" />
                 <ListView layoutX="786.0" layoutY="388.0" prefHeight="82.0" prefWidth="200.0" />
-                <ImageView fitHeight="96.0" fitWidth="114.0" layoutX="14.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../../../Blommor/results.png" />
-                    </image>
+                <ImageView fitHeight="96.0" fitWidth="114.0" layoutX="14.0" layoutY="32.0" pickOnBounds="true"
+                           preserveRatio="true">
+                    <Image url="@../../../../Blommor/results.png"/>
                 </ImageView>
-                <ImageView fx:id="imgFunFactTitle" fitHeight="108.0" fitWidth="134.0" layoutX="786.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../../../Blommor/funfacts.png" />
-                    </image>
+                <ImageView fx:id="imgFunFactTitle" fitHeight="108.0" fitWidth="134.0" layoutX="786.0" layoutY="26.0"
+                           pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../../../../Blommor/funfacts.png"/>
                 </ImageView>
             <TextField fx:id="txtNbrOfResults" editable="false" style= "-fx-background-color: transparent" layoutX="181.0" layoutY="53.0" pickOnBounds="false" />
             </children>

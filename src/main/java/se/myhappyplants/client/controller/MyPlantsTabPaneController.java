@@ -215,7 +215,7 @@ public class MyPlantsTabPaneController {
         }
         long currentDateMilli = System.currentTimeMillis();
         Date date = new Date(currentDateMilli);
-        String imageURL = PictureRandomizer.getRandomPictureURL();
+        String imageURL = selectedPlant.getImageURL();
         Plant plantToAdd = new Plant(uniqueNickName, selectedPlant.getPlantId(), date, wateringFrequency, imageURL);
         PopupBox.display(MessageText.sucessfullyAddPlant.toString());
         addPlantToDB(plantToAdd);

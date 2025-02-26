@@ -22,5 +22,6 @@ public enum MessageType {
     register,
     savePlant,
     savePlantWishlist,
+    removePlantWishlist,
     search
 }
