@@ -56,7 +56,7 @@ public class UserRepository {
     public boolean checkLogin(String email, String password) {
         boolean isVerified = false;
         String query = "SELECT password FROM users WHERE email = ? OR username = ?;";
-
+      
         try (ResultSet resultSet = queryExecutor.executeQuery(query, ps -> {
             ps.setString(1, email);
             ps.setString(2, email);

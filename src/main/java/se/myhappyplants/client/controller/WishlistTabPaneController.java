@@ -56,7 +56,7 @@ public class WishlistTabPaneController {
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
         lblUsername.setText(loggedInUser.getUser().getUsername());
         imgUserAvatar.setFill(new ImagePattern(new Image(SetAvatar.setAvatarOnLogin(loggedInUser.getUser().getEmail()))));
-        showFunFact(loggedInUser.getUser().areFunFactsActivated());
+        showFunFact(loggedInUser.getUser().getFunFactsActivated());
         createCurrentUserWishlistFromDB();
         addCurrentUserWishlistToHomeScreen();
     }

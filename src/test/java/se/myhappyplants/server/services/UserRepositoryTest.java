@@ -1,9 +1,11 @@
 package se.myhappyplants.server.services;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.*;
 import org.mindrot.jbcrypt.BCrypt;
 import se.myhappyplants.shared.User;
+
 import java.sql.*;
 
 /**
@@ -137,7 +139,7 @@ class UserRepositoryTest {
         assertEquals(email, result.getEmail());
         assertEquals(username, result.getUsername());
         assertEquals(notificationActivated, result.areNotificationsActivated());
-        assertEquals(funFactsActivated, result.areFunFactsActivated());
+        assertEquals(funFactsActivated, result.getFunFactsActivated());
     }
 
     /**

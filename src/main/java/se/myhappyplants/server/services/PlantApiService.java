@@ -32,13 +32,13 @@ public class PlantApiService {
     }
 
     public PlantDetails getPlantDetails(Plant plant) {
+        System.out.println("Inside getPlantDetails with plant: " + plant);
         int plantId = Integer.parseInt(plant.getPlantId());
 
         if (plantId > 3000) { // Plants with ID above 3000 require premium from the API to get detailed information
             System.out.println("Plant ID is above 3000, setting default values and not fetching details from API");
             return new PlantDetails("Unknown", "Unknown", "Unknown", List.of("Unknown"), "Unknown");
         }
-
         try {
             String query = String.format("https://perenual.com/api/species/details/%s?key=%s", plant.getPlantId(), API_KEY);
             JSONObject jsonResponse = fetchJsonResponse(query);
@@ -50,6 +50,10 @@ public class PlantApiService {
     }
 
     public Optional<List<Plant>> getPlants(String plantSearch, SortingOption sortingOption) {
+        if (sortingOption == null) {
+            sortingOption = SortingOption.COMMON_NAME;
+        }
+
         System.out.println("Fetching plants from API, search: " + plantSearch + ", sorting: " + sortingOption);
         try {
             String query = buildQueryUrl(plantSearch);

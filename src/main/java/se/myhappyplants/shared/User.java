@@ -109,7 +109,7 @@ public class User implements Serializable {
         this.avatarURL = new File(pathToImg).toURI().toString();
     }
 
-    public boolean areFunFactsActivated() {
+    public boolean getFunFactsActivated() {
         return funFactsActivated;
     }
 

@@ -66,7 +66,7 @@ public class SearchTabPaneController {
         if (loggedInUser.getUser() != null) {
             lblUsername.setText(loggedInUser.getUser().getUsername());
             imgUserAvatar.setFill(new ImagePattern(new Image(SetAvatar.setAvatarOnLogin(loggedInUser.getUser().getEmail()))));
-            showFunFact(loggedInUser.getUser().areFunFactsActivated());
+            showFunFact(loggedInUser.getUser().getFunFactsActivated());
         } else {
             lblUsername.setText("Guest");
             String defaultAvatarUrl = "file:resources/images/user_default_img.png";
