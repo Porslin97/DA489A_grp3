@@ -14,7 +14,7 @@ public class ImageLibrary {
     private static final Image deleteSign = new Image("Blommor/cancel.png");
 
     private static final Image emptyHeart = new Image("Blommor/heart_empty.png");
-    private static final Image fullHeart = new Image("Blommor/heart_full.com");
+    private static final Image fullHeart = new Image("Blommor/heart_full.png");
     private static final File loadingImageFile = new File("resources/images/img.png");
     private static final File defaultPlantImageFile = new File("resources/images/Grn_vxt.png");
 

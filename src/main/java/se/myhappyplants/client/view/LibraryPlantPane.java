@@ -49,6 +49,8 @@ public class LibraryPlantPane extends Pane implements PlantPane {
     private ListView listViewMoreInfo;
     private Label daysUntilWaterlbl;
 
+    private ImageView imgFavoriteSign;
+
     public boolean extended;
     private boolean gotInfoOnPlant;
 
@@ -98,8 +100,9 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         initChangeWaterOKButton(plant);
         initDatePicker();
         initDeleteButton(plant);
-        initListView();
         initFavoriteButton();
+        initImgFavoriteSign(plant);
+        initListView();
     }
 
 
@@ -356,6 +359,26 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         });
     }
 
+    private void initFavoriteButton() {
+        this.favoriteButton = new Button();
+        favoriteButton.setLayoutX(350.0);
+        favoriteButton.setLayoutY(55.0);
+        favoriteButton.setMnemonicParsing(false);
+        favoriteButton.setOnAction(action -> { myPlantsTabPaneController.updateFavorite(action, plant);});
+    }
+
+    private void initImgFavoriteSign(Plant plant) {
+        if(plant.getIsFavorite()){
+            this.imgFavoriteSign = new ImageView(ImageLibrary.getFullHeart());
+        } else {
+            this.imgFavoriteSign = new ImageView(ImageLibrary.getEmptyHeart());
+        }
+
+        imgFavoriteSign.setFitHeight(16);
+        imgFavoriteSign.setFitWidth(15);
+        favoriteButton.setGraphic(imgFavoriteSign);
+    }
+
     /**
      * Method to initialize and set the listView with the extended information about the plants
      */
@@ -366,18 +389,7 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         listViewMoreInfo.setPrefWidth(725.0);
         listViewMoreInfo.setPrefHeight(140.0);
         this.setPrefHeight(92.0);
-        this.getChildren().addAll(image, nickname, daysUntilWaterlbl, progressBar, waterButton, infoButton, updateWateringFrequencyButton);
-    }
-
-    private void initFavoriteButton() {
-        this.favoriteButton = new Button();
-        favoriteButton.setGraphic(new ImageView(ImageLibrary.getEmptyHeart()));
-        favoriteButton.setLayoutX(350.0);
-        favoriteButton.setLayoutY(55.0);
-        favoriteButton.setMnemonicParsing(false);
-        favoriteButton.setOnAction(action -> {
-
-        });
+        this.getChildren().addAll(image, nickname, daysUntilWaterlbl, progressBar, waterButton, infoButton, updateWateringFrequencyButton, favoriteButton);
     }
 
     /**

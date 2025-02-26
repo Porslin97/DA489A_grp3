@@ -288,4 +288,28 @@ public class UserPlantRepository {
     }
 
 
+    public boolean updateFavorite(User user, Plant plant) {
+        boolean favoriteChanged = false;
+        boolean isFavorite = plant.getIsFavorite();
+        int databaseId = plant.getDatabaseId();
+        int userId = user.getUniqueId();
+        String query;
+
+        if (isFavorite) {
+            query = "UPDATE user_plants SET is_favorite = false WHERE user_id = ? AND id = ?";
+        } else {
+            query = "UPDATE user_plants SET is_favorite = true WHERE user_id = ? AND id = ?";
+        }
+
+        try{
+            database.executeUpdate(query, ps -> {
+                ps.setInt(1, userId);
+                ps.setInt(2, databaseId);
+            });
+            favoriteChanged = true;
+        } catch (SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+        return favoriteChanged;
+    }
 }

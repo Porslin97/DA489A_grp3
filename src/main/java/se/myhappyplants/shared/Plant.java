@@ -236,6 +236,18 @@ public class Plant implements Serializable {
         return String.format("You need to water this plant in %d days", daysUntilNextWatering);
     }
 
+    public boolean getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
+    public int getDatabaseId() {
+        return databaseId;
+    }
+
     @Override
     public String toString() {
         return String.format("Common name: %s \tScientific name: %s ", commonName, scientificName);
