@@ -12,6 +12,7 @@ import javafx.scene.layout.*;
 import javafx.util.Duration;
 import se.myhappyplants.client.controller.MyPlantsTabPaneController;
 import se.myhappyplants.client.model.BoxTitle;
+import se.myhappyplants.client.model.ImageLibrary;
 import se.myhappyplants.client.model.PictureRandomizerClient;
 import se.myhappyplants.client.util.DialogUtils;
 import se.myhappyplants.shared.PlantDetails;
@@ -41,6 +42,8 @@ public class LibraryPlantPane extends Pane implements PlantPane {
     private Button changePictureButton;
     private Button updateWateringFrequencyButton;
     private Button deleteButton;
+
+    private Button favoriteButton;
     private DatePicker datePicker;
     private Button changeOKWaterButton;
     private ListView listViewMoreInfo;
@@ -96,7 +99,10 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         initDatePicker();
         initDeleteButton(plant);
         initListView();
+        initFavoriteButton();
     }
+
+
 
     /**
      * Constructor to initialize some variables and initiate library
@@ -360,22 +366,19 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         listViewMoreInfo.setPrefWidth(725.0);
         listViewMoreInfo.setPrefHeight(140.0);
         this.setPrefHeight(92.0);
-
-        /*
-        Vi vill inte anropa detaljer direkt när användarens växter laddas. bara när användaren klickar på info-knapp.
-
-        anropa inte direkt: Plant plantDetails = myPlantsTabPaneController.getPlantDetails(plant);
-        ObservableList<String> plantInfo = FXCollections.observableArrayList();
-        plantInfo.add("Scientific name: " + plantDetails.getScientificName());
-        plantInfo.add("Family: " + plantDetails.getFamilyName());
-        plantInfo.add("Light: " + plantDetails.getSunlight());
-        plantInfo.add("Water: " + plantDetails.getRecommended_watering_frequency());
-        plantInfo.add("Last watered: " + plant.getLastWatered());
-        */
         this.getChildren().addAll(image, nickname, daysUntilWaterlbl, progressBar, waterButton, infoButton, updateWateringFrequencyButton);
-        // listViewMoreInfo.setItems(plantInfo);
     }
 
+    private void initFavoriteButton() {
+        this.favoriteButton = new Button();
+        favoriteButton.setGraphic(new ImageView(ImageLibrary.getEmptyHeart()));
+        favoriteButton.setLayoutX(350.0);
+        favoriteButton.setLayoutY(55.0);
+        favoriteButton.setMnemonicParsing(false);
+        favoriteButton.setOnAction(action -> {
+
+        });
+    }
 
     /**
      * Method for expanding tab with "more information"-buttons.

@@ -12,6 +12,8 @@ import java.time.LocalDate;
 public class Plant implements Serializable {
 
     private static final long serialVersionUID = 867522155232174497L;
+
+    private int databaseId;
     private String plantId;
     private String commonName;
     private String scientificName;
@@ -20,6 +22,8 @@ public class Plant implements Serializable {
     private int users_watering_frequency;
     private Date lastWatered;
     private Date dateAdded;
+
+    private boolean isFavorite;
 
     // for wishlist. Added because limited api calls
     private String family;
@@ -122,6 +126,16 @@ public class Plant implements Serializable {
         this.water = water;
         this.description = description;
         this.imageURL = imageURL;
+    }
+
+    public Plant(int databaseId, String nickname, String plantId, Date lastWatered, int waterFrequency, String imageURL, boolean isFavorite) {
+        this.databaseId = databaseId;
+        this.nickname = nickname;
+        this.plantId = plantId;
+        this.lastWatered = lastWatered;
+        this.users_watering_frequency = waterFrequency;
+        this.imageURL = imageURL;
+        this.isFavorite =isFavorite;
     }
 
     public String getNickname() {

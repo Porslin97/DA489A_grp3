@@ -91,17 +91,19 @@ public class UserPlantRepository {
      */
     public ArrayList<Plant> getUserLibrary(User user) {
         ArrayList<Plant> plantList = new ArrayList<>();
-        String query = "SELECT nickname, plant_id, last_watered, image_url, watering_frequency FROM user_plants WHERE user_id = ?;";
+        String query = "SELECT id, nickname, plant_id, last_watered, image_url, watering_frequency, is_favorite FROM user_plants WHERE user_id = ?;";
         System.out.println("User: " + user.getUniqueId());
         try (ResultSet resultSet = database.executeQuery(query, ps -> ps.setInt(1, user.getUniqueId()))) {
             while (resultSet.next()) {
+                int databaseId = resultSet.getInt("id");
                 String nickname = resultSet.getString("nickname");
                 String plantId = resultSet.getString("plant_id");
                 Date lastWatered = resultSet.getDate("last_watered");
                 String imageURL = resultSet.getString("image_url");
                 int waterFrequency = resultSet.getInt("watering_frequency");
+                boolean isFavorite = resultSet.getBoolean("is_favorite");
                 System.out.println("Nickname: " + nickname + " PlantId: " + plantId + " Last watered: " + lastWatered + " ImageURL: " + imageURL);
-                plantList.add(new Plant(nickname, plantId, lastWatered, waterFrequency, imageURL));
+                plantList.add(new Plant(databaseId, nickname, plantId, lastWatered, waterFrequency, imageURL, isFavorite));
             }
         } catch (SQLException exception) {
             System.out.println(exception.fillInStackTrace());
