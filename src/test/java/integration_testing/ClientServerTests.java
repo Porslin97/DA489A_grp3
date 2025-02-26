@@ -1,5 +1,6 @@
 package integration_testing;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,17 +15,29 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+/**
+ * Integration tests for the client-server communication.
+ */
 
 public class ClientServerTests {
     private UserRepository userRepository;
     private UserPlantRepository userPlantRepository;
+    private PlantApiService plantApiServiceSpy;
     private DBQueryExecutor dbQueryExecutor;
     Server server;
     private static final int TEST_PORT = 2556;
     private ServerConnection clientConnection;
 
+
+    /**
+     * Sets up the test environment by creating a new server and client connection, and clearing the database.
+     * Uses a spy to mock the PlantApiService so that the actual API is not called during testing.
+     */
     @BeforeEach
     void setUp() throws SQLException, UnknownHostException {
         dbQueryExecutor = new DBQueryExecutor();
@@ -32,13 +45,9 @@ public class ClientServerTests {
 
         userRepository = new UserRepository(dbQueryExecutor);
         userPlantRepository = new UserPlantRepository(dbQueryExecutor);
+        plantApiServiceSpy = spy(new PlantApiService());
 
-        PlantApiService plantApiService = Mockito.mock(PlantApiService.class);
-        // mocking for details about a specific plant? probably need to mock API call for searching and retrieving multiple plants as well (getPlants)
-        Mockito.when(plantApiService.getPlantDetails(Mockito.any(Plant.class)))
-                .thenReturn(new PlantDetails("Test", "Test", "Test", List.of("Test"), "Test"));
-
-        ResponseController responseController = new ResponseController(userRepository, userPlantRepository, plantApiService);
+        ResponseController responseController = new ResponseController(userRepository, userPlantRepository, plantApiServiceSpy);
         server = new Server(TEST_PORT, responseController);
         clientConnection = ServerConnection.getClientConnection();
         clientConnection.setPort(TEST_PORT);
@@ -378,6 +387,103 @@ public class ClientServerTests {
         assertNotNull(updatedUser, "User should exist after fun facts preference have been updated");
         assertNotEquals(initialPreference, updatedUser.getFunFactsActivated(), "Fun facts preference should be updated");
     }
-    // TODO: getWishlist, getMorePlantInfo, savePlantWishlist, search
+
+    @Test
+    void shouldSuccessfullyRetrieveUserWishlist() {
+        String email = "test@mail.com";
+        String username = "TestGetWishlist";
+        String rawPassword = "password123";
+        userRepository.saveUser(new User(email, username, rawPassword, true));
+
+        Plant plant = new Plant("1", "TestPlant", "TestPlant", "TestPlant.jpg");
+        plant.setNickname("TestPlantNickname");
+        plant.setLastWatered(LocalDate.now().minusDays(2));
+        plant.setUsers_watering_frequency(7);
+
+        User user = userRepository.getUserDetails(email);
+
+        userPlantRepository.saveWishlistPlant(user, plant);
+
+        Message getWishlistRequest = new Message(MessageType.getWishlist, user);
+        Message getWishlistResponse = clientConnection.makeRequest(getWishlistRequest);
+
+        assertNotNull(getWishlistResponse, "Get wishlist response should not be null");
+        assertTrue(getWishlistResponse.isSuccess(), "Get wishlist should succeed when user is valid");
+
+        List<Plant> wishlist = getWishlistResponse.getPlantArray();
+        assertNotNull(wishlist, "Wishlist should not be null");
+        assertEquals(1, wishlist.size(), "Wishlist should contain 1 plant");
+    }
+
+    @Test
+    void shouldSuccessfullyGetMorePlantInfo() {
+        Plant plant = new Plant("123", "TestPlant", "TestPlant", "TestPlant.jpg");
+
+        PlantDetails mockPlantDetails = new PlantDetails(
+                "MockedFamily",
+                "MockedDescription",
+                "Average",
+                List.of("Full Sun", "Partial Shade"),
+                "MockedPlantus Scientificus"
+        );
+        doReturn(mockPlantDetails).when(plantApiServiceSpy).getPlantDetails(any(Plant.class));
+
+        Message getMorePlantInfoRequest = new Message(MessageType.getMorePlantInfo, plant);
+        Message getMorePlantInfoResponse = clientConnection.makeRequest(getMorePlantInfoRequest);
+
+        assertNotNull(getMorePlantInfoResponse, "Get more plant info response should not be null");
+        assertTrue(getMorePlantInfoResponse.isSuccess(), "Get more plant info should succeed when plant is valid");
+
+        PlantDetails plantDetails = getMorePlantInfoResponse.getPlantDetails();
+        System.out.println(plantDetails);
+        assertNotNull(plantDetails, "Plant details should not be null");
+        assertEquals("MockedFamily", plantDetails.getFamilyName(), "Family name should be correct");
+        assertEquals("MockedDescription", plantDetails.getDescription(), "Description should be correct");
+        assertEquals("Average", plantDetails.getRecommended_watering_frequency(), "Recommended watering frequency should be correct");
+        assertEquals(List.of("Full Sun", "Partial Shade"), plantDetails.getSunlight(), "Sunlight should be correct");
+        assertEquals("MockedPlantus Scientificus", plantDetails.getScientificName(), "Scientific name should be correct");
+    }
+
+    @Test
+    void shouldSuccessfullySearchForPlants() {
+        String query = "Monstera";
+        Optional<List<Plant>> mockPlants = Optional.of(List.of(
+                new Plant("1", "Monstera", "Monstera deliciosa", "Monstera.jpg"),
+                new Plant("2", "Monstera", "Monstera adansonii", "Monstera2.jpg")
+        ));
+        doReturn(mockPlants).when(plantApiServiceSpy).getPlants(query, SortingOption.COMMON_NAME);
+
+        Message searchRequest = new Message(MessageType.search, query, SortingOption.COMMON_NAME);
+        Message searchResponse = clientConnection.makeRequest(searchRequest);
+
+        assertNotNull(searchResponse, "Search response should not be null");
+        assertTrue(searchResponse.isSuccess(), "Search should succeed when query is valid");
+
+        List<Plant> searchResults = searchResponse.getPlantArray();
+        assertNotNull(searchResults, "Search results should not be null");
+        assertEquals(2, searchResults.size(), "Search results should contain 2 plants");
+    }
+
+    @Test
+    void shouldSuccessfullySavePlantToWishlist() {
+        String email = "test@mail.com";
+        String username = "TestGetWishlist";
+        String rawPassword = "password123";
+        userRepository.saveUser(new User(email, username, rawPassword, true));
+
+        Plant plant = new Plant("1", "TestPlant", "TestPlant", "TestPlant.jpg");
+
+        User user = userRepository.getUserDetails(email);
+
+        Message saveWishlistPlantRequest = new Message(MessageType.savePlantWishlist, user, plant);
+        Message saveWishlistPlantResponse = clientConnection.makeRequest(saveWishlistPlantRequest);
+
+        assertNotNull(saveWishlistPlantResponse, "Save wishlist plant response should not be null");
+        assertTrue(saveWishlistPlantResponse.isSuccess(), "Save wishlist plant should succeed when user is valid");
+
+        List<Plant> wishlist = userPlantRepository.getUserWishlist(user);
+        assertNotNull(wishlist, "Wishlist should not be null");
+        assertEquals(1, wishlist.size(), "Wishlist should contain 1 plant");
+    }
 }
 
