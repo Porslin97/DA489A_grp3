@@ -49,10 +49,10 @@ public class SearchPlantPane extends Pane implements PlantPane {
      * @param imgPath
      * @param plant
      */
-    public SearchPlantPane(SearchTabPaneController searchTabPaneController, String imgPath, Plant plant) {
+    public SearchPlantPane(SearchTabPaneController searchTabPaneController, Image image, Plant plant) {
         this.searchTabPaneController = searchTabPaneController;
         this.plant = plant;
-        initImage(imgPath);
+        initImage(image);
         initCommonName();
         initScientificName();
         initInfoButton();
@@ -72,8 +72,7 @@ public class SearchPlantPane extends Pane implements PlantPane {
      *
      * @param imgPath
      */
-    private void initImage(String imgPath) {
-        Image img = new Image(imgPath);
+    private void initImage(Image img) {
         if (img.isError()) {
             System.err.println("Error loading image in SearchPlantPane initImage: " + plant.getImageURL());
         }

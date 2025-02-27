@@ -1,7 +1,5 @@
 package se.myhappyplants.client.controller;
 
-import java.io.*;
-
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,7 +9,7 @@ import javafx.scene.control.TextField;
 import se.myhappyplants.client.model.BoxTitle;
 import se.myhappyplants.client.model.LoggedInUser;
 import se.myhappyplants.client.model.RootName;
-import se.myhappyplants.client.service.ServerConnection;
+import se.myhappyplants.client.view.ServerConnection;
 import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.client.view.PopupBox;
 import se.myhappyplants.shared.Message;

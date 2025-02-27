@@ -15,7 +15,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.event.ActionEvent;
 import se.myhappyplants.client.model.*;
-import se.myhappyplants.client.service.ServerConnection;
+import se.myhappyplants.client.view.ServerConnection;
 import se.myhappyplants.client.util.ImageUtils;
 import se.myhappyplants.client.view.LibraryPlantPane;
 import se.myhappyplants.client.view.MessageBox;
@@ -238,23 +238,7 @@ public class MyPlantsTabPaneController {
      * @param selectedPlant the plant that the user selects
      * @param plantNickname the nickname of the plant that the user chooses
      */
-    @FXML
-    public void addPlantToCurrentUserLibrary(Plant selectedPlant, String plantNickname, int wateringFrequency) {
-        int plantsWithThisNickname = 1;
-        String uniqueNickName = plantNickname;
-        for (Plant plant : currentUserLibrary) {
-            if (plant.getNickname().equals(uniqueNickName)) {
-                plantsWithThisNickname++;
-                uniqueNickName = plantNickname + plantsWithThisNickname;
-            }
-        }
-        long currentDateMilli = System.currentTimeMillis();
-        Date date = new Date(currentDateMilli);
-        String imageURL = selectedPlant.getImageURL();
-        Plant plantToAdd = new Plant(uniqueNickName, selectedPlant.getPlantId(), date, wateringFrequency, imageURL);
-        PopupBox.display(MessageText.sucessfullyAddPlant.toString());
-        addPlantToDB(plantToAdd);
-    }
+
 
     /**
      * Method to save the plant to the database
@@ -474,5 +458,14 @@ public class MyPlantsTabPaneController {
                 e.printStackTrace();
             }
         }
+    }
+
+    public Iterable<? extends Plant> getCurrentUserLibrary() {
+        return currentUserLibrary;
+    }
+
+    public void addPlantToUserLibrary(Plant plantToAdd) {
+        currentUserLibrary.add(plantToAdd);
+        addCurrentUserLibraryToHomeScreen();
     }
 }

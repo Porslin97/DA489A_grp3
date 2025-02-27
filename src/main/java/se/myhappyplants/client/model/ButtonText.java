@@ -1,4 +1,4 @@
-package se.myhappyplants.client.view;
+package se.myhappyplants.client.model;
 
 import javafx.scene.control.ToggleButton;
 import se.myhappyplants.client.controller.SettingsTabPaneController;

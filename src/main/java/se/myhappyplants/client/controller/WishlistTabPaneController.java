@@ -7,7 +7,6 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,14 +16,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import se.myhappyplants.client.model.*;
-import se.myhappyplants.client.service.ServerConnection;
+import se.myhappyplants.client.view.ServerConnection;
 import se.myhappyplants.client.util.DialogUtils;
 import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.client.view.PopupBox;
 import se.myhappyplants.client.view.WishlistPlantPane;
 import se.myhappyplants.shared.*;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
@@ -49,6 +47,8 @@ public class WishlistTabPaneController {
 
     @FXML
     private Circle imgUserAvatar;
+
+    private final String database = "wishlist";
 
 
     @FXML
@@ -107,17 +107,12 @@ public class WishlistTabPaneController {
     }
 
     private void addPlantToDB(Plant plantToAdd) {
-        Thread addPlantThread = new Thread(() -> {
+        boolean success = mainPaneController.addPlantToDB(plantToAdd, database);
+
+        if (success) {
             currentUserWishlist.add(plantToAdd);
-            Message savePlant = new Message(MessageType.savePlantWishlist, LoggedInUser.getInstance().getUser(), plantToAdd);
-            ServerConnection connection = ServerConnection.getClientConnection();
-            Message response = connection.makeRequest(savePlant);
-            if (!response.isSuccess()) {
-                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
-            }
-            createCurrentUserWishlistFromDB();
-        });
-        addPlantThread.start();
+            addCurrentUserWishlistToHomeScreen();
+        }
     }
 
     @FXML
@@ -134,7 +129,7 @@ public class WishlistTabPaneController {
 
     @FXML
     public void removePlantFromDB(Plant plant) {
-        Platform.runLater(() ->PopupBox.display(MessageText.removePlant.toString()));
+        Platform.runLater(() -> PopupBox.display(MessageText.removePlant.toString()));
         Thread removePlantThread = new Thread(() -> {
             currentUserWishlist.remove(plant);
             Message deletePlant = new Message(MessageType.removePlantWishlist, LoggedInUser.getInstance().getUser(), plant);
@@ -173,11 +168,11 @@ public class WishlistTabPaneController {
         if (currentUserWishlist == null) {
             obsListWishlistPlantPane.add(new WishlistPlantPane());
         } else {
-            if (currentUserWishlist.size()<1) {
+            if (currentUserWishlist.size() < 1) {
                 obsListWishlistPlantPane.add(new WishlistPlantPane(this));
             } else {
                 for (Plant plant : currentUserWishlist) {
-                    obsListWishlistPlantPane.add(new WishlistPlantPane(this,ImageLibrary.getLoadingImageFile().toURI().toString(), plant));
+                    obsListWishlistPlantPane.add(new WishlistPlantPane(this, ImageLibrary.getLoadingImage(), plant));
                 }
             }
         }
@@ -193,12 +188,12 @@ public class WishlistTabPaneController {
                         for (WishlistPlantPane wishlistPlantPane : obsListWishlistPlantPane) {
                             Plant Plant = wishlistPlantPane.getPlant();
                             if (Plant.getImageURL().equals("")) {
-                                wishlistPlantPane.setDefaultImage(ImageLibrary.getDefaultPlantImage().toURI().toString());
+                                wishlistPlantPane.setDefaultImage(ImageLibrary.getDefaultPlantImage().getUrl());
                             } else {
                                 try {
                                     wishlistPlantPane.updateImage();
                                 } catch (IllegalArgumentException e) {
-                                    wishlistPlantPane.setDefaultImage(ImageLibrary.getDefaultPlantImage().toURI().toString());
+                                    wishlistPlantPane.setDefaultImage(ImageLibrary.getDefaultPlantImage().getUrl());
                                 }
                             }
                             updateProgress(i++, obsListWishlistPlantPane.size());
@@ -213,6 +208,7 @@ public class WishlistTabPaneController {
     public MainPaneController getMainPaneController() {
         return mainPaneController;
     }
+
     @FXML
     public void addPlantToCurrentUserLibrary(Plant plantAdd, ActionEvent action) {
         if (!isUserLoggedIn()) {
@@ -229,9 +225,24 @@ public class WishlistTabPaneController {
             return;
         }
 
-        mainPaneController.getMyPlantsTabPaneController().addPlantToCurrentUserLibrary(plantAdd, plantNickname, newWateringFrequency);
-        removePlantFromCurrentUserWishlist(plantAdd, action);
-
+        int plantsWithThisNickname = 1;
+        String uniqueNickName = plantNickname;
+        for (Plant plant : mainPaneController.getCurrentUserLibrary()) {
+            if (plant.getNickname().equals(uniqueNickName)) {
+                plantsWithThisNickname++;
+                uniqueNickName = plantNickname + plantsWithThisNickname;
+            }
+        }
+        long currentDateMilli = System.currentTimeMillis();
+        Date date = new Date(currentDateMilli);
+        String imageURL = plantAdd.getImageURL();
+        Plant plantToAdd = new Plant(uniqueNickName, plantAdd.getPlantId(), date, newWateringFrequency, imageURL);
+        PopupBox.display(MessageText.sucessfullyAddPlant.toString());
+        boolean success = mainPaneController.addPlantToDB(plantToAdd, database);
+        if (success){
+            mainPaneController.addPlantToUserLibrary(plantToAdd);
+            removePlantFromCurrentUserWishlist(plantToAdd, action);
+        }
     }
 
     private boolean isUserLoggedIn() {

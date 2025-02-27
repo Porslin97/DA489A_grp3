@@ -59,8 +59,7 @@ public class LibraryPlantPane extends Pane implements PlantPane {
      * while waiting for response from database
      */
     public LibraryPlantPane() {
-        File fileImg = new File("resources/images/img.png");
-        Image img = new Image(fileImg.toURI().toString());
+        Image img = new Image("Blommor/img.png");
         image = new ImageView(img);
         image.setFitHeight(45.0);
         image.setFitWidth(45.0);
@@ -437,7 +436,7 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         if (progress < 0.15) {
             progressBar.setStyle("-fx-accent: #BE4052");
         } else {
-            progressBar.setStyle("-fx-accent: 2D88AA");
+            progressBar.setStyle("-fx-accent: #2D88AA");
         }
     }
 

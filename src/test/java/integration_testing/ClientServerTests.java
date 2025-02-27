@@ -1,11 +1,10 @@
 package integration_testing;
 
-import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import se.myhappyplants.client.service.ServerConnection;
+import se.myhappyplants.client.view.ServerConnection;
 import se.myhappyplants.server.controller.ResponseController;
 import se.myhappyplants.server.services.*;
 import se.myhappyplants.shared.*;

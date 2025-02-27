@@ -10,7 +10,7 @@ import se.myhappyplants.client.model.BoxTitle;
 import se.myhappyplants.client.model.LoggedInUser;
 import se.myhappyplants.client.model.RootName;
 import se.myhappyplants.client.model.Verifier;
-import se.myhappyplants.client.service.ServerConnection;
+import se.myhappyplants.client.view.ServerConnection;
 import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.shared.Message;
 import se.myhappyplants.shared.MessageType;
