@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.event.ActionEvent;
 import se.myhappyplants.client.model.*;
 import se.myhappyplants.client.service.ServerConnection;
 import se.myhappyplants.client.util.ImageUtils;
@@ -152,6 +153,40 @@ public class MyPlantsTabPaneController {
     public void showNotifications() {
         ObservableList<String> notificationStrings = NotificationsCreator.getNotificationsStrings(currentUserLibrary, imgNotifications);
         Platform.runLater(() -> lstViewNotifications.setItems(notificationStrings));
+    }
+
+    @FXML
+    public void updateFavorite(ActionEvent actionEvent, Plant plant) {
+        Button favoriteButton = (Button) actionEvent.getSource();
+
+        ImageView emptyHeartImg = new ImageView(ImageLibrary.getEmptyHeart());
+        emptyHeartImg.setFitHeight(16);
+        emptyHeartImg.setFitWidth(15);
+
+        ImageView fullHeartImg = new ImageView(ImageLibrary.getFullHeart());
+        fullHeartImg.setFitHeight(16);
+        fullHeartImg.setFitWidth(15);
+
+        Thread updateFavoriteThread = new Thread(() -> {
+            Message updateFavorite = new Message(MessageType.updateIsFavorite, LoggedInUser.getInstance().getUser(), plant);
+            ServerConnection connection = ServerConnection.getClientConnection();
+            Message response = connection.makeRequest(updateFavorite);
+
+            if(response.isSuccess()){
+                Platform.runLater(() -> {
+                    if(plant.getIsFavorite()) {
+                        favoriteButton.setGraphic(emptyHeartImg);
+                        plant.setIsFavorite(false);
+                    } else {
+                        favoriteButton.setGraphic(fullHeartImg);
+                        plant.setIsFavorite(true);
+                    }
+                });
+            } else {
+                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
+            }
+        });
+        updateFavoriteThread.start();
     }
 
     /**
@@ -312,7 +347,7 @@ public class MyPlantsTabPaneController {
         SortingOption selectedOption;
         selectedOption = cmbSortOption.getValue();
         if (selectedOption == null)
-            selectedOption = SortingOption.NICKNAME;
+            selectedOption = SortingOption.FAVORITES;
         lstViewUserPlantLibrary.setItems(ListSorter.sort(selectedOption, lstViewUserPlantLibrary.getItems()));
     }
 

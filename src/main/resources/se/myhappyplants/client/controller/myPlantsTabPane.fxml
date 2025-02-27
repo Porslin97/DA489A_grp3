@@ -30,7 +30,7 @@
         <children>
             <ImageView fx:id="imgNotifications" fitHeight="527.0" fitWidth="1000.0" BorderPane.alignment="CENTER" />
             <Label layoutX="522.0" layoutY="57.0" text="Sort by: " />
-            <ComboBox fx:id="cmbSortOption" layoutX="591.0" layoutY="51.0" onAction="#sortLibrary" prefHeight="30.0" prefWidth="186.0" promptText="  Nickname" />
+            <ComboBox fx:id="cmbSortOption" layoutX="591.0" layoutY="51.0" onAction="#sortLibrary" prefHeight="30.0" prefWidth="186.0" promptText="  Favorites" />
             <ListView fx:id="lstViewUserPlantLibrary" layoutX="12.0" layoutY="86.0" prefHeight="384.0" prefWidth="765.0" />
             <ListView fx:id="lstViewNotifications" layoutX="786.0" layoutY="86.0" prefHeight="296.0" prefWidth="200.0" />
             <Button fx:id="btnExpandAll" layoutX="296.0" layoutY="51.0" mnemonicParsing="false" onAction="#expandAll" text="Expand all" />

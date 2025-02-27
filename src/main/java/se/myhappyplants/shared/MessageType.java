@@ -23,5 +23,6 @@ public enum MessageType {
     savePlant,
     savePlantWishlist,
     removePlantWishlist,
-    search
+    search,
+    updateIsFavorite
 }

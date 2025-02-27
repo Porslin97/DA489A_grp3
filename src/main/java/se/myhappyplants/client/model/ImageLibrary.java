@@ -12,6 +12,9 @@ public class ImageLibrary {
     private static final Image plusSign = new Image("Blommor/plusSign.png");
     private static final Image wishlistSign = new Image("Blommor/star.png");
     private static final Image deleteSign = new Image("Blommor/cancel.png");
+
+    private static final Image emptyHeart = new Image("Blommor/heart_empty.png");
+    private static final Image fullHeart = new Image("Blommor/heart_full.png");
     private static final File loadingImageFile = new File("resources/images/img.png");
     private static final File defaultPlantImageFile = new File("resources/images/Grn_vxt.png");
 
@@ -30,6 +33,14 @@ public class ImageLibrary {
 
     public static Image getWishlistSign() {
         return wishlistSign;
+    }
+
+    public static Image getEmptyHeart() {
+        return emptyHeart;
+    }
+
+    public static Image getFullHeart() {
+        return fullHeart;
     }
 
     /**

@@ -50,6 +50,7 @@ public class ResponseContext {
         responders.put(MessageType.getWishlist, new GetWishlist(userPlantRepository));
         responders.put(MessageType.removePlantWishlist, new DeletePlantFromWishlist(userPlantRepository));
         responders.put(MessageType.search, new Search(plantApiService));
+        responders.put(MessageType.updateIsFavorite, new UpdateFavorite(userPlantRepository));
     }
 
     public IResponseHandler getResponseHandler(MessageType messageType) {

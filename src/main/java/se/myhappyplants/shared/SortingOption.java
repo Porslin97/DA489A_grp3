@@ -9,6 +9,7 @@ public enum SortingOption {
     NICKNAME("  Nickname"),
     COMMON_NAME("  Common name"),
     SCIENTIFIC_NAME("  Scientific name"),
+    FAVORITES("  Favorites"),
     WATER_NEED("  Water need");
 
     private final String name;

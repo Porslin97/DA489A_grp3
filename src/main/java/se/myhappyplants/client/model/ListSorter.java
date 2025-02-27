@@ -57,6 +57,7 @@ public class ListSorter {
             case COMMON_NAME -> plantList.sort(Comparator.comparing(pane -> pane.getPlant().getCommonName(), String.CASE_INSENSITIVE_ORDER));
             case SCIENTIFIC_NAME -> plantList.sort(Comparator.comparing(pane -> pane.getPlant().getScientificName(), String.CASE_INSENSITIVE_ORDER));
             case WATER_NEED -> plantList.sort(Comparator.comparingDouble(pane -> pane.getPlant().getProgress()));
+            case FAVORITES -> plantList.sort(Comparator.comparing(pane -> !((PlantPane) pane).getPlant().getIsFavorite()).thenComparing(pane -> ((PlantPane) pane).getPlant().getNickname(), String.CASE_INSENSITIVE_ORDER));
             default -> {} //no sorting
         }
         return plantList;
