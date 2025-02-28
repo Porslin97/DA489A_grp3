@@ -1,7 +1,6 @@
 package se.myhappyplants.server.services;
 
 import javafx.application.Platform;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +14,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import javafx.application.Platform;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserPlantRepositoryTest {
@@ -27,7 +24,7 @@ class UserPlantRepositoryTest {
 
 
     @BeforeAll
-    static void javaFXinitiliazation() {
+    static void javaFXinitialization() {
         try {
             Platform.startup(() -> {
 
@@ -135,12 +132,121 @@ class UserPlantRepositoryTest {
         assertTrue(userPlantRepository.savePlant(savedUser, plant2), " 'Northern marsh' has been saved");
 
         ArrayList<Plant> library = userPlantRepository.getUserLibrary(savedUser);
-        assertNotNull(library, "the library is null");
+        assertNotNull(library, "the library is not null");
         assertFalse(library.isEmpty(), "the library has plants");
 
         boolean foundPlant1 = library.stream().anyMatch(p -> "Night scented stock".equals(p.getNickname()));
         boolean foundPlant2 = library.stream().anyMatch(p -> "Northern marsh".equals(p.getNickname()));
         assertTrue(foundPlant1, "The library has 'Night scented stock'");
         assertTrue(foundPlant2, "The library has 'Northern marsh'");
+
+    }
+
+    @Test
+    void testChangeLastWatered() {
+        User testUser = new User(6, "testfall2.6@test.com", "testUser6", true, true);
+
+        assertTrue(userRepository.saveUser(testUser));
+        User savedTestUser = userRepository.getUserDetails("testfall2.6@test.com");
+
+        Date oldDate = Date.valueOf("2025-01-01");
+        Plant testPlant = new Plant("testPlant", "1", oldDate);
+
+        assertTrue(userPlantRepository.savePlant(savedTestUser, testPlant));
+
+        LocalDate newDate = LocalDate.now();
+        assertTrue(userPlantRepository.changeLastWatered(savedTestUser, testPlant.getNickname(), newDate));
+        testPlant = userPlantRepository.getPlant(savedTestUser, testPlant.getNickname());
+        assertEquals(Date.valueOf(newDate), testPlant.getLastWatered());
+
+    }
+
+
+    @Test
+    void testSaveWishListPlant() {
+        User testUser = new User(7, "testfall2.7@test.com", "testUser7", true, true);
+
+        assertTrue(userRepository.saveUser(testUser));
+        User savedTestUser = userRepository.getUserDetails("testfall2.7@test.com");
+        Plant testPlant = new Plant("7", "commonName7", "http://example.com/img.jpg", Date.valueOf(LocalDate.now()));
+
+        assertTrue(userPlantRepository.saveWishlistPlant(savedTestUser, testPlant));
+
+        ArrayList<Plant> wishlist = userPlantRepository.getUserWishlist(savedTestUser);
+        assertNotNull(wishlist);
+        System.out.println(wishlist);
+
+        boolean found = false;
+        for (Plant p : wishlist) {
+            if ("7".equals(p.getPlantId())) {
+                found = true;
+                break;
+            }
+        }
+
+        assertTrue(found);
+    }
+
+
+    @Test
+    void testChangeNickname() {
+        User testUser = new User(8, "testfall2.8@test.com", "testUser8", true, true);
+
+        assertTrue(userRepository.saveUser(testUser));
+        User savedTestUser = userRepository.getUserDetails("testfall2.8@test.com");
+        String oldNickname = "oldNickname";
+
+        Plant testPlant = new Plant(oldNickname, "8", Date.valueOf(LocalDate.now()));
+        assertTrue(userPlantRepository.savePlant(savedTestUser, testPlant));
+
+        String newNickname = "newNickname";
+        assertTrue(userPlantRepository.changeNickname(savedTestUser, oldNickname, newNickname));
+        Plant updatedPlant = userPlantRepository.getPlant(savedTestUser, newNickname);
+        assertEquals(newNickname, updatedPlant.getNickname());
+
+    }
+
+    @Test
+    void testChangeAllToWatered() {
+        User testUser1 = new User(9, "testfall2.9@test.com", "testUser9", true, true);
+
+        assertTrue(userRepository.saveUser(testUser1));
+
+        User savedTestUser = userRepository.getUserDetails("testfall2.9@test.com");
+
+        String oldLastWatered = "2025-01-01";
+        Plant testPlant1 = new Plant("testPlant", "9", Date.valueOf(oldLastWatered));
+        Plant testPlant2 = new Plant("testPlant", "10", Date.valueOf(oldLastWatered));
+        Plant testPlant3 = new Plant("testPlant", "11", Date.valueOf(oldLastWatered));
+
+        assertTrue(userPlantRepository.savePlant(savedTestUser, testPlant1));
+        assertTrue(userPlantRepository.savePlant(savedTestUser, testPlant2));
+        assertTrue(userPlantRepository.savePlant(savedTestUser, testPlant3));
+
+        assertTrue(userPlantRepository.changeAllToWatered(savedTestUser));
+
+        ArrayList<Plant> library = userPlantRepository.getUserLibrary(savedTestUser);
+
+        for (Plant p : library) {
+            assertEquals(Date.valueOf(LocalDate.now()), p.getLastWatered());
+        }
+
+
+    }
+
+    @Test
+    void testChangePlantPicture() {
+        User testUser = new User(10, "testfall2.10@test.com", "testUser10", true, true);
+
+        assertTrue(userRepository.saveUser(testUser));
+        User savedTestUser = userRepository.getUserDetails("testfall2.10@test.com");
+
+        String picture = "http://picture.com/img.jpg";
+
+        Plant testPlant = new Plant("nickName", "10", Date.valueOf(LocalDate.now()), picture);
+        assertTrue(userPlantRepository.savePlant(savedTestUser, testPlant));
+
+        assertTrue(userPlantRepository.changePlantPicture(savedTestUser, testPlant));
+
     }
 }
