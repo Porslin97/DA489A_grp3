@@ -49,7 +49,7 @@ class UserPlantRepositoryTest {
     }
 
     @Test
-    void addPlantWithNickname() throws SQLException, java.net.UnknownHostException {
+    void addPlantWithNickname() {
         User testUser = new User(1, "testfall2.1@test.com", "testUser1", true, true);
         boolean userSaved = userRepository.saveUser(testUser);
         assertTrue(userSaved, "user saved correctly");
@@ -79,7 +79,7 @@ class UserPlantRepositoryTest {
     }
 
     @Test
-    void deletePlantFromLibrary() throws SQLException, java.net.UnknownHostException {
+    void deletePlantFromLibrary() {
         User testUser = new User(3, "testfall2.3@test.com", "testUser3", true, true);
         boolean userSaved = userRepository.saveUser(testUser);
         assertTrue(userSaved, "testuser 3 has been saved");
@@ -100,7 +100,7 @@ class UserPlantRepositoryTest {
     }
 
     @Test
-    void testUpdateWateringFrequency() throws SQLException, java.net.UnknownHostException {
+    void testUpdateWateringFrequency() {
         User user = new User(4, "changefrequnit4@test.com", "testUser4", true, true);
         assertTrue(userRepository.saveUser(user));
         User savedUser = userRepository.getUserDetails("changefrequnit4@test.com");
@@ -117,7 +117,7 @@ class UserPlantRepositoryTest {
     }
 
     @Test
-    void seeLibraryOverview() throws SQLException, UnknownHostException {
+    void seeLibraryOverview() {
         User testUser = new User(5, "testfall2.5@test.com", "testUser4", true, true);
         assertTrue(userRepository.saveUser(testUser), "The user has been saved to the database");
 
@@ -143,7 +143,7 @@ class UserPlantRepositoryTest {
     }
 
     @Test
-    void testChangeLastWatered() throws SQLException, UnknownHostException {
+    void testChangeLastWatered() {
         User testUser = new User(6, "testfall2.6@test.com", "testUser6", true, true);
 
         assertTrue(userRepository.saveUser(testUser));
@@ -162,9 +162,8 @@ class UserPlantRepositoryTest {
     }
 
 
-
     @Test
-    void testSaveWishListPlant() throws SQLException, UnknownHostException {
+    void testSaveWishListPlant() {
         User testUser = new User(7, "testfall2.7@test.com", "testUser7", true, true);
 
         assertTrue(userRepository.saveUser(testUser));
@@ -190,7 +189,7 @@ class UserPlantRepositoryTest {
 
 
     @Test
-    void testChangeNickname() throws SQLException, UnknownHostException {
+    void testChangeNickname() {
         User testUser = new User(8, "testfall2.8@test.com", "testUser8", true, true);
 
         assertTrue(userRepository.saveUser(testUser));
@@ -208,7 +207,7 @@ class UserPlantRepositoryTest {
     }
 
     @Test
-    void testChangeAllToWatered() throws SQLException, UnknownHostException {
+    void testChangeAllToWatered() {
         User testUser1 = new User(9, "testfall2.9@test.com", "testUser9", true, true);
 
         assertTrue(userRepository.saveUser(testUser1));
@@ -236,7 +235,7 @@ class UserPlantRepositoryTest {
     }
 
     @Test
-    void testChangePlantPicture() throws SQLException, UnknownHostException {
+    void testChangePlantPicture() {
         User testUser = new User(10, "testfall2.10@test.com", "testUser10", true, true);
 
         assertTrue(userRepository.saveUser(testUser));
