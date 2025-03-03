@@ -100,7 +100,10 @@ public class WishlistTabPaneController {
         Date dateAdded = new Date(currentDateMilli);
         String imageURL = selectedPlant.getImageURL();
 
-        Plant plantToAdd = new Plant(selectedPlant.getPlantId(), selectedPlant.getCommonName(), imageURL, dateAdded);
+        Plant plantToAdd = new Plant.PlantBuilder(selectedPlant)
+                .setDateAdded(dateAdded)
+                .setImageURL(imageURL)
+                .build();
         PopupBox.display(MessageText.sucessfullyAddPlant.toString());
         addPlantToDB(plantToAdd);
 
@@ -117,8 +120,7 @@ public class WishlistTabPaneController {
 
     @FXML
     public void removePlantFromCurrentUserWishlist(Plant selectedPlant, ActionEvent action) {
-        Plant plantToRemove = new Plant(selectedPlant.getCommonName(), selectedPlant.getPlantId(), null);
-        removePlantFromDB(plantToRemove);
+        removePlantFromDB(selectedPlant);
         Parent listItemToRemove = ((Button) action.getSource()).getParent();
         System.out.println(listItemToRemove);
         System.out.println();
@@ -236,7 +238,12 @@ public class WishlistTabPaneController {
         long currentDateMilli = System.currentTimeMillis();
         Date date = new Date(currentDateMilli);
         String imageURL = plantAdd.getImageURL();
-        Plant plantToAdd = new Plant(uniqueNickName, plantAdd.getPlantId(), date, newWateringFrequency, imageURL);
+        Plant plantToAdd = new Plant.PlantBuilder(plantAdd)
+                .setNickname(uniqueNickName)
+                .setDateAdded(date)
+                .setUsersWateringFrequency(newWateringFrequency)
+                .setImageURL(imageURL)
+                .build();
         PopupBox.display(MessageText.sucessfullyAddPlant.toString());
         boolean success = mainPaneController.addPlantToDB(plantToAdd, database);
         if (success){

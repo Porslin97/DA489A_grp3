@@ -107,7 +107,12 @@ public class PlantApiService {
             String scientificName = getJsonArrayAsList(plantJson, "scientific_name").stream().findFirst().orElse("");
             String imageUrl = plantJson.getJSONObject("default_image").getString("thumbnail");
             System.out.println("Plant: " + id + " " + commonName + " " + scientificName + " " + imageUrl);
-            plants.add(new Plant(id, commonName, scientificName, imageUrl));
+            plants.add(new Plant.PlantBuilder()
+                    .setPlantId(id)
+                    .setCommonName(commonName)
+                    .setScientificName(scientificName)
+                    .setImageURL(imageUrl)
+                    .build());
         }
         System.out.println("Parsed " + plants.size() + " plants");
         System.out.println(plants);

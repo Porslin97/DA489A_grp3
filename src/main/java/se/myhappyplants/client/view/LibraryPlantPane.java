@@ -96,14 +96,13 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         initChangeNicknameButton(plant);
         initChangePictureButton();
         initUpdateWateringFrequencyButton(plant);
-        initChangeWaterOKButton(plant);
+        initChangeWaterOKButton();
         initDatePicker();
         initDeleteButton(plant);
         initFavoriteButton();
         initImgFavoriteSign(plant);
         initListView();
     }
-
 
 
     /**
@@ -272,7 +271,7 @@ public class LibraryPlantPane extends Pane implements PlantPane {
                 PlantDetails plantDetails = myPlantsTabPaneController.getPlantDetails(plant);
                 ObservableList<String> plantInfo = FXCollections.observableArrayList();
                 plantInfo.add("Last watered: " + plant.getLastWatered());
-                plantInfo.add("Current watering frequency: every " + plant.getUsers_watering_frequency() + " days");
+                plantInfo.add("Current watering frequency: every " + plant.getUsersWateringFrequency() + " days");
                 plantInfo.add("Scientific name: " + plantDetails.getScientificName());
                 plantInfo.add("Family: " + plantDetails.getFamilyName());
                 plantInfo.add("Light: " + plantDetails.getSunlight());
@@ -305,16 +304,14 @@ public class LibraryPlantPane extends Pane implements PlantPane {
 
     /**
      * Method to initiate the change last watered-button
-     *
-     * @param plant to change the nickname on
      */
-    private void initChangeWaterOKButton(Plant plant) {
+    private void initChangeWaterOKButton() {
         this.changeOKWaterButton = new Button("Change");
         changeOKWaterButton.setLayoutX(215.0);
         changeOKWaterButton.setLayoutY(250.0);
         changeOKWaterButton.setMnemonicParsing(false);
         changeOKWaterButton.setOnAction(onPress -> {
-            changeDate(plant);
+            this.plant = changeDate(plant);
             datePicker.setPromptText("Change last watered");
         });
     }
@@ -363,11 +360,13 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         favoriteButton.setLayoutX(350.0);
         favoriteButton.setLayoutY(55.0);
         favoriteButton.setMnemonicParsing(false);
-        favoriteButton.setOnAction(action -> { myPlantsTabPaneController.updateFavorite(action, plant);});
+        favoriteButton.setOnAction(action -> {
+            myPlantsTabPaneController.updateFavorite(action, plant);
+        });
     }
 
     private void initImgFavoriteSign(Plant plant) {
-        if(plant.getIsFavorite()){
+        if (plant.getIsFavorite()) {
             this.imgFavoriteSign = new ImageView(ImageLibrary.getFullHeart());
         } else {
             this.imgFavoriteSign = new ImageView(ImageLibrary.getEmptyHeart());
@@ -460,12 +459,11 @@ public class LibraryPlantPane extends Pane implements PlantPane {
      * @param plant the selected plant
      */
     private void changeNickname(Plant plant) {
-        boolean changeSuccess;
         String newNickname = MessageBox.askForStringInput("Change nickname", "New nickname:");
 
         if (!newNickname.equals("")) {
-            changeSuccess = myPlantsTabPaneController.changeNicknameInDB(plant, newNickname);
-            if (changeSuccess) {
+            Plant updatedPlant = myPlantsTabPaneController.changeNicknameInDB(plant, newNickname);
+            if (!updatedPlant.equals(plant)) {
                 nickname.setText(newNickname);
             }
         }
@@ -495,15 +493,15 @@ public class LibraryPlantPane extends Pane implements PlantPane {
      *
      * @param plant the selected plant
      */
-    private void changeDate(Plant plant) {
+    private Plant changeDate(Plant plant) {
         LocalDate date = datePicker.getValue();
-        if (plant.setLastWatered(date)) {
-            progressBar.setProgress(plant.getProgress());
-            setColorProgressBar(plant.getProgress());
-            myPlantsTabPaneController.changeLastWateredInDB(plant, date);
-        } else {
-            MessageBox.display(BoxTitle.Error, "Can't water a plant in the future");
-        }
+        Plant updatedPlant = new Plant.PlantBuilder(plant)
+                .setLastWatered(date)
+                .build();
+        progressBar.setProgress(plant.getProgress());
+        setColorProgressBar(plant.getProgress());
+        myPlantsTabPaneController.changeLastWateredInDB(plant, date);
+        return updatedPlant;
     }
 
     /**
@@ -514,5 +512,9 @@ public class LibraryPlantPane extends Pane implements PlantPane {
     @Override
     public Plant getPlant() {
         return plant;
+    }
+
+    public void setPlant(Plant plant) {
+        this.plant = plant;
     }
 }

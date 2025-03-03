@@ -19,7 +19,7 @@ public class Plant implements Serializable {
     private String scientificName;
     private String imageURL;
     private String nickname;
-    private int users_watering_frequency;
+    private int usersWateringFrequency;
     private Date lastWatered;
     private Date dateAdded;
 
@@ -31,119 +31,29 @@ public class Plant implements Serializable {
     private String water;
     private String description;
 
-    /**
-     * Creates a plant object from information gathered from Perenual species-list endpoint
-     * @param id
-     * @param commonName
-     * @param imageURL
-     */
-
-    public Plant(String id, String commonName, String scientificName, String imageURL) {
-        this.plantId = id;
-        this.commonName = commonName;
-        this.scientificName = scientificName;
-        this.imageURL = imageURL;
+    private Plant(PlantBuilder builder) {
+        this.databaseId = builder.databaseId;
+        this.plantId = builder.plantId;
+        this.commonName = builder.commonName;
+        this.scientificName = builder.scientificName;
+        this.imageURL = builder.imageURL;
+        this.nickname = builder.nickname;
+        this.usersWateringFrequency = builder.usersWateringFrequency;
+        this.lastWatered = builder.lastWatered;
+        this.dateAdded = builder.dateAdded;
+        this.isFavorite = builder.isFavorite;
+        this.family = builder.family;
+        this.light = builder.light;
+        this.water = builder.water;
+        this.description = builder.description;
     }
 
-    public Plant(String id, String commonName, String imageURL, Date dateAdded) {
-        this.plantId = id;
-        this.commonName = commonName;
-        this.imageURL = imageURL;
-        this.dateAdded = dateAdded;
+    public int getDatabaseId() {
+        return databaseId;
     }
 
-    /**
-     * Creates a plant object from information
-     * in the Species database
-     *
-     * @param plantId        Unique plant id in Species database
-     * @param commonName     Common name
-     * @param scientificName Scientific name
-     * @param familyName     Family name
-     * @param imageURL       Image location
-     */
-    public Plant(String plantId, String commonName, String scientificName, String familyName, String imageURL) {
-        this.plantId = plantId;
-        this.commonName = commonName;
-        this.scientificName = scientificName;
-        this.imageURL = imageURL;
-    }
-
-
-    public Plant(String nickname, String plantID, Date lastWatered) {
-        this.nickname = nickname;
-        this.plantId = plantID;
-        this.lastWatered = lastWatered;
-    }
-
-    /**
-     * Creates a plant object from a users library
-     * in the MyHappyPlants database
-     *
-     * @param nickname
-     * @param plantId        Unique plant id in Species database
-     * @param lastWatered    Date the plant was last watered
-     * @param waterFrequency How often the plant needs water in milliseconds
-     * @param imageURL       Image location
-     */
-    public Plant(String nickname, String plantId, Date lastWatered, int waterFrequency, String imageURL) {
-        this.nickname = nickname;
-        this.plantId = plantId;
-        this.lastWatered = lastWatered;
-        this.users_watering_frequency = waterFrequency;
-        this.imageURL = imageURL;
-    }
-
-    /**
-     * Creates a plant object that can be used to update
-     * a users library in the MyHappyPlants database
-     *
-     * @param nickname
-     * @param plantId     Unique plant id in Species database
-     * @param lastWatered Date the plant was last watered
-     * @param imageURL    Image location
-     */
-    public Plant(String nickname, String plantId, Date lastWatered, String imageURL) {
-
-        this.nickname = nickname;
-        this.plantId = plantId;
-        this.lastWatered = lastWatered;
-        this.imageURL = imageURL;
-    }
-
-    public Plant(String plantId, Date addedDate) {
-        this.plantId = plantId;
-        this.dateAdded = addedDate;
-    }
-
-    public Plant(String plantId, Date dateAdded, String commonName, String scientificName, String family, String light, String water, String description, String imageURL) {
-        this.plantId = plantId;
-        this.dateAdded = dateAdded;
-        this.commonName = commonName;
-        this.scientificName = scientificName;
-        this.light = light;
-        this.family = family;
-        this.water = water;
-        this.description = description;
-        this.imageURL = imageURL;
-    }
-
-    public Plant(int databaseId, String nickname, String plantId, Date lastWatered, int waterFrequency, String imageURL, boolean isFavorite) {
-        this.databaseId = databaseId;
-        this.nickname = nickname;
-        this.plantId = plantId;
-        this.lastWatered = lastWatered;
-        this.users_watering_frequency = waterFrequency;
-        this.imageURL = imageURL;
-        this.isFavorite =isFavorite;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public String getPlantId() {
+        return plantId;
     }
 
     public String getCommonName() {
@@ -154,57 +64,49 @@ public class Plant implements Serializable {
         return scientificName;
     }
 
-    public String getPlantId() {
-        return plantId;
-    }
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-    /**
-     * Image location for selected plant
-     *
-     * @return URL location of image
-     */
     public String getImageURL() {
-        if(imageURL == null) {
-            imageURL = PictureRandomizer.getRandomPictureURL();
-        }
         return imageURL;
     }
 
-    public Date getDateAdded() {
-        return dateAdded;
+    public String getNickname() {
+        return nickname;
+    }
+
+    public int getUsersWateringFrequency() {
+        return usersWateringFrequency;
     }
 
     public Date getLastWatered() {
         return lastWatered;
     }
 
-    public boolean setLastWatered(LocalDate localDate) {
-        if (localDate.isAfter(LocalDate.now())) {
-            return false;
-        }
-        this.lastWatered = Date.valueOf(localDate);
-        return true;
+    public Date getDateAdded() {
+        return dateAdded;
     }
 
-    public int getUsers_watering_frequency() {
-        return users_watering_frequency;
+    public boolean getIsFavorite() {
+        return isFavorite;
     }
 
-    public void setUsers_watering_frequency(int users_watering_frequency) {
-        this.users_watering_frequency = users_watering_frequency;
+    public String getFamily() {
+        return family;
     }
 
-    /**
-     * Compares the length of time since the plant was watered
-     * Returns a decimal value that can be used in a progress bar or indicator
-     *
-     * @return Double between 0.02 (max time elapsed) and 1.0 (min time elapsed)
-     */
+    public String getLight() {
+        return light;
+    }
+
+    public String getWater() {
+        return water;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public double getProgress() {
         long daysSinceLastWatered = (System.currentTimeMillis() - lastWatered.getTime()) / (1000 * 60 * 60 * 24);
-        double progress = 1.0 - ((double) daysSinceLastWatered / (double) users_watering_frequency);
+        double progress = 1.0 - ((double) daysSinceLastWatered / (double) usersWateringFrequency);
 
         if (progress <= 0.02) {
             progress = 0.02;
@@ -214,16 +116,9 @@ public class Plant implements Serializable {
         return progress;
     }
 
-    /**
-     * Converts time since last water from milliseconds
-     * into days, then returns the value as
-     * an explanation text
-     *
-     * @return Days since last water
-     */
     public String getDaysUntilWater() {
         long daysSinceLastWatered = (System.currentTimeMillis() - lastWatered.getTime()) / (1000 * 60 * 60 * 24);
-        int daysUntilNextWatering = users_watering_frequency - (int) daysSinceLastWatered;
+        int daysUntilNextWatering = usersWateringFrequency - (int) daysSinceLastWatered;
 
         if (daysUntilNextWatering <= 0) {
             return "You need to water this plant now!";
@@ -236,20 +131,118 @@ public class Plant implements Serializable {
         return String.format("You need to water this plant in %d days", daysUntilNextWatering);
     }
 
-    public boolean getIsFavorite() {
-        return isFavorite;
-    }
+    public static class PlantBuilder {
+        private int databaseId;
+        private String plantId;
+        private String commonName;
+        private String scientificName;
+        private String imageURL;
+        private String nickname;
+        private int usersWateringFrequency;
+        private Date lastWatered;
+        private Date dateAdded;
+        private boolean isFavorite;
+        private String family;
+        private String light;
+        private String water;
+        private String description;
 
-    public void setIsFavorite(boolean isFavorite) {
-        this.isFavorite = isFavorite;
-    }
+        public PlantBuilder() {}
 
-    public int getDatabaseId() {
-        return databaseId;
-    }
+        // Copy constructor to modify an existing Plant object
+        public PlantBuilder(Plant existingPlant) {
+            this.databaseId = existingPlant.getDatabaseId();
+            this.plantId = existingPlant.getPlantId();
+            this.commonName = existingPlant.getCommonName();
+            this.scientificName = existingPlant.getScientificName();
+            this.imageURL = existingPlant.getImageURL();
+            this.nickname = existingPlant.getNickname();
+            this.usersWateringFrequency = existingPlant.getUsersWateringFrequency();
+            this.lastWatered = existingPlant.getLastWatered();
+            this.dateAdded = existingPlant.getDateAdded();
+            this.isFavorite = existingPlant.getIsFavorite();
+            this.family = existingPlant.getFamily();
+            this.light = existingPlant.getLight();
+            this.water = existingPlant.getWater();
+            this.description = existingPlant.getDescription();
+        }
 
-    @Override
-    public String toString() {
-        return String.format("Common name: %s \tScientific name: %s ", commonName, scientificName);
+        public PlantBuilder setDatabaseId(int databaseId) {
+            this.databaseId = databaseId;
+            return this;
+        }
+
+        public PlantBuilder setPlantId(String plantId) {
+            this.plantId = plantId;
+            return this;
+        }
+
+        public PlantBuilder setCommonName(String commonName) {
+            this.commonName = commonName;
+            return this;
+        }
+
+        public PlantBuilder setScientificName(String scientificName) {
+            this.scientificName = scientificName;
+            return this;
+        }
+
+        public PlantBuilder setImageURL(String imageURL) {
+            this.imageURL = imageURL;
+            return this;
+        }
+
+        public PlantBuilder setNickname(String nickname) {
+            this.nickname = nickname;
+            return this;
+        }
+
+        public PlantBuilder setUsersWateringFrequency(int usersWateringFrequency) {
+            this.usersWateringFrequency = usersWateringFrequency;
+            return this;
+        }
+
+        public PlantBuilder setLastWatered(LocalDate lastWatered) {
+            if (lastWatered.isAfter(LocalDate.now())) {
+                this.lastWatered = Date.valueOf(LocalDate.now());
+            }else {
+                this.lastWatered = Date.valueOf(lastWatered);
+            }
+            return this;
+        }
+
+        public PlantBuilder setDateAdded(Date dateAdded) {
+            this.dateAdded = dateAdded;
+            return this;
+        }
+
+        public PlantBuilder setIsFavorite(boolean isFavorite) {
+            this.isFavorite = isFavorite;
+            return this;
+        }
+
+        public PlantBuilder setFamily(String family) {
+            this.family = family;
+            return this;
+        }
+
+        public PlantBuilder setLight(String light) {
+            this.light = light;
+            return this;
+        }
+
+        public PlantBuilder setWater(String water) {
+            this.water = water;
+            return this;
+        }
+
+        public PlantBuilder setDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Plant build() {
+            return new Plant(this);
+        }
     }
 }

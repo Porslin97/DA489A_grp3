@@ -140,7 +140,13 @@ public class SearchTabPaneController {
         long currentDateMilli = System.currentTimeMillis();
         Date date = new Date(currentDateMilli);
         String imageURL = plantAdd.getImageURL();
-        Plant plantToAdd = new Plant(uniqueNickName, plantAdd.getPlantId(), date, newWateringFrequency, imageURL);
+        Plant plantToAdd = new Plant.PlantBuilder()
+                .setNickname(uniqueNickName)
+                .setPlantId(plantAdd.getPlantId())
+                .setDateAdded(date)
+                .setUsersWateringFrequency(newWateringFrequency)
+                .setImageURL(imageURL)
+                .build();
         PopupBox.display(MessageText.sucessfullyAddPlant.toString());
         boolean success = mainPaneController.addPlantToDB(plantToAdd, database);
         if (success){

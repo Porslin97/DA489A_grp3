@@ -28,9 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Controller with logic used by the "My Plants" tab
@@ -156,8 +156,9 @@ public class MyPlantsTabPaneController {
     }
 
     @FXML
-    public void updateFavorite(ActionEvent actionEvent, Plant plant) {
+    public Plant updateFavorite(ActionEvent actionEvent, Plant plant) {
         Button favoriteButton = (Button) actionEvent.getSource();
+        AtomicReference<Plant> plantToUpdate = new AtomicReference<>(plant);
 
         ImageView emptyHeartImg = new ImageView(ImageLibrary.getEmptyHeart());
         emptyHeartImg.setFitHeight(16);
@@ -176,17 +177,30 @@ public class MyPlantsTabPaneController {
                 Platform.runLater(() -> {
                     if(plant.getIsFavorite()) {
                         favoriteButton.setGraphic(emptyHeartImg);
-                        plant.setIsFavorite(false);
+                        plantToUpdate.set(new Plant.PlantBuilder(plant)
+                                .setIsFavorite(false)
+                                .build());
+
                     } else {
                         favoriteButton.setGraphic(fullHeartImg);
-                        plant.setIsFavorite(true);
+                        plantToUpdate.set(new Plant.PlantBuilder(plant)
+                                .setIsFavorite(true)
+                                .build());
                     }
                 });
             } else {
+                plantToUpdate.set(plant);
                 Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
             }
         });
         updateFavoriteThread.start();
+
+        try {
+            updateFavoriteThread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return plantToUpdate.get();
     }
 
     /**
@@ -292,18 +306,20 @@ public class MyPlantsTabPaneController {
      * @param newNickname the new nickname of the plant
      * @return if it's successful. true or false
      */
-    public boolean changeNicknameInDB(Plant plant, String newNickname) {
+    public Plant changeNicknameInDB(Plant plant, String newNickname) {
         Message changeNicknameInDB = new Message(MessageType.changeNickname, LoggedInUser.getInstance().getUser(), plant, newNickname);
         ServerConnection connection = ServerConnection.getClientConnection();
         Message response = connection.makeRequest(changeNicknameInDB);
         PopupBox.display(MessageText.sucessfullyChangedPlant.toString());
         if (!response.isSuccess()) {
             Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "It was not possible to change nickname for you plant. Try again."));
-            return false;
+            return plant;
         } else {
-            plant.setNickname(newNickname);
+            Plant updatedPlant = new Plant.PlantBuilder(plant)
+                    .setNickname(newNickname)
+                    .build();
             sortLibrary();
-            return true;
+            return updatedPlant;
         }
     }
 
@@ -443,7 +459,10 @@ public class MyPlantsTabPaneController {
                     Files.delete(newPictureFile.toPath());
                     Files.copy(selectedImage.toPath(), newPictureFile.toPath());
                 }
-                lpp.getPlant().setImageURL(newPictureFile.toURI().toURL().toString());
+                Plant updatedPlant = new Plant.PlantBuilder(lpp.getPlant())
+                        .setImageURL(newPictureFile.toURI().toURL().toString()) // Toggle favorite status
+                        .build();
+                lpp.setPlant(updatedPlant);
                 lpp.updateImage();
                 Thread changePlantPictureThread = new Thread(() -> {
                     Message changePlantPicture = new Message(MessageType.changePlantPicture, LoggedInUser.getInstance().getUser(), lpp.getPlant());

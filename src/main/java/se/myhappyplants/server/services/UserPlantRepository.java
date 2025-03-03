@@ -49,7 +49,7 @@ public class UserPlantRepository {
                 ps.setString(3, plant.getPlantId());
                 ps.setDate(4, plant.getLastWatered());
                 ps.setString(5, plant.getImageURL());
-                ps.setInt(6, plant.getUsers_watering_frequency());
+                ps.setInt(6, plant.getUsersWateringFrequency());
             });
             success = true;
         } catch (SQLException throwables) {
@@ -103,7 +103,15 @@ public class UserPlantRepository {
                 int waterFrequency = resultSet.getInt("watering_frequency");
                 boolean isFavorite = resultSet.getBoolean("is_favorite");
                 System.out.println("Nickname: " + nickname + " PlantId: " + plantId + " Last watered: " + lastWatered + " ImageURL: " + imageURL);
-                plantList.add(new Plant(databaseId, nickname, plantId, lastWatered, waterFrequency, imageURL, isFavorite));
+                plantList.add(new Plant.PlantBuilder()
+                        .setDatabaseId(databaseId)
+                        .setNickname(nickname)
+                        .setPlantId(plantId)
+                        .setLastWatered(lastWatered.toLocalDate())
+                        .setUsersWateringFrequency(waterFrequency)
+                        .setImageURL(imageURL)
+                        .setIsFavorite(isFavorite)
+                        .build());
             }
         } catch (SQLException exception) {
             System.out.println(exception.fillInStackTrace());
@@ -127,7 +135,17 @@ public class UserPlantRepository {
                 String imageURL = resultSet.getString("image_url");
                 System.out.println("PlantId: " + plantId + " Added date: " + addedDate);
 
-                plantList.add(new Plant(plantId, addedDate, commonName, scientificName, family, light, water, description, imageURL));
+                plantList.add(new Plant.PlantBuilder()
+                        .setPlantId(plantId)
+                        .setDateAdded(addedDate)
+                        .setCommonName(commonName)
+                        .setScientificName(scientificName)
+                        .setFamily(family)
+                        .setLight(light)
+                        .setWater(water)
+                        .setDescription(description)
+                        .setImageURL(imageURL)
+                        .build());
             }
         } catch (SQLException exception) {
             System.out.println(exception.fillInStackTrace());
@@ -153,7 +171,13 @@ public class UserPlantRepository {
                 Date lastWatered = resultSet.getDate("last_watered");
                 String imageURL = resultSet.getString("image_url");
                 int waterFrequency = resultSet.getInt("watering_frequency");
-                plant = new Plant(nickname, plantId, lastWatered, waterFrequency, imageURL);
+                plant = new Plant.PlantBuilder()
+                        .setNickname(nickname)
+                        .setPlantId(plantId)
+                        .setLastWatered(lastWatered.toLocalDate())
+                        .setUsersWateringFrequency(waterFrequency)
+                        .setImageURL(imageURL)
+                        .build();
             }
         } catch (SQLException sqlException) {
             System.out.println(sqlException.fillInStackTrace());
