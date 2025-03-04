@@ -156,8 +156,9 @@ public class MyPlantsTabPaneController {
     }
 
     @FXML
-    public Plant updateFavorite(ActionEvent actionEvent, Plant plant) {
+    public Plant updateFavorite(ActionEvent actionEvent, Plant plant, LibraryPlantPane lpp) {
         Button favoriteButton = (Button) actionEvent.getSource();
+        //made atomic for thread safety
         AtomicReference<Plant> plantToUpdate = new AtomicReference<>(plant);
 
         ImageView emptyHeartImg = new ImageView(ImageLibrary.getEmptyHeart());
@@ -200,6 +201,10 @@ public class MyPlantsTabPaneController {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        lstViewUserPlantLibrary.getItems().remove(lpp);
+        lpp.setPlant(plantToUpdate.get());
+        lstViewUserPlantLibrary.getItems().add(lpp);
+        lstViewUserPlantLibrary.refresh();
         return plantToUpdate.get();
     }
 

@@ -361,7 +361,7 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         favoriteButton.setLayoutY(55.0);
         favoriteButton.setMnemonicParsing(false);
         favoriteButton.setOnAction(action -> {
-            myPlantsTabPaneController.updateFavorite(action, plant);
+            myPlantsTabPaneController.updateFavorite(action, plant, this);
         });
     }
 
