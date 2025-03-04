@@ -1,13 +1,21 @@
 package se.myhappyplants.client.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
+import se.myhappyplants.client.model.BoxTitle;
 import se.myhappyplants.client.model.LoggedInUser;
 import se.myhappyplants.client.model.RootName;
+import se.myhappyplants.client.view.MessageBox;
+import se.myhappyplants.client.view.ServerConnection;
+import se.myhappyplants.shared.Message;
+import se.myhappyplants.shared.MessageType;
+import se.myhappyplants.shared.Plant;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Controls the inputs from a 'logged in' user and is the mainPane for the GUI
@@ -97,5 +105,40 @@ public class MainPaneController {
         mainPane.getSelectionModel().select(1);
     }
 
+    boolean addPlantToDB(Plant plantToAdd, String database) {
+        AtomicBoolean success = new AtomicBoolean(false);
+        Thread addPlantThread = new Thread(() ->  {
+            Message savePlant = null;
+            if(database.equals("wishlist")){
+                savePlant = new Message(MessageType.savePlantWishlist, LoggedInUser.getInstance().getUser(), plantToAdd);
+            }else if (database.equals("library")){
+                savePlant = new Message(MessageType.savePlant, LoggedInUser.getInstance().getUser(), plantToAdd);
+            }
 
+            ServerConnection connection = ServerConnection.getClientConnection();
+            Message response = connection.makeRequest(savePlant);
+            if (!response.isSuccess()) {
+                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
+            }else {
+                success.set(true);
+            }
+        });
+        addPlantThread.start();
+
+        try {
+            addPlantThread.join(); // Wait for the thread to finish
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return success.get();
+    }
+
+
+    public Iterable<? extends Plant> getCurrentUserLibrary() {
+        return myPlantsTabPaneController.getCurrentUserLibrary();
+    }
+
+    public void addPlantToUserLibrary(Plant plantToAdd) {
+        myPlantsTabPaneController.addPlantToUserLibrary(plantToAdd);
+    }
 }

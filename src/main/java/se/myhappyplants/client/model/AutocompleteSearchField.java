@@ -1,4 +1,4 @@
-package se.myhappyplants.client.view;
+package se.myhappyplants.client.model;
 
 import javafx.geometry.Side;
 import javafx.scene.Node;

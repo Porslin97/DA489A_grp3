@@ -56,10 +56,10 @@ public class WishlistPlantPane extends Pane implements PlantPane {
      * @param imgPath
      * @param plant
      */
-    public WishlistPlantPane(WishlistTabPaneController wishlistTabPaneController, String imgPath, Plant plant) {
+    public WishlistPlantPane(WishlistTabPaneController wishlistTabPaneController, Image image, Plant plant) {
         this.wishlistTabPaneController = wishlistTabPaneController;
         this.plant = plant;
-        initImage(imgPath);
+        initImage(image);
         initCommonName();
         initScientificName();
         initInfoButton();
@@ -76,8 +76,7 @@ public class WishlistPlantPane extends Pane implements PlantPane {
      *
      * @param imgPath
      */
-    private void initImage(String imgPath) {
-        Image img = new Image(imgPath);
+    private void initImage(Image img) {
         if (img.isError()) {
             System.err.println("Error loading image in WishlistPlantPane initImage: " + plant.getImageURL());
         }

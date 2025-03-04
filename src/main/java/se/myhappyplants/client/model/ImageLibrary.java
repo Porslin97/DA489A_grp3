@@ -2,8 +2,6 @@ package se.myhappyplants.client.model;
 
 import javafx.scene.image.Image;
 
-import java.io.File;
-
 /**
  * Container class for the images
  */
@@ -15,8 +13,8 @@ public class ImageLibrary {
 
     private static final Image emptyHeart = new Image("Blommor/heart_empty.png");
     private static final Image fullHeart = new Image("Blommor/heart_full.png");
-    private static final File loadingImageFile = new File("resources/images/img.png");
-    private static final File defaultPlantImageFile = new File("resources/images/Grn_vxt.png");
+    private static final Image loadingImage = new Image("Blommor/img.png");
+    private static final Image defaultPlantImage = new Image("Blommor/Grn_vxt.png");
 
 
     /**
@@ -47,15 +45,15 @@ public class ImageLibrary {
      * Getter method to the loading image
      * @return Image
      */
-    public static File getLoadingImageFile() {
-        return loadingImageFile;
+    public static Image getLoadingImage() {
+        return loadingImage;
     }
 
     /**
      * Getter method to the default plant image
      * @return File
      */
-    public static File getDefaultPlantImage() {
-        return defaultPlantImageFile;
+    public static Image getDefaultPlantImage() {
+        return defaultPlantImage;
     }
 }
