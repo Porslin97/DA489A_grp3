@@ -13,6 +13,7 @@ import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -399,9 +400,13 @@ public class ClientServerTests {
         plant.setLastWatered(LocalDate.now().minusDays(2));
         plant.setUsers_watering_frequency(7);
 
+        ArrayList<String> sunlight = new ArrayList<>();
+        sunlight.add("Sunlight test");
+        PlantDetails plantDetails = new PlantDetails("Family", "This plant is a test plant", "Average watering", sunlight);
+
         User user = userRepository.getUserDetails(email);
 
-        userPlantRepository.saveWishlistPlant(user, plant);
+        userPlantRepository.saveWishlistPlant(user, plant, plantDetails);
 
         Message getWishlistRequest = new Message(MessageType.getWishlist, user);
         Message getWishlistResponse = clientConnection.makeRequest(getWishlistRequest);
