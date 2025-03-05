@@ -3,12 +3,14 @@ package se.myhappyplants.client.controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import se.myhappyplants.client.model.BoxTitle;
 import se.myhappyplants.client.model.LoggedInUser;
 import se.myhappyplants.client.model.RootName;
+import se.myhappyplants.client.model.Verifier;
 import se.myhappyplants.client.view.ServerConnection;
 import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.client.view.PopupBox;
@@ -16,6 +18,7 @@ import se.myhappyplants.shared.Message;
 import se.myhappyplants.shared.MessageType;
 import se.myhappyplants.shared.User;
 
+import javax.xml.validation.Validator;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -59,6 +62,7 @@ public class LoginPaneController {
                 e.printStackTrace();
             }
         }
+        txtFldEmail.toFront();
     }
 
     /**
@@ -68,6 +72,22 @@ public class LoginPaneController {
      */
     @FXML
     private void loginButtonPressed() {
+        String email = txtFldEmail.getText();
+        String password = passFldPassword.getText();
+
+        if (!Verifier.validateEmail(email)) {
+            Platform.runLater(() -> MessageBox.display(BoxTitle.Error, "Please enter your email address in format: yourname@example.com"));
+            return;
+        }
+        if (email.isEmpty()) {
+            Platform.runLater(() -> MessageBox.display(BoxTitle.Error, "Please enter your email address"));
+            return;
+        }
+        if (password.isEmpty()) {
+            Platform.runLater(() -> MessageBox.display(BoxTitle.Error, "Please enter your password"));
+            return;
+        }
+
         Thread loginThread = new Thread(() -> {
             Message loginMessage = new Message(MessageType.login, new User(txtFldEmail.getText(), passFldPassword.getText()));
             ServerConnection connection = ServerConnection.getClientConnection();
@@ -119,8 +139,6 @@ public class LoginPaneController {
             e.printStackTrace();
         }
     }
-
-
 
     public void guestButtonPressed(ActionEvent actionEvent) throws IOException {
         StartClient.setRoot(RootName.searchTabPane.toString());

@@ -35,6 +35,8 @@ public class RegisterPaneController {
     public void initialize() {
         verifier = new Verifier();
         goBackIcon.setFocusTraversable(true); //sets the goback button on focus to remove from first textfield
+        txtFldNewEmail.toFront();
+        txtFldNewEmail1.toFront();
     }
 
     @FXML
@@ -61,7 +63,7 @@ public class RegisterPaneController {
                             e.printStackTrace();
                         }
                     } else {
-                        Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "An account with this email address already exists here at My Happy Plants."));
+                        Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "An account with this email address or username already exists here at My Happy Plants."));
                     }
                 } else {
                     Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));

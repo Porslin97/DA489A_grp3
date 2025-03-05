@@ -38,7 +38,7 @@ public class StartClient extends Application {
     public void start(Stage stage) throws IOException {
         window = stage;
         window.setResizable(false);
-        window.initStyle(StageStyle.DECORATED);
+        // commented this out https://github.com/TestFX/TestFX/issues/492 window.initStyle(StageStyle.DECORATED); decorated is default anyway,
         window.setOnCloseRequest(action -> {
             action.consume();
             close();
