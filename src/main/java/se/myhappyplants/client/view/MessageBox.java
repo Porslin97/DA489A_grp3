@@ -39,9 +39,11 @@ public class MessageBox {
         window.setMinHeight(100);
 
         Label label = new Label();
+        label.setId("messageBoxLabel"); // for testing the GUI, sets ID like it would be in FXML file
         label.setText(message);
 
         Button okButton = new Button("OK");
+        okButton.setId("okButton");
         okButton.setOnAction(action -> {
             window.close();
         });
@@ -72,22 +74,24 @@ public class MessageBox {
         Stage window = new Stage();
         AtomicInteger answer = new AtomicInteger(-1);
 
-
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle(String.valueOf(boxTitle));
         window.setMinWidth(350);
         window.setMinHeight(150);
 
         Label label = new Label();
+        label.setId("yesNoMessageBoxLabel");
         label.setText(question);
 
         Button yesButton = new Button("Yes");
+        yesButton.setId("yesButton");
         yesButton.setOnAction(action -> {
             answer.set(1);
             window.close();
         });
 
         Button noButton = new Button("No");
+        noButton.setId("noButton");
         noButton.setOnAction(action -> {
             answer.set(0);
             window.close();
