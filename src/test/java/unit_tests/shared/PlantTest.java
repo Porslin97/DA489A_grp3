@@ -1,4 +1,4 @@
-package unit_tests;
+package unit_tests.shared;
 
 import org.junit.jupiter.api.Test;
 import se.myhappyplants.shared.Plant;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class Plant_Test {
+public class PlantTest {
     Date defaultDate = new Date(0, 0, 1);
     Plant testPlant = new Plant("1", defaultDate, "TestName", "Scientific name", "light", "Family", "Water", "This describes the plant", "Blommor/blomma2.png");
 

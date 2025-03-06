@@ -105,7 +105,7 @@ public class MainPaneController {
         mainPane.getSelectionModel().select(1);
     }
 
-    boolean addPlantToDB(Plant plantToAdd, String database) {
+    public boolean addPlantToDB(Plant plantToAdd, String database) {
         AtomicBoolean success = new AtomicBoolean(false);
         Thread addPlantThread = new Thread(() ->  {
             Message savePlant = null;

@@ -1,4 +1,4 @@
-package unit_tests;
+package unit_tests.shared;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PlantDetails_Test {
+public class PlantDetailsTest {
 
     private ArrayList<String> sunlight = new ArrayList<>();
     private PlantDetails plantDetails;
