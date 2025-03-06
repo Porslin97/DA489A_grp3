@@ -48,6 +48,7 @@ public class PopupBox extends Popup {
         window.setY(y);
 
         Label label = new Label();
+        label.setId("popupBoxLabel");
         label.setText(message);
         label.setTextAlignment(TextAlignment.CENTER);
 
