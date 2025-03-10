@@ -464,9 +464,13 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         String newNickname = MessageBox.askForStringInput("Change nickname", "New nickname:");
 
         if (!newNickname.equals("")) {
-            changeSuccess = myPlantsTabPaneController.changeNicknameInDB(plant, newNickname);
-            if (changeSuccess) {
-                nickname.setText(newNickname);
+            if (myPlantsTabPaneController.isNicknameUnique(newNickname)) {
+                changeSuccess = myPlantsTabPaneController.changeNicknameInDB(plant, newNickname);
+                if (changeSuccess) {
+                    nickname.setText(newNickname);
+                }
+            } else {
+                MessageBox.display(BoxTitle.Error, "Nickname already exists. Please choose a different nickname.");
             }
         }
     }

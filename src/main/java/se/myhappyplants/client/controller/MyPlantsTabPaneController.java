@@ -468,4 +468,14 @@ public class MyPlantsTabPaneController {
         currentUserLibrary.add(plantToAdd);
         addCurrentUserLibraryToHomeScreen();
     }
+
+    public boolean isNicknameUnique(String nickname) {
+        // Kontrollera om smeknamnet redan finns i användarens växtbibliotek
+        for (Plant plant : getCurrentUserLibrary()) {
+            if (plant.getNickname().equalsIgnoreCase(nickname)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
