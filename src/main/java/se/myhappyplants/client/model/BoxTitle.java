@@ -12,7 +12,9 @@ public enum BoxTitle {
     Add("Add"),
     GDPR("GDPR"),
     Delete("Delete"),
-    Guest("Guest");
+    Guest("Guest"),
+    Warning("Warning");
+
 
     BoxTitle(String text) {
 

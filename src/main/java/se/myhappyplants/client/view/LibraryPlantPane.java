@@ -15,6 +15,7 @@ import se.myhappyplants.client.model.BoxTitle;
 import se.myhappyplants.client.model.ImageLibrary;
 import se.myhappyplants.client.model.PictureRandomizerClient;
 import se.myhappyplants.client.util.DialogUtils;
+import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.shared.PlantDetails;
 import se.myhappyplants.shared.Plant;
 
@@ -22,6 +23,8 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
+
+// Rest of the code...
 
 /**
  * Simple pane that displays a DBPlant's information
@@ -460,18 +463,19 @@ public class LibraryPlantPane extends Pane implements PlantPane {
      * @param plant the selected plant
      */
     private void changeNickname(Plant plant) {
-        boolean changeSuccess;
         String newNickname = MessageBox.askForStringInput("Change nickname", "New nickname:");
 
-        if (!newNickname.equals("")) {
-            if (myPlantsTabPaneController.isNicknameUnique(newNickname)) {
-                changeSuccess = myPlantsTabPaneController.changeNicknameInDB(plant, newNickname);
-                if (changeSuccess) {
-                    nickname.setText(newNickname);
-                }
-            } else {
-                MessageBox.display(BoxTitle.Error, "Nickname already exists. Please choose a different nickname.");
-            }
+        if (newNickname == null || newNickname.trim().isEmpty()) {
+            return;
+        }
+
+        if (plant.getNickname().equalsIgnoreCase(newNickname)) {
+            MessageBox.display(BoxTitle.Warning, "The new nickname is the same as the current one.");
+            return;
+        }
+
+        if (myPlantsTabPaneController.changeNicknameInDB(plant, newNickname)) {
+            nickname.setText(newNickname);
         }
     }
 
