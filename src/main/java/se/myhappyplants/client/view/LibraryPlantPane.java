@@ -15,16 +15,13 @@ import se.myhappyplants.client.model.BoxTitle;
 import se.myhappyplants.client.model.ImageLibrary;
 import se.myhappyplants.client.model.PictureRandomizerClient;
 import se.myhappyplants.client.util.DialogUtils;
-import se.myhappyplants.client.view.MessageBox;
 import se.myhappyplants.shared.PlantDetails;
 import se.myhappyplants.shared.Plant;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
-// Rest of the code...
 
 /**
  * Simple pane that displays a DBPlant's information

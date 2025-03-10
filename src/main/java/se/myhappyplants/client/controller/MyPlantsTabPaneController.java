@@ -292,7 +292,6 @@ public class MyPlantsTabPaneController {
      * @param newNickname the new nickname of the plant
      * @return if it's successful. true or false
      */
-
     public boolean changeNicknameInDB(Plant plant, String newNickname) {
         if (plant.getNickname().equalsIgnoreCase(newNickname)) {
             Platform.runLater(() -> MessageBox.display(BoxTitle.Warning, "The new nickname is the same as the current one."));
