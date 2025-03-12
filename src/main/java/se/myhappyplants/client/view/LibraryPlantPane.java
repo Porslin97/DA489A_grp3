@@ -18,10 +18,10 @@ import se.myhappyplants.client.util.DialogUtils;
 import se.myhappyplants.shared.PlantDetails;
 import se.myhappyplants.shared.Plant;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
+
 
 /**
  * Simple pane that displays a DBPlant's information
@@ -460,14 +460,19 @@ public class LibraryPlantPane extends Pane implements PlantPane {
      * @param plant the selected plant
      */
     private void changeNickname(Plant plant) {
-        boolean changeSuccess;
         String newNickname = MessageBox.askForStringInput("Change nickname", "New nickname:");
 
-        if (!newNickname.equals("")) {
-            changeSuccess = myPlantsTabPaneController.changeNicknameInDB(plant, newNickname);
-            if (changeSuccess) {
-                nickname.setText(newNickname);
-            }
+        if (newNickname == null || newNickname.trim().isEmpty()) {
+            return;
+        }
+
+        if (plant.getNickname().equalsIgnoreCase(newNickname)) {
+            MessageBox.display(BoxTitle.Warning, "The new nickname is the same as the current one.");
+            return;
+        }
+
+        if (myPlantsTabPaneController.changeNicknameInDB(plant, newNickname)) {
+            nickname.setText(newNickname);
         }
     }
 

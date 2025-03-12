@@ -294,19 +294,27 @@ public class MyPlantsTabPaneController {
      * @return if it's successful. true or false
      */
     public boolean changeNicknameInDB(Plant plant, String newNickname) {
-        Message changeNicknameInDB = new Message(MessageType.changeNickname, LoggedInUser.getInstance().getUser(), plant, newNickname);
-        ServerConnection connection = ServerConnection.getClientConnection();
-        Message response = connection.makeRequest(changeNicknameInDB);
-        PopupBox.display(MessageText.sucessfullyChangedPlant.toString());
-        if (!response.isSuccess()) {
-            Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "It was not possible to change nickname for you plant. Try again."));
+        if (plant.getNickname().equalsIgnoreCase(newNickname)) {
+            Platform.runLater(() -> MessageBox.display(BoxTitle.Warning, "The new nickname is the same as the current one."));
             return false;
-        } else {
-            plant.setNickname(newNickname);
-            sortLibrary();
-            return true;
         }
+
+        Message changeNicknameRequest = new Message(MessageType.changeNickname, LoggedInUser.getInstance().getUser(), plant, newNickname);
+        ServerConnection connection = ServerConnection.getClientConnection();
+        Message response = connection.makeRequest(changeNicknameRequest);
+
+        if (!response.isSuccess()) {
+            Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "It was not possible to change the nickname. Try again."));
+            return false;
+        }
+
+        plant.setNickname(newNickname);
+        sortLibrary();
+
+        Platform.runLater(() -> PopupBox.display(MessageText.sucessfullyChangedPlant.toString()));
+        return true;
     }
+
 
     public boolean changeWateringFrequencyInDB(Plant plant, int wateringFrequency) {
         Message changeWateringFrequencyInDB = new Message(MessageType.changeWateringFrequency, LoggedInUser.getInstance().getUser(), plant, wateringFrequency);
@@ -474,4 +482,5 @@ public class MyPlantsTabPaneController {
         addCurrentUserLibraryToHomeScreen();
         return success;
     }
+
 }
