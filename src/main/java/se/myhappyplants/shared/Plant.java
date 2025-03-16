@@ -23,6 +23,7 @@ public class Plant implements Serializable {
     private Date lastWatered;
     private Date dateAdded;
 
+    private String tag;
     private boolean isFavorite;
 
     // for wishlist. Added because limited api calls
@@ -138,6 +139,24 @@ public class Plant implements Serializable {
         this.isFavorite =isFavorite;
     }
 
+    public Plant(int databaseId, String nickname, String plantId, Date lastWatered, int waterFrequency, String imageURL, boolean isFavorite, String tag) {
+        this.databaseId = databaseId;
+        this.nickname = nickname;
+        this.plantId = plantId;
+        this.lastWatered = lastWatered;
+        this.users_watering_frequency = waterFrequency;
+        this.imageURL = imageURL;
+        this.isFavorite =isFavorite;
+        this.tag = tag;
+    }
+
+    public String getTag(){
+        return tag;
+    }
+
+    public void setTag(String tag){
+        this.tag = tag;
+    }
     public String getNickname() {
         return nickname;
     }
