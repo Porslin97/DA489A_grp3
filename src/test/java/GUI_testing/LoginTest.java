@@ -112,7 +112,7 @@ public class LoginTest extends FxRobot {
     }
 
     @Test
-    void testEmptyEmailField() {
+    void testLoginEmptyEmailField() {
         clickOn("#txtFldEmail").eraseText(25);
         clickOn("#txtFldEmail").write("");
         clickOn("#passFldPassword").write("password123");
@@ -125,7 +125,7 @@ public class LoginTest extends FxRobot {
     }
 
     @Test
-    void testEmptyPasswordField() {
+    void testLoginEmptyPasswordField() {
         clickOn("#txtFldEmail").eraseText(25);
         clickOn("#txtFldEmail").write("validuser@example.com");
         clickOn("#passFldPassword").write("");
@@ -138,7 +138,7 @@ public class LoginTest extends FxRobot {
     }
 
     @Test
-    void testInvalidEmailFormat() {
+    void testLoginInvalidEmailFormat() {
         clickOn("#txtFldEmail").eraseText(25);
         clickOn("#txtFldEmail").write("invalid-email");
         clickOn("#passFldPassword").write("password123");

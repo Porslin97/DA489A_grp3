@@ -167,7 +167,7 @@ public class ClientServerTests {
 
     @Test
     void shouldSuccessfullyRetrieveUserPlantLibrary() { // TODO: issue with is_favorite it seems. Not present in testing database
-        String email = "test@email.com";
+        String email = "test@mail.com";
         String username = "TestGetLibrary";
         String rawPassword = "password123";
         userRepository.saveUser(new User(email, username, rawPassword, true));
@@ -396,9 +396,6 @@ public class ClientServerTests {
         userRepository.saveUser(new User(email, username, rawPassword, true));
 
         Plant plant = new Plant("1", "TestPlant", "TestPlant", "TestPlant.jpg");
-        plant.setNickname("TestPlantNickname");
-        plant.setLastWatered(LocalDate.now().minusDays(2));
-        plant.setUsers_watering_frequency(7);
 
         User user = userRepository.getUserDetails(email);
 
