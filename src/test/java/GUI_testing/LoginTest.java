@@ -9,6 +9,7 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.control.LabeledMatchers;
+import org.testfx.matcher.control.TextInputControlMatchers;
 import org.testfx.util.WaitForAsyncUtils;
 import se.myhappyplants.client.controller.StartClient;
 import se.myhappyplants.server.services.UserRepository;
@@ -148,5 +149,31 @@ public class LoginTest extends FxRobot {
 
         verifyThat("#messageBoxLabel", isVisible());
         verifyThat("#messageBoxLabel", LabeledMatchers.hasText("Please enter your email address in format: yourname@example.com"));
+    }
+
+    @Test
+    void testLogoutButton() {
+        String email = "logout@example.com";
+        String username = "LogoutTest";
+        String rawPassword = "password123";
+        userRepository.saveUser(new User(email, username, rawPassword, true));
+
+        clickOn("#txtFldEmail").eraseText(25);
+        clickOn("#txtFldEmail").write(email);
+        clickOn("#passFldPassword").write(rawPassword);
+        clickOn("#loginButton");
+
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+
+        verifyThat("#myPlantsTab", isVisible());
+
+        clickOn("#logoutButton");
+
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+
+        verifyThat("#loginButton", isVisible());
+        verifyThat("#registerLink", isVisible());
+
+        verifyThat("#txtFldEmail", TextInputControlMatchers.hasText(email));
     }
 }
