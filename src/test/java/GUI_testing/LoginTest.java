@@ -152,7 +152,7 @@ public class LoginTest extends FxRobot {
     }
 
     @Test
-    void testLogoutButton() {
+    void testLogoutButtonUser() {
         String email = "logout@example.com";
         String username = "LogoutTest";
         String rawPassword = "password123";
@@ -175,5 +175,23 @@ public class LoginTest extends FxRobot {
         verifyThat("#registerLink", isVisible());
 
         verifyThat("#txtFldEmail", TextInputControlMatchers.hasText(email));
+    }
+
+    @Test
+    void testLogoutButtonGuest() {
+        clickOn("#guestButton");
+        verifyThat("#messageBoxLabel", isVisible());
+        verifyThat("#messageBoxLabel", LabeledMatchers.hasText("You will be logged in as a guest. You will only be able to search for plants."));
+
+        clickOn("#okButton");
+
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+
+        clickOn("#logoutButton");
+
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+
+        verifyThat("#loginButton", isVisible());
+        verifyThat("#registerLink", isVisible());
     }
 }
