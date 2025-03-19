@@ -12,9 +12,11 @@ import se.myhappyplants.shared.User;
  */
 public class SaveWishlistPlant implements IResponseHandler {
     private UserPlantRepository userPlantRepository;
+    PlantApiService plantApiService;
 
-    public SaveWishlistPlant(UserPlantRepository userPlantRepository) {
+    public SaveWishlistPlant(UserPlantRepository userPlantRepository, PlantApiService plantApiService) {
         this.userPlantRepository = userPlantRepository;
+        this.plantApiService = plantApiService;
     }
 
     @Override
@@ -22,12 +24,10 @@ public class SaveWishlistPlant implements IResponseHandler {
         Message response;
         User user = request.getUser();
         Plant plant = request.getPlant();
-        PlantApiService plantApiService = new PlantApiService();
         PlantDetails plantDetails = plantApiService.getPlantDetails(plant);
         if (userPlantRepository.saveWishlistPlant(user, plant, plantDetails)) {
             System.out.println(plant.toString());
             response = new Message(true);
-
         } else {
             response = new Message(false);
         }
