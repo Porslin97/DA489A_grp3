@@ -41,7 +41,7 @@ public class UserPlantRepository {
 
     public boolean savePlant(User user, Plant plant) {
         boolean success = false;
-        String query = "INSERT INTO user_plants (user_id, nickname, plant_id, last_watered, image_url, watering_frequency) VALUES (?, ?, ?, ?, ?, ?);";
+        String query = "INSERT INTO user_plants (user_id, nickname, plant_id, last_watered, image_url, watering_frequency, tag) VALUES (?, ?, ?, ?, ?, ?, ?);";
         try {
             database.executeUpdate(query, ps -> {
                 ps.setInt(1, user.getUniqueId());
@@ -50,6 +50,7 @@ public class UserPlantRepository {
                 ps.setDate(4, plant.getLastWatered());
                 ps.setString(5, plant.getImageURL());
                 ps.setInt(6, plant.getUsers_watering_frequency());
+                ps.setString(7, plant.getTag());
             });
             success = true;
         } catch (SQLException throwables) {
@@ -81,6 +82,8 @@ public class UserPlantRepository {
         }
         return success;
     }
+
+
 
     /**
      * Method that returns all the plants connected to the logged in user.

@@ -23,7 +23,7 @@ import java.util.Optional;
  * Service class responsible for fetching plant data from the Perenual API.
  */
 public class PlantApiService {
-    private final String BASE_URL = "https://perenual.com/api/species-list";
+    private final String BASE_URL = "https://perenual.com/api/species/list";
     private final String API_KEY = PasswordsAndKeys.APIToken;
     private final HttpClient httpClient;
 
@@ -73,10 +73,13 @@ public class PlantApiService {
     }
 
     private String buildQueryUrl(String plantSearch) {
-        return String.format("%s?key=%s&q=%s",
+        String query = String.format("%s?key=%s&q=%s",
                 BASE_URL,
                 API_KEY,
                 URLEncoder.encode(plantSearch, StandardCharsets.UTF_8));
+        System.out.println("API-nyckel: " + API_KEY);
+        System.out.println("Query URL: " + query);
+        return query;
     }
 
     private JSONObject fetchJsonResponse(String query) throws Exception {

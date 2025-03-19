@@ -139,7 +139,17 @@ public class SearchTabPaneController {
         long currentDateMilli = System.currentTimeMillis();
         Date date = new Date(currentDateMilli);
         String imageURL = plantAdd.getImageURL();
+
+        String tagInput = MessageBox.askForStringInput("Lägg till tag",
+                "Ange en tag (börjar med #) för växten, eller lämna tom om ingen tagg önskas:");
+        if (tagInput != null && !tagInput.trim().isEmpty()) {
+            plantAdd.setTag(tagInput.trim());
+        } else { plantAdd.setTag("");
+        }
+
         Plant plantToAdd = new Plant(uniqueNickName, plantAdd.getPlantId(), date, newWateringFrequency, imageURL);
+        plantToAdd.setTag(plantAdd.getTag());
+
         PopupBox.display(MessageText.sucessfullyAddPlant.toString());
         boolean success = mainPaneController.addPlantToDB(plantToAdd, database);
         if (success){
