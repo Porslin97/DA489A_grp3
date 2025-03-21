@@ -76,13 +76,14 @@ public class SettingsTabPaneController {
     @FXML
     public void changeNotificationsSetting() {
         Thread changeNotificationsThread = new Thread(() -> {
+            tglBtnChangeNotification.setDisable(true);
             Message notificationRequest = new Message(MessageType.changeNotifications, tglBtnChangeNotification.isSelected(), LoggedInUser.getInstance().getUser());
             ServerConnection connection = ServerConnection.getClientConnection();
             Message notificationResponse = connection.makeRequest(notificationRequest);
             if (notificationResponse != null) {
                 if (notificationResponse.isSuccess()) {
                     LoggedInUser.getInstance().getUser().setIsNotificationsActivated(tglBtnChangeNotification.isSelected());
-                    tglBtnChangeNotification.setDisable(true);
+                    tglBtnChangeNotification.setDisable(false);
                     Platform.runLater(() -> new PopupBox("Notification settings\n changed"));
                 } else {
                     Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "Settings could not be changed"));
@@ -103,13 +104,14 @@ public class SettingsTabPaneController {
     @FXML
     public void changeFunFactsSetting() {
         Thread changeFunFactsThread = new Thread(() -> {
+            tglBtnChangeFunFacts.setDisable(true);
             Message changeFunFactsRequest = new Message(MessageType.changeFunFacts, tglBtnChangeFunFacts.isSelected(), LoggedInUser.getInstance().getUser());
             ServerConnection connection = ServerConnection.getClientConnection();
             Message funFactsResponse = connection.makeRequest(changeFunFactsRequest);
             if (funFactsResponse != null) {
                 if (funFactsResponse.isSuccess()) {
                     LoggedInUser.getInstance().getUser().setFunFactsActivated(tglBtnChangeFunFacts.isSelected());
-                    tglBtnChangeFunFacts.setDisable(true);
+                    tglBtnChangeFunFacts.setDisable(false);
                     Platform.runLater(() -> new PopupBox("Fun Facts settings\n changed"));
                 } else {
                     Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "Settings could not be changed"));
