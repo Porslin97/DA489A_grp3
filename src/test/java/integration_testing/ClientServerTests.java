@@ -167,7 +167,7 @@ public class ClientServerTests {
     }
 
     @Test
-    void shouldSuccessfullyRetrieveUserPlantLibrary() { // TODO: issue with is_favorite it seems. Not present in testing database
+    void shouldSuccessfullyRetrieveUserPlantLibrary() {
         String email = "test@mail.com";
         String username = "TestGetLibrary";
         String rawPassword = "password123";

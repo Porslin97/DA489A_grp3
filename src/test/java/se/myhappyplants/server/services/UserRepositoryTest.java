@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 import org.mindrot.jbcrypt.BCrypt;
 import se.myhappyplants.shared.User;
 
+import java.io.File;
 import java.sql.*;
 
 /**
@@ -252,5 +253,18 @@ class UserRepositoryTest {
         if (dbQueryExecutor != null) {
             dbQueryExecutor.closeConnection();
         }
+    }
+
+    @Test
+    void testSetUserAvatar() {
+        String email = "test@mail.com";
+        String username = "TestUser";
+        String avatarPath = "resources/images/user_avatars/maradona@live.se_avatar.png";
+
+        User user = new User(1, email, username, true, true);
+        user.setAvatar(avatarPath);
+
+        String expectedPath = new File(avatarPath).toURI().toString();
+        assertEquals(expectedPath, user.getAvatarURL(), "Avatar URL should match the converted file URI");
     }
 }
