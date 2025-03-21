@@ -148,6 +148,13 @@ public class UserRepository {
         return accountDeleted;
     }
 
+    /**
+     * Method to change the notification status for a user
+     *
+     * @param user          the user that should have the notification status changed
+     * @param notifications the new notification status
+     * @return boolean value, false if the transaction is rolled back
+     */
     public boolean changeNotifications(User user, boolean notifications) {
         String query = "UPDATE users SET notification_activated = ? WHERE email = ?";
         try {
@@ -162,6 +169,13 @@ public class UserRepository {
         return true;
     }
 
+    /**
+     * Method to change the fun facts status for a user
+     *
+     * @param user              the user that should have the fun facts status changed
+     * @param funFactsActivated the new fun facts status
+     * @return boolean value, false if the transaction is rolled back
+     */
     public boolean changeFunFacts(User user, Boolean funFactsActivated) {
         String query = "UPDATE users SET fun_facts_activated = ? WHERE email = ?";
         try {

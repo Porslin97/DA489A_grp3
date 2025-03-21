@@ -64,9 +64,6 @@ public class SearchPlantPane extends Pane implements PlantPane {
         initEventHandlerForInfo();
     }
 
-
-
-
     /**
      * Method to initialize the image
      *
@@ -128,6 +125,9 @@ public class SearchPlantPane extends Pane implements PlantPane {
         addButton.setOnAction(action -> searchTabPaneController.addPlantToCurrentUserLibrary(plant));
     }
 
+    /**
+     * Method to initialize the wishlist button
+     */
     private void initWishlistButton() {
         this.wishlistButton = new Button();
         wishlistButton.setLayoutX(700.0);
@@ -146,6 +146,9 @@ public class SearchPlantPane extends Pane implements PlantPane {
         addButton.setGraphic(imgViewPlusSign);
     }
 
+    /**
+     * Method to initialize the wishlist sign to the wishlist button
+     */
     private void initImgViewWishlistSign() {
         this.imgViewWishlistSign = new ImageView(ImageLibrary.getWishlistSign());
         imgViewWishlistSign.setFitHeight(16);

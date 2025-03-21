@@ -58,6 +58,13 @@ public class UserPlantRepository {
         return success;
     }
 
+    /**
+     * Method to save a new plant in database
+     * @param user
+     * @param plant
+     * @param plantDetails
+     * @return
+     */
     public boolean saveWishlistPlant(User user, Plant plant, PlantDetails plantDetails) {
         boolean success = false;
         String query = "INSERT INTO user_wishlist (user_id, plant_id, added_date, common_name, scientific_name, family, light, water, description, image_url) VALUES (?, CAST(? AS INTEGER), ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -111,6 +118,11 @@ public class UserPlantRepository {
         return plantList;
     }
 
+    /**
+     * Method that returns all the plants connected to the logged in user.
+     * @param user
+     * @return
+     */
     public ArrayList<Plant> getUserWishlist(User user) {
         ArrayList<Plant> plantList = new ArrayList<>();
         String query = "SELECT plant_id, added_date, common_name, scientific_name, family, light, water, description, image_url FROM user_wishlist WHERE user_id = ?;";
@@ -224,6 +236,14 @@ public class UserPlantRepository {
         return dateChanged;
     }
 
+    /**
+     * Method that makes a query to change the nickname of a specific plant in table Plant
+     *
+     * @param user        the user that owns the plant
+     * @param nickname    nickname of the plant
+     * @param newNickname new nickname to change to
+     * @return boolean result depending on the result, false if exception
+     */
     public boolean changeNickname(User user, String nickname, String newNickname) {
         boolean nicknameChanged = false;
         String query = "UPDATE user_plants SET nickname = ? WHERE user_id = ? AND nickname = ?;";
@@ -240,6 +260,12 @@ public class UserPlantRepository {
         return nicknameChanged;
     }
 
+    /**
+     * Method that makes a query to change all plants to watered in table Plant
+     *
+     * @param user the user that owns the plant
+     * @return boolean result depending on the result, false if exception
+     */
     public boolean changeAllToWatered(User user) {
         boolean dateChanged = false;
         LocalDate date = LocalDate.now();
@@ -256,6 +282,14 @@ public class UserPlantRepository {
         return dateChanged;
     }
 
+    /**
+     * Method that makes a query to change the watering frequency of a specific plant in table Plant
+     *
+     * @param user               the user that owns the plant
+     * @param nickname           nickname of the plant
+     * @param newWateringFrequency new watering frequency to change to
+     * @return boolean result depending on the result, false if exception
+     */
     public boolean changePlantPicture(User user, Plant plant) {
         boolean pictureChanged = false;
         String query = "UPDATE user_plants SET image_url = ? WHERE user_id = ? AND nickname = ?;";
@@ -272,6 +306,14 @@ public class UserPlantRepository {
         return pictureChanged;
     }
 
+    /**
+     * Method that makes a query to change the watering frequency of a specific plant in table Plant
+     *
+     * @param user               the user that owns the plant
+     * @param nickname           nickname of the plant
+     * @param newWateringFrequency new watering frequency to change to
+     * @return boolean result depending on the result, false if exception
+     */
     public boolean updateWateringFrequency(User user, Plant plant, int newWateringFrequency) {
         boolean frequencyChanged = false;
         String query = "UPDATE user_plants SET watering_frequency = ? WHERE user_id = ? AND nickname = ?;";
@@ -288,7 +330,15 @@ public class UserPlantRepository {
         return frequencyChanged;
     }
 
-
+    /**
+     * Method that makes a query to change the watering frequency of a specific plant in table Plant
+     *
+     * @param user               the user that owns the plant
+     * @param plant              the plant to change
+     * @param newNickname        new nickname to change to
+     * @param newWateringFrequency new watering frequency to change to
+     * @return boolean result depending on the result, false if exception
+     */
     public boolean updateFavorite(User user, Plant plant) {
         boolean favoriteChanged = false;
         boolean isFavorite = plant.getIsFavorite();

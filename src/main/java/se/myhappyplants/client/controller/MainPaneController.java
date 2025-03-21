@@ -133,10 +133,16 @@ public class MainPaneController {
     }
 
 
+    /**
+     * Method to switch to the tab the user selects
+     */
     public Iterable<? extends Plant> getCurrentUserLibrary() {
         return myPlantsTabPaneController.getCurrentUserLibrary();
     }
 
+    /**
+     * Method to switch to the tab the user selects
+     */
     public void addPlantToUserLibrary(Plant plantToAdd) {
         myPlantsTabPaneController.addPlantToUserLibrary(plantToAdd);
     }

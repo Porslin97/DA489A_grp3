@@ -19,7 +19,12 @@ import java.io.IOException;
 public class ResponseController {
     private ResponseContext responseContext;
 
-
+    /**
+     * Constructor that initializes the responseContext
+     * @param userRepository
+     * @param userPlantRepository
+     * @param plantApiService
+     */
     public ResponseController(UserRepository userRepository, UserPlantRepository userPlantRepository, PlantApiService plantApiService){
         responseContext = new ResponseContext(userRepository, userPlantRepository, plantApiService);
     }

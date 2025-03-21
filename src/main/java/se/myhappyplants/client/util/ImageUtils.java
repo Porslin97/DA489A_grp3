@@ -7,6 +7,11 @@ import javax.imageio.ImageIO;
 
 public class ImageUtils {
 
+    /**
+     * Method to check if the image is valid
+     * @param imageFile
+     * @return boolean if the image is valid
+     */
     public static boolean isValidImage(File imageFile) {
         try {
             BufferedImage bufferedImage = ImageIO.read(imageFile);

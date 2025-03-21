@@ -57,6 +57,9 @@ public class PopupBox extends Popup {
         showAndFade();
     }
 
+    /**
+     * Method to show the popup box and fade it out
+     */
     public void showAndFade() {
         window.show();
         AtomicReference<Double> opacity = new AtomicReference<>(1.0);

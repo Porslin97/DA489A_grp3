@@ -31,6 +31,9 @@ public class RegisterPaneController {
 
     private Verifier verifier;
 
+    /**
+     * Initializes the controller
+     */
     @FXML
     public void initialize() {
         verifier = new Verifier();
@@ -39,6 +42,9 @@ public class RegisterPaneController {
         txtFldNewEmail1.toFront();
     }
 
+    /**
+     * Method to register a new user
+     */
     @FXML
     private void registerButtonPressed() {
         int answer = MessageBox.askYesNo(BoxTitle.GDPR, "Your account details will be saved in accordance with GDPR requirements" + "\n" + "Do you still want to create the account?");
@@ -76,11 +82,21 @@ public class RegisterPaneController {
         }
     }
 
+    /**
+     * Method to switch to the main pane
+     *
+     * @throws IOException
+     */
     @FXML
     private void switchToMainPane() throws IOException {
         StartClient.setRoot(String.valueOf(RootName.mainPane));
     }
 
+    /**
+     * Method to switch to the login pane
+     *
+     * @param mouseEvent
+     */
     public void swapToLogin(MouseEvent mouseEvent) {
         try {
             StartClient.setRoot(RootName.loginPane.toString());
@@ -88,6 +104,12 @@ public class RegisterPaneController {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Method to get the components to verify
+     *
+     * @return
+     */
     public String[] getComponentsToVerify() {
         String[] loginInfoToCompare = new String[5];
         loginInfoToCompare[0] = txtFldNewEmail.getText();

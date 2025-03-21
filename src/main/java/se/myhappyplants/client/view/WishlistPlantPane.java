@@ -132,6 +132,9 @@ public class WishlistPlantPane extends Pane implements PlantPane {
         addButton.setOnAction(action -> wishlistTabPaneController.addPlantToCurrentUserLibrary(plant, action));
     }
 
+    /**
+     * Method to initialize the remove from wishlist button
+     */
     private void initRemoveFromWishlistButton() {
         this.wishlistButton = new Button();
         wishlistButton.setLayoutX(700.0);
@@ -150,6 +153,9 @@ public class WishlistPlantPane extends Pane implements PlantPane {
         addButton.setGraphic(imgViewPlusSign);
     }
 
+    /**
+     * Method to initialize the wishlist sign to the wishlist button
+     */
     private void initImgViewWishlistSign() {
         this.imgViewWishlistSign = new ImageView(ImageLibrary.getDeleteSign());
         imgViewWishlistSign.setFitHeight(16);
@@ -277,7 +283,5 @@ public class WishlistPlantPane extends Pane implements PlantPane {
         extended = false;
         gotInfoOnPlant = false;
     }
-
-
 }
 

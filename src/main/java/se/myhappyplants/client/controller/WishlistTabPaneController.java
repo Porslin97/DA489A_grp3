@@ -50,7 +50,9 @@ public class WishlistTabPaneController {
 
     private final String database = "wishlist";
 
-
+    /**
+     * Method that initializes the wishlist tab pane
+     */
     @FXML
     public void initialize() {
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
@@ -61,11 +63,20 @@ public class WishlistTabPaneController {
         addCurrentUserWishlistToHomeScreen();
     }
 
+    /**
+     * Method that sets the main controller
+     *
+     * @param mainPaneController
+     */
     public void setMainController(MainPaneController mainPaneController) {
         this.mainPaneController = mainPaneController;
     }
 
-
+    /**
+     * Method that shows a fun fact
+     *
+     * @param factsActivated
+     */
     public void showFunFact(boolean factsActivated) {
 
         FunFacts funFacts = new FunFacts();
@@ -78,7 +89,11 @@ public class WishlistTabPaneController {
         }
     }
 
-
+    /**
+     * Method that logs out the user
+     *
+     * @throws IOException
+     */
     @FXML
     private void logoutButtonPressed() throws IOException {
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
@@ -89,10 +104,18 @@ public class WishlistTabPaneController {
         }
     }
 
+    /**
+     * Method that updates the avatar
+     */
     public void updateAvatar() {
         imgUserAvatar.setFill(new ImagePattern(new Image(LoggedInUser.getInstance().getUser().getAvatarURL())));
     }
 
+    /**
+     * Method that adds a plant to the current user's wishlist
+     *
+     * @param selectedPlant
+     */
     @FXML
     public void addPlantToCurrentUserWishlist(Plant selectedPlant) {
 
@@ -105,6 +128,11 @@ public class WishlistTabPaneController {
         addPlantToDB(plantToAdd);
     }
 
+    /**
+     * Method that adds a plant to the database
+     *
+     * @param plantToAdd
+     */
     private void addPlantToDB(Plant plantToAdd) {
         boolean success = mainPaneController.addPlantToDB(plantToAdd, database);
 
@@ -114,6 +142,12 @@ public class WishlistTabPaneController {
         }
     }
 
+    /**
+     * Method that removes a plant from the current user's wishlist
+     *
+     * @param selectedPlant
+     * @param action
+     */
     @FXML
     public void removePlantFromCurrentUserWishlist(Plant selectedPlant, ActionEvent action) {
         Plant plantToRemove = new Plant(selectedPlant.getCommonName(), selectedPlant.getPlantId(), null);
@@ -125,6 +159,11 @@ public class WishlistTabPaneController {
         lstViewUserPlantWishlist.refresh();
     }
 
+    /**
+     * Method that removes a plant from the database
+     *
+     * @param plant
+     */
     @FXML
     public void removePlantFromDB(Plant plant) {
         Platform.runLater(() -> new PopupBox(MessageText.removeWishlistPlant.toString()));
@@ -141,6 +180,9 @@ public class WishlistTabPaneController {
         removePlantThread.start();
     }
 
+    /**
+     * Method that creates the current user's wishlist from the database
+     */
     @FXML
     public void createCurrentUserWishlistFromDB() {
         Thread getWishlistThread = new Thread(() -> {
@@ -159,7 +201,9 @@ public class WishlistTabPaneController {
         getWishlistThread.start();
     }
 
-
+    /**
+     * Method that adds the current user's wishlist to the home screen
+     */
     @FXML
     private void addCurrentUserWishlistToHomeScreen() {
         ObservableList<WishlistPlantPane> obsListWishlistPlantPane = FXCollections.observableArrayList();
@@ -207,6 +251,12 @@ public class WishlistTabPaneController {
         return mainPaneController;
     }
 
+    /**
+     * Method that adds a plant to the current user's library
+     *
+     * @param plantAdd
+     * @param action
+     */
     @FXML
     public void addPlantToCurrentUserLibrary(Plant plantAdd, ActionEvent action) {
         if (!isUserLoggedIn()) {
@@ -243,6 +293,11 @@ public class WishlistTabPaneController {
         }
     }
 
+    /**
+     * Method that checks if the user is logged in
+     *
+     * @return
+     */
     private boolean isUserLoggedIn() {
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
         if (loggedInUser.getUser() == null) {
@@ -252,6 +307,12 @@ public class WishlistTabPaneController {
         return true;
     }
 
+    /**
+     * Method that gets the plant nickname
+     *
+     * @param plantAdd
+     * @return
+     */
     private String getPlantNickname(Plant plantAdd) {
         String plantNickname = plantAdd.getCommonName();
         int answer = MessageBox.askYesNo(BoxTitle.Add, "Do you want to add a nickname for your plant?");
@@ -275,6 +336,12 @@ public class WishlistTabPaneController {
         return plantNickname;
     }
 
+    /**
+     * Method that gets the plant details
+     *
+     * @param plant
+     * @return
+     */
     public PlantDetails getPlantDetails(Plant plant) {
         new PopupBox(MessageText.holdOnGettingInfo.toString());
         PlantDetails plantDetails = null;

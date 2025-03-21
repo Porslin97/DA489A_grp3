@@ -182,6 +182,12 @@ public class MyPlantsTabPaneController {
         Platform.runLater(() -> lstViewNotifications.setItems(notificationStrings));
     }
 
+    /**
+     * Method to update the favorite status of a plant
+     *
+     * @param actionEvent the event that triggers the method
+     * @param plant       the plant that the user has selected
+     */
     @FXML
     public void updateFavorite(ActionEvent actionEvent, Plant plant) {
         Button favoriteButton = (Button) actionEvent.getSource();
@@ -324,7 +330,13 @@ public class MyPlantsTabPaneController {
         return true;
     }
 
-
+    /**
+     * Method to send to the server to change the watering frequency of a selected plant in the database.
+     *
+     * @param plant             the selected plant
+     * @param wateringFrequency the new watering frequency of the plant
+     * @return if it's successful. true or false
+     */
     public boolean changeWateringFrequencyInDB(Plant plant, int wateringFrequency) {
         Message changeWateringFrequencyInDB = new Message(MessageType.changeWateringFrequency, LoggedInUser.getInstance().getUser(), plant, wateringFrequency);
         ServerConnection connection = ServerConnection.getClientConnection();
@@ -440,6 +452,11 @@ public class MyPlantsTabPaneController {
         waterAllThread.start();
     }
 
+    /**
+     * Method to set a new plant picture
+     *
+     * @param lpp the selected plant
+     */
     public void setNewPlantPicture(LibraryPlantPane lpp) {
         FileChooser fc = new FileChooser();
         FileChooser.ExtensionFilter fileExtensions = new FileChooser.ExtensionFilter("Images", "*.jpg", "*.jpeg", "*.png");
@@ -479,10 +496,21 @@ public class MyPlantsTabPaneController {
         }
     }
 
+    /**
+     * Method to get the current user library
+     *
+     * @return the current user library
+     */
     public Iterable<? extends Plant> getCurrentUserLibrary() {
         return currentUserLibrary;
     }
 
+    /**
+     * Method to add a plant to the current user library
+     *
+     * @param plantToAdd the plant to add
+     * @return if the plant was added or not
+     */
     public boolean addPlantToUserLibrary(Plant plantToAdd) {
         boolean success = false;
         currentUserLibrary.add(plantToAdd);

@@ -143,6 +143,12 @@ public class LoginPaneController {
         }
     }
 
+    /**
+     * Method to switch to the searchTabPane
+     *
+     * @param actionEvent
+     * @throws IOException
+     */
     public void guestButtonPressed(ActionEvent actionEvent) throws IOException {
         StartClient.setRoot(RootName.searchTabPane.toString());
     }
