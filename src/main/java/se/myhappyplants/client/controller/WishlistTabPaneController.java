@@ -101,9 +101,8 @@ public class WishlistTabPaneController {
         String imageURL = selectedPlant.getImageURL();
 
         Plant plantToAdd = new Plant(selectedPlant.getPlantId(), selectedPlant.getCommonName(), imageURL, dateAdded);
-        PopupBox.display(MessageText.sucessfullyAddPlant.toString());
+        PopupBox.display(MessageText.successfullyAddWishlistPlant.toString());
         addPlantToDB(plantToAdd);
-
     }
 
     private void addPlantToDB(Plant plantToAdd) {
@@ -237,7 +236,7 @@ public class WishlistTabPaneController {
         Date date = new Date(currentDateMilli);
         String imageURL = plantAdd.getImageURL();
         Plant plantToAdd = new Plant(uniqueNickName, plantAdd.getPlantId(), date, newWateringFrequency, imageURL);
-        PopupBox.display(MessageText.sucessfullyAddPlant.toString());
+        PopupBox.display(MessageText.successfullyAddPlant.toString());
         boolean success = mainPaneController.addPlantToDB(plantToAdd, database);
         if (success){
             mainPaneController.addPlantToUserLibrary(plantToAdd);

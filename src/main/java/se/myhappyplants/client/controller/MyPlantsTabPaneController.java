@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -279,7 +278,7 @@ public class MyPlantsTabPaneController {
         Message changeLastWatered = new Message(MessageType.changeLastWatered, LoggedInUser.getInstance().getUser(), plant, date);
         ServerConnection connection = ServerConnection.getClientConnection();
         Message response = connection.makeRequest(changeLastWatered);
-        PopupBox.display(MessageText.sucessfullyChangedDate.toString());
+        PopupBox.display(MessageText.successfullyChangedDate.toString());
         if (!response.isSuccess()) {
             Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
         }
@@ -311,7 +310,7 @@ public class MyPlantsTabPaneController {
         plant.setNickname(newNickname);
         sortLibrary();
 
-        Platform.runLater(() -> PopupBox.display(MessageText.sucessfullyChangedPlant.toString()));
+        Platform.runLater(() -> PopupBox.display(MessageText.successfullyChangedPlant.toString()));
         return true;
     }
 
@@ -320,7 +319,7 @@ public class MyPlantsTabPaneController {
         Message changeWateringFrequencyInDB = new Message(MessageType.changeWateringFrequency, LoggedInUser.getInstance().getUser(), plant, wateringFrequency);
         ServerConnection connection = ServerConnection.getClientConnection();
         Message response = connection.makeRequest(changeWateringFrequencyInDB);
-        PopupBox.display(MessageText.sucessfullyChangedPlant.toString());
+        PopupBox.display(MessageText.successfullyChangedPlant.toString());
         if (!response.isSuccess()) {
             Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "It was not possible to change watering frequency for you plant. Try again."));
             return false;
