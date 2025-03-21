@@ -75,14 +75,17 @@ public class LoginPaneController {
         String email = txtFldEmail.getText();
         String password = passFldPassword.getText();
 
+        if (email.isEmpty()) {
+            Platform.runLater(() -> MessageBox.display(BoxTitle.Error, "Please enter your email address or username"));
+            return;
+        }
+
+        /* disable email validation for now since users should be able to log in with username
         if (!Verifier.validateEmail(email)) {
             Platform.runLater(() -> MessageBox.display(BoxTitle.Error, "Please enter your email address in format: yourname@example.com"));
             return;
-        }
-        if (email.isEmpty()) {
-            Platform.runLater(() -> MessageBox.display(BoxTitle.Error, "Please enter your email address"));
-            return;
-        }
+        } */
+
         if (password.isEmpty()) {
             Platform.runLater(() -> MessageBox.display(BoxTitle.Error, "Please enter your password"));
             return;
