@@ -62,8 +62,10 @@ public class SettingsTabPaneController {
         ButtonText.setButtonText(tglBtnChangeFunFacts);
 
     }
+
     /**
      * Method to set the mainController
+     *
      * @param mainPaneController the controller to set
      */
     public void setMainController(MainPaneController mainPaneController) {
@@ -77,21 +79,23 @@ public class SettingsTabPaneController {
     public void changeNotificationsSetting() {
         Thread changeNotificationsThread = new Thread(() -> {
             tglBtnChangeNotification.setDisable(true);
-            Message notificationRequest = new Message(MessageType.changeNotifications, tglBtnChangeNotification.isSelected(), LoggedInUser.getInstance().getUser());
-            ServerConnection connection = ServerConnection.getClientConnection();
-            Message notificationResponse = connection.makeRequest(notificationRequest);
-            if (notificationResponse != null) {
-                if (notificationResponse.isSuccess()) {
-                    LoggedInUser.getInstance().getUser().setIsNotificationsActivated(tglBtnChangeNotification.isSelected());
-                    tglBtnChangeNotification.setDisable(false);
-                    Platform.runLater(() -> new PopupBox("Notification settings\n changed"));
+            try {
+                Message notificationRequest = new Message(MessageType.changeNotifications, tglBtnChangeNotification.isSelected(), LoggedInUser.getInstance().getUser());
+                ServerConnection connection = ServerConnection.getClientConnection();
+                Message notificationResponse = connection.makeRequest(notificationRequest);
+                if (notificationResponse != null) {
+                    if (notificationResponse.isSuccess()) {
+                        LoggedInUser.getInstance().getUser().setIsNotificationsActivated(tglBtnChangeNotification.isSelected());
+                        Platform.runLater(() -> new PopupBox("Notification settings\n changed"));
+                    } else {
+                        Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "Settings could not be changed"));
+                    }
                 } else {
-                    Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "Settings could not be changed"));
+                    Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
                 }
-            } else {
-                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
+            } finally {
+                tglBtnChangeNotification.setDisable(false);
             }
-
         });
         changeNotificationsThread.start();
         ButtonText.setButtonText(tglBtnChangeNotification);
@@ -105,19 +109,22 @@ public class SettingsTabPaneController {
     public void changeFunFactsSetting() {
         Thread changeFunFactsThread = new Thread(() -> {
             tglBtnChangeFunFacts.setDisable(true);
-            Message changeFunFactsRequest = new Message(MessageType.changeFunFacts, tglBtnChangeFunFacts.isSelected(), LoggedInUser.getInstance().getUser());
-            ServerConnection connection = ServerConnection.getClientConnection();
-            Message funFactsResponse = connection.makeRequest(changeFunFactsRequest);
-            if (funFactsResponse != null) {
-                if (funFactsResponse.isSuccess()) {
-                    LoggedInUser.getInstance().getUser().setFunFactsActivated(tglBtnChangeFunFacts.isSelected());
-                    tglBtnChangeFunFacts.setDisable(false);
-                    Platform.runLater(() -> new PopupBox("Fun Facts settings\n changed"));
+            try {
+                Message changeFunFactsRequest = new Message(MessageType.changeFunFacts, tglBtnChangeFunFacts.isSelected(), LoggedInUser.getInstance().getUser());
+                ServerConnection connection = ServerConnection.getClientConnection();
+                Message funFactsResponse = connection.makeRequest(changeFunFactsRequest);
+                if (funFactsResponse != null) {
+                    if (funFactsResponse.isSuccess()) {
+                        LoggedInUser.getInstance().getUser().setFunFactsActivated(tglBtnChangeFunFacts.isSelected());
+                        Platform.runLater(() -> new PopupBox("Fun Facts settings\n changed"));
+                    } else {
+                        Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "Settings could not be changed"));
+                    }
                 } else {
-                    Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "Settings could not be changed"));
+                    Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
                 }
-            } else {
-                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
+            } finally {
+                tglBtnChangeFunFacts.setDisable(false);
             }
         });
         changeFunFactsThread.start();
@@ -157,8 +164,10 @@ public class SettingsTabPaneController {
             deleteAccountThread.start();
         }
     }
+
     /**
      * Method to message the right controller-class that the log out-button has been pressed
+     *
      * @throws IOException
      */
     @FXML
