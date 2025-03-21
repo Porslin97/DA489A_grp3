@@ -30,6 +30,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class MyPlantsTabPaneController {
     @FXML
     public ImageView imgNotifications;
 
-    private List<Plant> currentUserLibrary;
+    private List<Plant> currentUserLibrary = new ArrayList<>();
 
     @FXML
     private MainPaneController mainPaneController;
@@ -63,13 +64,13 @@ public class MyPlantsTabPaneController {
     private ListView<String> lstViewNotifications;
 
     @FXML
-    private Button btnWaterAll;
+    private Button btnWaterAll = new Button();
 
     @FXML
-    private Button btnExpandAll;
+    private Button btnExpandAll = new Button();
 
     @FXML
-    public Button btnCollapseAll;
+    public Button btnCollapseAll = new Button();
 
     /**
      * Method to initilize the variables
@@ -472,9 +473,14 @@ public class MyPlantsTabPaneController {
         return currentUserLibrary;
     }
 
-    public void addPlantToUserLibrary(Plant plantToAdd) {
+    public boolean addPlantToUserLibrary(Plant plantToAdd) {
+        boolean success = false;
         currentUserLibrary.add(plantToAdd);
+        if (currentUserLibrary.contains(plantToAdd)){
+            success = true;
+        }
         addCurrentUserLibraryToHomeScreen();
+        return success;
     }
 
 }
