@@ -24,7 +24,7 @@ public class ListSorter {
     public static ObservableList<SortingOption> sortOptionsSearch() {
         ObservableList<SortingOption> sortOptions = FXCollections.observableArrayList();
         for (SortingOption option : SortingOption.values()) {
-            if (option != SortingOption.NICKNAME && option != SortingOption.WATER_NEED) //null on search results
+            if (option != SortingOption.NICKNAME && option != SortingOption.WATER_NEED && option != SortingOption.FAVORITES) //null on search results
                 sortOptions.add(option);
         }
         return sortOptions;
