@@ -126,7 +126,7 @@ public class RegistrationTest extends FxRobot {
     }
 
     @Test
-    void testInvalidEmailFormat() {
+    void testRegisterInvalidEmailFormat() {
         clickOn("#registerLink");
         clickOn("#txtFldNewEmail").write("invalid-email");
         clickOn("#txtFldNewEmail1").write("invalid-email");
@@ -143,7 +143,7 @@ public class RegistrationTest extends FxRobot {
     }
 
     @Test
-    void testEmptyUsername() {
+    void testRegisterEmptyUsername() {
         clickOn("#registerLink");
         clickOn("#txtFldNewEmail").write("newuser@example.com");
         clickOn("#txtFldNewEmail1").write("newuser@example.com");
@@ -159,7 +159,7 @@ public class RegistrationTest extends FxRobot {
     }
 
     @Test
-    void testEmptyPassword() {
+    void testRegisterEmptyPassword() {
         clickOn("#registerLink");
         clickOn("#txtFldNewEmail").write("newuser@example.com");
         clickOn("#txtFldNewEmail1").write("newuser@example.com");
@@ -174,7 +174,7 @@ public class RegistrationTest extends FxRobot {
     }
 
     @Test
-    void testMismatchedEmails() {
+    void testRegisterMismatchedEmails() {
         clickOn("#registerLink");
         clickOn("#txtFldNewEmail").write("newuser@example.com");
         clickOn("#txtFldNewEmail1").write("different@example.com");
@@ -191,7 +191,7 @@ public class RegistrationTest extends FxRobot {
     }
 
     @Test
-    void testMismatchedPasswords() {
+    void testRegisterMismatchedPasswords() {
         clickOn("#registerLink");
         clickOn("#txtFldNewEmail").write("newuser@example.com");
         clickOn("#txtFldNewEmail1").write("newuser@example.com");

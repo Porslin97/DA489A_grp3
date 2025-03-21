@@ -46,7 +46,7 @@ public class ResponseContext {
         responders.put(MessageType.login, new Login(userRepository));
         responders.put(MessageType.register, new Register(userRepository));
         responders.put(MessageType.savePlant, new SavePlant(userPlantRepository));
-        responders.put(MessageType.savePlantWishlist, new SaveWishlistPlant(userPlantRepository));
+        responders.put(MessageType.savePlantWishlist, new SaveWishlistPlant(userPlantRepository, plantApiService));
         responders.put(MessageType.getWishlist, new GetWishlist(userPlantRepository));
         responders.put(MessageType.removePlantWishlist, new DeletePlantFromWishlist(userPlantRepository));
         responders.put(MessageType.search, new Search(plantApiService));

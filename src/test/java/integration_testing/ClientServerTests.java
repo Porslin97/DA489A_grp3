@@ -73,6 +73,7 @@ public class ClientServerTests {
         try (Statement stmt = dbQueryExecutor.getConnection().createStatement()) {
             stmt.execute("DELETE FROM user_plants;");
             stmt.execute("DELETE FROM users;");
+            stmt.execute("DELETE FROM user_wishlist;");
             stmt.execute("ALTER SEQUENCE users_id_seq RESTART WITH 1;");
             stmt.execute("ALTER SEQUENCE plants_id_seq RESTART WITH 1;");
         }
@@ -168,7 +169,7 @@ public class ClientServerTests {
 
     @Test
     void shouldSuccessfullyRetrieveUserPlantLibrary() { // TODO: issue with is_favorite it seems. Not present in testing database
-        String email = "test@email.com";
+        String email = "test@mail.com";
         String username = "TestGetLibrary";
         String rawPassword = "password123";
         userRepository.saveUser(new User(email, username, rawPassword, true));
@@ -388,7 +389,6 @@ public class ClientServerTests {
     }
 
 
-    /* TODO: fix this test when wishlist functionality is complete and correctly implemented
     @Test
     void shouldSuccessfullyRetrieveUserWishlist() {
         String email = "test@mail.com";
@@ -396,18 +396,21 @@ public class ClientServerTests {
         String rawPassword = "password123";
         userRepository.saveUser(new User(email, username, rawPassword, true));
 
-        Plant plant = new Plant("1", "TestPlant", "TestPlant", "TestPlant.jpg");
-        plant.setNickname("TestPlantNickname");
-        plant.setLastWatered(LocalDate.now().minusDays(2));
-        plant.setUsers_watering_frequency(7);
-
-        ArrayList<String> sunlight = new ArrayList<>();
-        sunlight.add("Sunlight test");
-        PlantDetails plantDetails = new PlantDetails("Family", "This plant is a test plant", "Average watering", sunlight);
-
         User user = userRepository.getUserDetails(email);
 
-        userPlantRepository.saveWishlistPlant(user, plant, plantDetails);
+        Plant plant = new Plant("1", "TestPlant", "TestPlant", "TestPlant.jpg");
+
+        PlantDetails mockPlantDetails = new PlantDetails(
+                "MockedFamily",
+                "MockedDescription",
+                "Average",
+                List.of("Full Sun", "Partial Shade"),
+                "MockedPlantus Scientificus"
+        );
+        doReturn(mockPlantDetails).when(plantApiServiceSpy).getPlantDetails(any(Plant.class));
+
+        Message saveWishlistPlantRequest = new Message(MessageType.savePlantWishlist, user, plant);
+        clientConnection.makeRequest(saveWishlistPlantRequest);
 
         Message getWishlistRequest = new Message(MessageType.getWishlist, user);
         Message getWishlistResponse = clientConnection.makeRequest(getWishlistRequest);
@@ -419,8 +422,6 @@ public class ClientServerTests {
         assertNotNull(wishlist, "Wishlist should not be null");
         assertEquals(1, wishlist.size(), "Wishlist should contain 1 plant");
     }
-    */
-
 
     @Test
     void shouldSuccessfullyGetMorePlantInfo() {
@@ -489,6 +490,7 @@ public class ClientServerTests {
                 List.of("Full Sun", "Partial Shade"),
                 "MockedPlantus Scientificus"
         );
+
         doReturn(mockPlantDetails).when(plantApiServiceSpy).getPlantDetails(any(Plant.class));
 
         Message saveWishlistPlantRequest = new Message(MessageType.savePlantWishlist, user, plant);
@@ -500,6 +502,43 @@ public class ClientServerTests {
         List<Plant> wishlist = userPlantRepository.getUserWishlist(user);
         assertNotNull(wishlist, "Wishlist should not be null");
         assertEquals(1, wishlist.size(), "Wishlist should contain 1 plant");
+    }
+
+    @Test
+    void shouldSuccessfullyRemovePlantFromWishlist() {
+        String email = "test@mail.com";
+        String username = "TestRemoveWishlist";
+        String rawPassword = "password123";
+        userRepository.saveUser(new User(email, username, rawPassword, true));
+        User user = userRepository.getUserDetails(email);
+
+        Plant plant = new Plant("1", "TestPlant", "TestPlant", "TestPlant.jpg");
+
+        PlantDetails mockPlantDetails = new PlantDetails(
+                "MockedFamily",
+                "MockedDescription",
+                "Average",
+                List.of("Full Sun", "Partial Shade"),
+                "MockedPlantus Scientificus"
+        );
+        doReturn(mockPlantDetails).when(plantApiServiceSpy).getPlantDetails(any(Plant.class));
+
+        Message saveWishlistPlantRequest = new Message(MessageType.savePlantWishlist, user, plant);
+        clientConnection.makeRequest(saveWishlistPlantRequest);
+
+        List<Plant> wishlist = userPlantRepository.getUserWishlist(user);
+        assertEquals(1, wishlist.size(), "Wishlist should at this point contain 1 plant");
+
+        Message removeWishlistPlantRequest = new Message(MessageType.removePlantWishlist, user, plant);
+        Message removeWishlistPlantResponse = clientConnection.makeRequest(removeWishlistPlantRequest);
+
+        assertNotNull(removeWishlistPlantResponse, "Remove wishlist plant response should not be null");
+        assertTrue(removeWishlistPlantResponse.isSuccess(), "Remove wishlist plant should succeed when plant exists in wishlist");
+
+        wishlist = userPlantRepository.getUserWishlist(user);
+
+        assertNotNull(wishlist, "Wishlist should not be null");
+        assertEquals(0, wishlist.size(), "Wishlist should be empty after plant removal");
     }
 }
 

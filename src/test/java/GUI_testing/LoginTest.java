@@ -9,6 +9,7 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.control.LabeledMatchers;
+import org.testfx.matcher.control.TextInputControlMatchers;
 import org.testfx.util.WaitForAsyncUtils;
 import se.myhappyplants.client.controller.StartClient;
 import se.myhappyplants.server.services.UserRepository;
@@ -112,7 +113,7 @@ public class LoginTest extends FxRobot {
     }
 
     @Test
-    void testEmptyEmailField() {
+    void testLoginEmptyEmailField() {
         clickOn("#txtFldEmail").eraseText(25);
         clickOn("#txtFldEmail").write("");
         clickOn("#passFldPassword").write("password123");
@@ -125,7 +126,7 @@ public class LoginTest extends FxRobot {
     }
 
     @Test
-    void testEmptyPasswordField() {
+    void testLoginEmptyPasswordField() {
         clickOn("#txtFldEmail").eraseText(25);
         clickOn("#txtFldEmail").write("validuser@example.com");
         clickOn("#passFldPassword").write("");
@@ -138,7 +139,7 @@ public class LoginTest extends FxRobot {
     }
 
     @Test
-    void testInvalidEmailFormat() {
+    void testLoginInvalidEmailFormat() {
         clickOn("#txtFldEmail").eraseText(25);
         clickOn("#txtFldEmail").write("invalid-email");
         clickOn("#passFldPassword").write("password123");
@@ -148,5 +149,49 @@ public class LoginTest extends FxRobot {
 
         verifyThat("#messageBoxLabel", isVisible());
         verifyThat("#messageBoxLabel", LabeledMatchers.hasText("Please enter your email address in format: yourname@example.com"));
+    }
+
+    @Test
+    void testLogoutButtonUser() {
+        String email = "logout@example.com";
+        String username = "LogoutTest";
+        String rawPassword = "password123";
+        userRepository.saveUser(new User(email, username, rawPassword, true));
+
+        clickOn("#txtFldEmail").eraseText(25);
+        clickOn("#txtFldEmail").write(email);
+        clickOn("#passFldPassword").write(rawPassword);
+        clickOn("#loginButton");
+
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+
+        verifyThat("#myPlantsTab", isVisible());
+
+        clickOn("#logoutButton");
+
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+
+        verifyThat("#loginButton", isVisible());
+        verifyThat("#registerLink", isVisible());
+
+        verifyThat("#txtFldEmail", TextInputControlMatchers.hasText(email));
+    }
+
+    @Test
+    void testLogoutButtonGuest() {
+        clickOn("#guestButton");
+        verifyThat("#messageBoxLabel", isVisible());
+        verifyThat("#messageBoxLabel", LabeledMatchers.hasText("You will be logged in as a guest. You will only be able to search for plants."));
+
+        clickOn("#okButton");
+
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+
+        clickOn("#logoutButton");
+
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+
+        verifyThat("#loginButton", isVisible());
+        verifyThat("#registerLink", isVisible());
     }
 }

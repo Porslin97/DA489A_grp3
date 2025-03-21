@@ -116,6 +116,7 @@ class UserPlantRepositoryTest {
         assertEquals(10, updated.getUsers_watering_frequency(), "The watering frequency should be updated to 10");
     }
 
+    
     @Test
     void seeLibraryOverview() {
         User testUser = new User(5, "testfall2.5@test.com", "testUser4", true, true);
