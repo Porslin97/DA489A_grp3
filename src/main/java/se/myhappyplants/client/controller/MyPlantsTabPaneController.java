@@ -43,6 +43,7 @@ public class MyPlantsTabPaneController {
     public ImageView imgNotifications;
 
     private List<Plant> currentUserLibrary = new ArrayList<>();
+    private boolean isLoadingLibrary = true;
 
     @FXML
     private MainPaneController mainPaneController;
@@ -82,8 +83,8 @@ public class MyPlantsTabPaneController {
         String avatarURL = SetAvatar.setAvatarOnLogin(loggedInUser.getUser().getEmail());
         imgUserAvatar.setFill(new ImagePattern(new Image(avatarURL)));
         cmbSortOption.setItems(ListSorter.sortOptionsLibrary());
-        createCurrentUserLibraryFromDB();
         addCurrentUserLibraryToHomeScreen();
+        createCurrentUserLibraryFromDB();
     }
 
 
@@ -109,11 +110,12 @@ public class MyPlantsTabPaneController {
     @FXML
     public void addCurrentUserLibraryToHomeScreen() {
         ObservableList<LibraryPlantPane> obsListLibraryPlantPane = FXCollections.observableArrayList();
-        if (currentUserLibrary == null) {
+
+        if (isLoadingLibrary) {
             disableButtons();
-            obsListLibraryPlantPane.add(new LibraryPlantPane());
+            obsListLibraryPlantPane.add(new LibraryPlantPane(true));
         } else {
-            if (currentUserLibrary.size()<1) {
+            if (currentUserLibrary.isEmpty()) {
                 disableButtons();
                 obsListLibraryPlantPane.add(new LibraryPlantPane(this));
             } else {
@@ -194,6 +196,8 @@ public class MyPlantsTabPaneController {
      */
     @FXML
     public void createCurrentUserLibraryFromDB() {
+        isLoadingLibrary = true;
+
         Thread getLibraryThread = new Thread(() -> {
             Message getLibrary = new Message(MessageType.getLibrary, LoggedInUser.getInstance().getUser());
             ServerConnection connection = ServerConnection.getClientConnection();
@@ -202,6 +206,7 @@ public class MyPlantsTabPaneController {
             if (response.isSuccess()) {
                 currentUserLibrary = response.getPlantArray();
                 System.out.println("currentUserLibrary: " + currentUserLibrary);
+                isLoadingLibrary = false;
                 addCurrentUserLibraryToHomeScreen();
                 showNotifications();
             } else {

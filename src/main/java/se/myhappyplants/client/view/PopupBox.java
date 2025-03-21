@@ -76,13 +76,13 @@ public class PopupBox extends Popup {
         );
         timeline.setCycleCount(100);
         timeline.setOnFinished(action -> {
+            System.out.println("popup has finished");
             if(toggleButton !=null){
                 toggleButton.setDisable(false);
             }
             window.close();
         });
         timeline.play();
-
     }
 
     /**

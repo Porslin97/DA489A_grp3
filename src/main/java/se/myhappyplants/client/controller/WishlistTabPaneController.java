@@ -119,8 +119,6 @@ public class WishlistTabPaneController {
         Plant plantToRemove = new Plant(selectedPlant.getCommonName(), selectedPlant.getPlantId(), null);
         removePlantFromDB(plantToRemove);
         Parent listItemToRemove = ((Button) action.getSource()).getParent();
-        System.out.println(listItemToRemove);
-        System.out.println();
         lstViewUserPlantWishlist.getItems().remove(listItemToRemove);
         System.out.println(lstViewUserPlantWishlist.getItems());
         lstViewUserPlantWishlist.refresh();
@@ -128,7 +126,7 @@ public class WishlistTabPaneController {
 
     @FXML
     public void removePlantFromDB(Plant plant) {
-        Platform.runLater(() -> PopupBox.display(MessageText.removePlant.toString()));
+        Platform.runLater(() -> PopupBox.display(MessageText.removeWishlistPlant.toString()));
         Thread removePlantThread = new Thread(() -> {
             currentUserWishlist.remove(plant);
             Message deletePlant = new Message(MessageType.removePlantWishlist, LoggedInUser.getInstance().getUser(), plant);

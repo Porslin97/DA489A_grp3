@@ -6,11 +6,12 @@ package se.myhappyplants.client.model;
  * Updated by: Linn Borgström, 2021-05-17
  */
 public enum MessageText {
-    successfullyAddPlant("You added \n a plant!"),
+    successfullyAddPlant("You added \n a plant to your library!"),
     successfullyAddWishlistPlant("You added \n a plant to your wishlist!"),
     successfullyChangedPlant("You changed \n a plants information!"),
     successfullyChangedDate("You changed \n the water date!"),
-    removePlant("You removed a plant!"),
+    removePlant("You removed a plant \n from your library!"),
+    removeWishlistPlant("You removed a plant \n from your wishlist!"),
     holdOnGettingInfo("Hold on \n while we are \n getting your information");
 
 

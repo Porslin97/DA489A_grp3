@@ -114,7 +114,12 @@ public class LibraryPlantPane extends Pane implements PlantPane {
     public LibraryPlantPane(MyPlantsTabPaneController myPlantsTabPaneController) {
         this.myPlantsTabPaneController = myPlantsTabPaneController;
         initEmptyLibraryLabel();
+    }
 
+    public LibraryPlantPane(boolean isLoading) {
+        if (isLoading) {
+            initLoadingView();
+        }
     }
 
     /**
@@ -132,6 +137,23 @@ public class LibraryPlantPane extends Pane implements PlantPane {
         btnSearchPlants.setLayoutX(500.0);
         btnSearchPlants.setLayoutY(40.0);
         this.getChildren().addAll(image, lblEmptyInfo, btnSearchPlants);
+    }
+
+    private void initLoadingView() {
+        this.image = new ImageView();
+        Image img = PictureRandomizerClient.getRandomPicture();
+        initImages(img);
+
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setMaxSize(40, 40);
+        progressIndicator.setLayoutX(150.0);
+        progressIndicator.setLayoutY(20.0);
+
+        Label lblLoadingInfo = new Label("Loading your plants...");
+        lblLoadingInfo.setLayoutX(150.0);
+        lblLoadingInfo.setLayoutY(70.0);
+
+        this.getChildren().addAll(image, progressIndicator, lblLoadingInfo);
     }
 
 
@@ -235,7 +257,7 @@ public class LibraryPlantPane extends Pane implements PlantPane {
      * @param plant to change the nickname on
      */
 
-    private void initUpdateWateringFrequencyButton(Plant plant) { // TODO: needs to update in the library panel when changing?
+    private void initUpdateWateringFrequencyButton(Plant plant) {
         this.updateWateringFrequencyButton = new Button("Update watering frequency");
         updateWateringFrequencyButton.setLayoutX(500.0);
         updateWateringFrequencyButton.setLayoutY(55.0);

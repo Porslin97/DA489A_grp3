@@ -9,12 +9,12 @@ import java.util.Random;
 public class PictureRandomizer {
 
     private static final String[] flowerImages = {
-            "Blommor/blomma1.png",
             "Blommor/blomma2.png",
             "Blommor/blomma3.png",
             "Blommor/blomma4.png",
             "Blommor/blomma5.png",
             "Blommor/blomma6.png",
+            "Blommor/blomma9.png",
     };
 
     /**
