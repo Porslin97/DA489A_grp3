@@ -101,7 +101,7 @@ public class MainPaneController {
      * Method to switch to the tab the user selects
      */
     public void changeToSearchTab() {
-        mainPane.getSelectionModel().select(1);
+        mainPane.getSelectionModel().select(2);
     }
 
     public boolean addPlantToDB(Plant plantToAdd, String database) {
