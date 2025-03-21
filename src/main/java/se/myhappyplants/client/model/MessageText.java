@@ -8,6 +8,7 @@ package se.myhappyplants.client.model;
 public enum MessageText {
     successfullyAddPlant("You added \n a plant to your library!"),
     successfullyAddWishlistPlant("You added \n a plant to your wishlist!"),
+    successfullyUpdatedFavoriteStatus("You updated \n a plants favorite status!"),
     successfullyChangedPlant("You changed \n a plants information!"),
     successfullyChangedDate("You changed \n the water date!"),
     removePlant("You removed a plant \n from your library!"),

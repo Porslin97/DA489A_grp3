@@ -201,6 +201,7 @@ public class MyPlantsTabPaneController {
 
             if (response.isSuccess()) {
                 Platform.runLater(() -> {
+                    new PopupBox(MessageText.successfullyUpdatedFavoriteStatus.toString());
                     if (plant.getIsFavorite()) {
                         favoriteButton.setGraphic(emptyHeartImg);
                         plant.setIsFavorite(false);

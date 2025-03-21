@@ -94,6 +94,15 @@ public class Plant implements Serializable {
         this.imageURL = imageURL;
     }
 
+    public Plant(String nickname, String plantId, Date lastWatered, int waterFrequency, String imageURL, boolean isFavorite) {
+        this.nickname = nickname;
+        this.plantId = plantId;
+        this.lastWatered = lastWatered;
+        this.users_watering_frequency = waterFrequency;
+        this.imageURL = imageURL;
+        this.isFavorite = isFavorite;
+    }
+
     /**
      * Creates a plant object that can be used to update
      * a users library in the MyHappyPlants database
@@ -250,6 +259,7 @@ public class Plant implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Common name: %s \tScientific name: %s ", commonName, scientificName);
+        return String.format("Common name: %s \tScientific name: %s \tFamily: %s \tLight: %s \tWater: %s \tDescription: %s \tNickname: %s \tUsers watering frequency: %d \tLast watered: %s \tDate added: %s \tIs favorite: %b \tDatabase ID: %d",
+                commonName, scientificName, family, light, water, description, nickname, users_watering_frequency, lastWatered, dateAdded, isFavorite, databaseId);
     }
 }

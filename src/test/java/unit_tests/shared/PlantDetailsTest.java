@@ -20,7 +20,6 @@ public class PlantDetailsTest {
 
     @Test
     public void testGetFamilyName(){
-        plantDetails.getFamilyName();
         assertEquals("FamilyTest", plantDetails.getFamilyName());
     }
     @Test
@@ -29,24 +28,20 @@ public class PlantDetailsTest {
     }
     @Test
     public void testGetWateringFrequency(){
-        plantDetails.getRecommended_watering_frequency();
         assertEquals("Recommended average", plantDetails.getRecommended_watering_frequency());
     }
     @Test
     public void testGetSunlight(){
-        plantDetails.getSunlight();
         assertEquals("shady", plantDetails.getSunlight().getFirst());
     }
 
     @Test
     public void testGetScientificNameInPLantDetails(){
-        plantDetails.getScientificName();
         assertEquals("testus scientificus", plantDetails.getScientificName());
     }
 
     @Test
     public void testToString(){
-        plantDetails.toString();
         assertEquals("PlantDetails{familyName='FamilyTest', description='Description test', recommended_watering_frequency='Recommended average', sunlight=[shady]}", plantDetails.toString());
     }
 
