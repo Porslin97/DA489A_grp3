@@ -140,7 +140,7 @@ public class SearchTabPaneController {
         Date date = new Date(currentDateMilli);
         String imageURL = plantAdd.getImageURL();
         Plant plantToAdd = new Plant(uniqueNickName, plantAdd.getPlantId(), date, newWateringFrequency, imageURL);
-        PopupBox.display(MessageText.successfullyAddPlant.toString());
+        new PopupBox(MessageText.successfullyAddPlant.toString());
         boolean success = mainPaneController.addPlantToDB(plantToAdd, database);
         if (success){
             mainPaneController.addPlantToUserLibrary(plantToAdd);
@@ -244,7 +244,7 @@ private void showResultsOnPane() {
 private void searchButtonPressed() {
     btnSearch.setDisable(true);
     txtFldSearchText.addToHistory();
-    PopupBox.display(MessageText.holdOnGettingInfo.toString());
+    new PopupBox(MessageText.holdOnGettingInfo.toString());
     Thread searchThread = new Thread(() -> {
         SortingOption selectedSortingOption = cmbSortOption.getValue();
         Message apiRequest = new Message(MessageType.search, txtFldSearchText.getText(), selectedSortingOption);
@@ -286,7 +286,7 @@ private void logoutButtonPressed() throws IOException {
 }
 
 public PlantDetails getPlantDetails(Plant plant) {
-    PopupBox.display(MessageText.holdOnGettingInfo.toString());
+    new PopupBox(MessageText.holdOnGettingInfo.toString());
     PlantDetails plantDetails = null;
     Message getInfoSearchedPlant = new Message(MessageType.getMorePlantInfo, plant);
     ServerConnection connection = ServerConnection.getClientConnection();

@@ -90,6 +90,7 @@ public class MyPlantsTabPaneController {
 
     /**
      * Method to set the mainPaneController
+     *
      * @param mainPaneController to set
      */
     public void setMainController(MainPaneController mainPaneController) {
@@ -98,6 +99,7 @@ public class MyPlantsTabPaneController {
 
     /**
      * Getter-method to get the mainPaneController
+     *
      * @return MainPaneController
      */
     public MainPaneController getMainPaneController() {
@@ -119,10 +121,10 @@ public class MyPlantsTabPaneController {
                 disableButtons();
                 obsListLibraryPlantPane.add(new LibraryPlantPane(this));
             } else {
-                enableButtons();
                 for (Plant plant : currentUserLibrary) {
                     obsListLibraryPlantPane.add(new LibraryPlantPane(this, plant));
                 }
+                enableButtons();
             }
         }
         Platform.runLater(() -> {
@@ -132,9 +134,32 @@ public class MyPlantsTabPaneController {
     }
 
     /**
+     * Method to create the logged in users library from the database
+     */
+    @FXML
+    public void createCurrentUserLibraryFromDB() {
+        System.out.println("Entered createCurrentUserLibraryFromDB in MyPlantsTabPaneController");
+        Thread getLibraryThread = new Thread(() -> {
+            Message getLibrary = new Message(MessageType.getLibrary, LoggedInUser.getInstance().getUser());
+            ServerConnection connection = ServerConnection.getClientConnection();
+            Message response = connection.makeRequest(getLibrary);
+
+            if (response.isSuccess()) {
+                currentUserLibrary = response.getPlantArray();
+                isLoadingLibrary = false;
+                addCurrentUserLibraryToHomeScreen();
+                showNotifications();
+            } else {
+                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
+            }
+        });
+        getLibraryThread.start();
+    }
+
+    /**
      * Method to disable the buttons
      */
-    private void disableButtons () {
+    private void disableButtons() {
         btnWaterAll.setDisable(true);
         btnExpandAll.setDisable(true);
         btnCollapseAll.setDisable(true);
@@ -143,7 +168,7 @@ public class MyPlantsTabPaneController {
     /**
      * Mehtod to enable the buttons
      */
-    private void enableButtons () {
+    private void enableButtons() {
         btnWaterAll.setDisable(false);
         btnExpandAll.setDisable(false);
         btnCollapseAll.setDisable(false);
@@ -174,9 +199,9 @@ public class MyPlantsTabPaneController {
             ServerConnection connection = ServerConnection.getClientConnection();
             Message response = connection.makeRequest(updateFavorite);
 
-            if(response.isSuccess()){
+            if (response.isSuccess()) {
                 Platform.runLater(() -> {
-                    if(plant.getIsFavorite()) {
+                    if (plant.getIsFavorite()) {
                         favoriteButton.setGraphic(emptyHeartImg);
                         plant.setIsFavorite(false);
                     } else {
@@ -192,37 +217,13 @@ public class MyPlantsTabPaneController {
     }
 
     /**
-     * Method to create the logged in users library from the database
-     */
-    @FXML
-    public void createCurrentUserLibraryFromDB() {
-        isLoadingLibrary = true;
-
-        Thread getLibraryThread = new Thread(() -> {
-            Message getLibrary = new Message(MessageType.getLibrary, LoggedInUser.getInstance().getUser());
-            ServerConnection connection = ServerConnection.getClientConnection();
-            Message response = connection.makeRequest(getLibrary);
-
-            if (response.isSuccess()) {
-                currentUserLibrary = response.getPlantArray();
-                System.out.println("currentUserLibrary: " + currentUserLibrary);
-                isLoadingLibrary = false;
-                addCurrentUserLibraryToHomeScreen();
-                showNotifications();
-            } else {
-                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
-            }
-        });
-        getLibraryThread.start();
-    }
-
-    /**
      * Method to remove a selected plant from the database
+     *
      * @param plant
      */
     @FXML
     public void removePlantFromDB(Plant plant) {
-        Platform.runLater(() ->PopupBox.display(MessageText.removePlant.toString()));
+        Platform.runLater(() -> new PopupBox(MessageText.removePlant.toString()));
         Thread removePlantThread = new Thread(() -> {
             currentUserLibrary.remove(plant);
             addCurrentUserLibraryToHomeScreen();
@@ -247,6 +248,7 @@ public class MyPlantsTabPaneController {
 
     /**
      * Method to save the plant to the database
+     *
      * @param plant the selected plant that the user has chosen
      */
     @FXML
@@ -266,6 +268,7 @@ public class MyPlantsTabPaneController {
 
     /**
      * Method to message the right controller-class that the log out-button has been pressed
+     *
      * @throws IOException
      */
     @FXML
@@ -283,7 +286,7 @@ public class MyPlantsTabPaneController {
         Message changeLastWatered = new Message(MessageType.changeLastWatered, LoggedInUser.getInstance().getUser(), plant, date);
         ServerConnection connection = ServerConnection.getClientConnection();
         Message response = connection.makeRequest(changeLastWatered);
-        PopupBox.display(MessageText.successfullyChangedDate.toString());
+        new PopupBox(MessageText.successfullyChangedDate.toString());
         if (!response.isSuccess()) {
             Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The connection to the server has failed. Check your connection and try again."));
         }
@@ -293,7 +296,8 @@ public class MyPlantsTabPaneController {
 
     /**
      * Method to send to the server to change the nickname of a selected plant in the database.
-     * @param plant the selected plant
+     *
+     * @param plant       the selected plant
      * @param newNickname the new nickname of the plant
      * @return if it's successful. true or false
      */
@@ -315,7 +319,7 @@ public class MyPlantsTabPaneController {
         plant.setNickname(newNickname);
         sortLibrary();
 
-        Platform.runLater(() -> PopupBox.display(MessageText.successfullyChangedPlant.toString()));
+        Platform.runLater(() -> new PopupBox(MessageText.successfullyChangedPlant.toString()));
         return true;
     }
 
@@ -324,7 +328,7 @@ public class MyPlantsTabPaneController {
         Message changeWateringFrequencyInDB = new Message(MessageType.changeWateringFrequency, LoggedInUser.getInstance().getUser(), plant, wateringFrequency);
         ServerConnection connection = ServerConnection.getClientConnection();
         Message response = connection.makeRequest(changeWateringFrequencyInDB);
-        PopupBox.display(MessageText.successfullyChangedPlant.toString());
+        new PopupBox(MessageText.successfullyChangedPlant.toString());
         if (!response.isSuccess()) {
             Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "It was not possible to change watering frequency for you plant. Try again."));
             return false;
@@ -358,6 +362,7 @@ public class MyPlantsTabPaneController {
 
     /**
      * Method to send to the server to get extended information about the plant
+     *
      * @param plant the selected plant
      * @return an instance of the class PlantDetails
      */
@@ -480,7 +485,7 @@ public class MyPlantsTabPaneController {
     public boolean addPlantToUserLibrary(Plant plantToAdd) {
         boolean success = false;
         currentUserLibrary.add(plantToAdd);
-        if (currentUserLibrary.contains(plantToAdd)){
+        if (currentUserLibrary.contains(plantToAdd)) {
             success = true;
         }
         addCurrentUserLibraryToHomeScreen();

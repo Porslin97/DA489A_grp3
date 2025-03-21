@@ -101,7 +101,7 @@ public class WishlistTabPaneController {
         String imageURL = selectedPlant.getImageURL();
 
         Plant plantToAdd = new Plant(selectedPlant.getPlantId(), selectedPlant.getCommonName(), imageURL, dateAdded);
-        PopupBox.display(MessageText.successfullyAddWishlistPlant.toString());
+        new PopupBox(MessageText.successfullyAddWishlistPlant.toString());
         addPlantToDB(plantToAdd);
     }
 
@@ -127,7 +127,7 @@ public class WishlistTabPaneController {
 
     @FXML
     public void removePlantFromDB(Plant plant) {
-        Platform.runLater(() -> PopupBox.display(MessageText.removeWishlistPlant.toString()));
+        Platform.runLater(() -> new PopupBox(MessageText.removeWishlistPlant.toString()));
         Thread removePlantThread = new Thread(() -> {
             currentUserWishlist.remove(plant);
             Message deletePlant = new Message(MessageType.removePlantWishlist, LoggedInUser.getInstance().getUser(), plant);
@@ -235,7 +235,7 @@ public class WishlistTabPaneController {
         Date date = new Date(currentDateMilli);
         String imageURL = plantAdd.getImageURL();
         Plant plantToAdd = new Plant(uniqueNickName, plantAdd.getPlantId(), date, newWateringFrequency, imageURL);
-        PopupBox.display(MessageText.successfullyAddPlant.toString());
+        new PopupBox(MessageText.successfullyAddPlant.toString());
         boolean success = mainPaneController.addPlantToDB(plantToAdd, database);
         if (success){
             mainPaneController.addPlantToUserLibrary(plantToAdd);
@@ -276,7 +276,7 @@ public class WishlistTabPaneController {
     }
 
     public PlantDetails getPlantDetails(Plant plant) {
-        PopupBox.display(MessageText.holdOnGettingInfo.toString());
+        new PopupBox(MessageText.holdOnGettingInfo.toString());
         PlantDetails plantDetails = null;
         Message getInfoSearchedPlant = new Message(MessageType.getMorePlantInfo, plant);
         ServerConnection connection = ServerConnection.getClientConnection();

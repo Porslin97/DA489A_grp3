@@ -26,7 +26,6 @@ public class SetAvatar {
         catch (IOException e) {
             avatarURL = new File("resources/images/user_default_img.png").toURI().toString();
         }
-        System.out.println("return avatarURL: " + avatarURL);
         return avatarURL;
     }
 

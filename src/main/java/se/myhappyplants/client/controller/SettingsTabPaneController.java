@@ -83,7 +83,7 @@ public class SettingsTabPaneController {
                 if (notificationResponse.isSuccess()) {
                     LoggedInUser.getInstance().getUser().setIsNotificationsActivated(tglBtnChangeNotification.isSelected());
                     tglBtnChangeNotification.setDisable(true);
-                    Platform.runLater(() -> PopupBox.display("Notification settings\n changed", tglBtnChangeNotification));
+                    Platform.runLater(() -> new PopupBox("Notification settings\n changed"));
                 } else {
                     Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "Settings could not be changed"));
                 }
@@ -110,7 +110,7 @@ public class SettingsTabPaneController {
                 if (funFactsResponse.isSuccess()) {
                     LoggedInUser.getInstance().getUser().setFunFactsActivated(tglBtnChangeFunFacts.isSelected());
                     tglBtnChangeFunFacts.setDisable(true);
-                    Platform.runLater(() -> PopupBox.display("Fun Facts settings\n changed", tglBtnChangeFunFacts));
+                    Platform.runLater(() -> new PopupBox("Fun Facts settings\n changed"));
                 } else {
                     Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "Settings could not be changed"));
                 }

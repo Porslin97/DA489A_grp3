@@ -117,6 +117,7 @@ public class LibraryPlantPane extends Pane implements PlantPane {
     }
 
     public LibraryPlantPane(boolean isLoading) {
+        System.out.println("inside LibraryPlantPane constructor, isLoading: " + isLoading);
         if (isLoading) {
             initLoadingView();
         }

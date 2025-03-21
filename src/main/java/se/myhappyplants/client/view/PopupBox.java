@@ -25,16 +25,10 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class PopupBox extends Popup {
 
-    private static Stage window;
-    private static VBox vBox;
-    private static ToggleButton toggleButton;
+    private final Stage window;
+    private final VBox vBox;
 
-    /**
-     * Method to initialize and isplay the pop up box
-     * @param message the message to show
-     */
-    public static void display(String message) {
-
+    public PopupBox(String message) {
         window = new Stage();
         window.initModality(Modality.NONE);
         window.initStyle(StageStyle.TRANSPARENT);
@@ -63,35 +57,16 @@ public class PopupBox extends Popup {
         showAndFade();
     }
 
-    /**
-     * Method to get the pop up box to pop up and then fade
-     */
-    private static void showAndFade() {
+    public void showAndFade() {
         window.show();
         AtomicReference<Double> opacity = new AtomicReference<>(1.0);
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.millis(40), event -> {
-                    window.getScene().getRoot().opacityProperty().set(opacity.updateAndGet(v -> (double) (v - 0.01)));
+                    window.getScene().getRoot().opacityProperty().set(opacity.updateAndGet(v -> v - 0.01));
                 })
         );
         timeline.setCycleCount(100);
-        timeline.setOnFinished(action -> {
-            System.out.println("popup has finished");
-            if(toggleButton !=null){
-                toggleButton.setDisable(false);
-            }
-            window.close();
-        });
+        timeline.setOnFinished(action -> window.close());
         timeline.play();
-    }
-
-    /**
-     * Method to display the message
-     * @param message
-     * @param toggleButton
-     */
-    public static void display(String message, ToggleButton toggleButton) {
-        PopupBox.toggleButton = toggleButton;
-        display(message);
     }
 }

@@ -52,6 +52,7 @@ public class ListSorter {
      * @return ObservableList<PlantPane>
      */
     public static ObservableList<PlantPane> sort(SortingOption sortOption, ObservableList<PlantPane> plantList) {
+        System.out.println("Sorting by: " + sortOption);
         switch (sortOption) {
             case NICKNAME -> plantList.sort(Comparator.comparing(pane -> pane.getPlant().getNickname(), String.CASE_INSENSITIVE_ORDER));
             case COMMON_NAME -> plantList.sort(Comparator.comparing(pane -> pane.getPlant().getCommonName(), String.CASE_INSENSITIVE_ORDER));
