@@ -564,9 +564,36 @@ public class ClientServerTests {
         assertTrue(addFavoriteResponse.isSuccess(), "Add favorite should succeed when plant exists in user's library");
 
         Plant updatedPlant = userPlantRepository.getPlant(user, plant.getNickname());
-        System.out.println(updatedPlant);
         assertNotNull(updatedPlant, "Plant should exist in the database after update");
         assertTrue(updatedPlant.getIsFavorite(), "Plant should be marked as a favorite after update");
+    }
+
+    @Test
+    void shouldSuccessfullyRemovePlantFromFavorites() {
+        String email = "test@mail.com";
+        String username = "TestRemoveFavorite";
+        String rawPassword = "password123";
+        userRepository.saveUser(new User(email, username, rawPassword, true));
+        User user = userRepository.getUserDetails(email);
+
+        Plant plant = new Plant("1", "TestPlant", "TestPlant", "TestPlant.jpg");
+        plant.setNickname("TestPlantNickname");
+        plant.setUsers_watering_frequency(5);
+        plant.setLastWatered(LocalDate.now());
+        plant.setIsFavorite(true);
+        userPlantRepository.savePlant(user, plant);
+
+        assertTrue(plant.getIsFavorite(), "Plant should be a favorite initially");
+
+        Message removeFavoriteRequest = new Message(MessageType.updateIsFavorite, user, plant);
+        Message removeFavoriteResponse = clientConnection.makeRequest(removeFavoriteRequest);
+
+        assertNotNull(removeFavoriteResponse, "Remove favorite response should not be null");
+        assertTrue(removeFavoriteResponse.isSuccess(), "Remove favorite should succeed when plant exists in user's library");
+
+        Plant updatedPlant = userPlantRepository.getPlant(user, plant.getNickname());
+        assertNotNull(updatedPlant, "Plant should exist in the database after update");
+        assertFalse(updatedPlant.getIsFavorite(), "Plant should not be marked as a favorite after removal");
     }
 }
 
