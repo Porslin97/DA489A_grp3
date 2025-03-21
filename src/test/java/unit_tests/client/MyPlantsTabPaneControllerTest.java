@@ -38,7 +38,4 @@ public class MyPlantsTabPaneControllerTest {
         ArrayList<Plant> currentUserLibrary = (ArrayList<Plant>) myPlantsTabPaneController.getCurrentUserLibrary();
         assertEquals(testPlant, currentUserLibrary.getFirst());
     }
-
-
-
 }

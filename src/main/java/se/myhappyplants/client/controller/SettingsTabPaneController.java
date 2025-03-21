@@ -190,6 +190,7 @@ public class SettingsTabPaneController {
 
         if (selectedImage != null) {
             if (!ImageUtils.isValidImage(selectedImage)) {
+                Platform.runLater(() -> MessageBox.display(BoxTitle.Failed, "The selected file is not a valid image or has an unsupported format."));
                 return;
             }
 
