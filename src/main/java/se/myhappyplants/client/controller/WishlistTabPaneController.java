@@ -118,6 +118,7 @@ public class WishlistTabPaneController {
     public void removePlantFromCurrentUserWishlist(Plant selectedPlant, ActionEvent action) {
         Plant plantToRemove = new Plant(selectedPlant.getCommonName(), selectedPlant.getPlantId(), null);
         removePlantFromDB(plantToRemove);
+        currentUserWishlist.remove(selectedPlant);
         Parent listItemToRemove = ((Button) action.getSource()).getParent();
         lstViewUserPlantWishlist.getItems().remove(listItemToRemove);
         System.out.println(lstViewUserPlantWishlist.getItems());
